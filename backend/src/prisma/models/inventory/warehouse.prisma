@@ -1,0 +1,20 @@
+model Warehouse {
+  id        String   @id @default(uuid())
+  companyId String
+  code      String
+  name      String
+  address   String?
+  city      String?
+  phone     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company            Company            @relation(fields: [companyId], references: [id])
+  stocks             Stock[]
+  stockMovements     StockMovement[]
+  stockAdjustments   StockAdjustment[]
+  productionOrders   ProductionOrder[]
+
+  @@unique([companyId, code])
+}

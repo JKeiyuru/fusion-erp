@@ -1,4 +1,7 @@
+// ============================================
 // FILE: backend/src/modules/tenancy/tenancy.service.ts
+// Location: backend/src/modules/tenancy/tenancy.service.ts
+// ============================================
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateCompanyDto } from './dto/update-company.dto';

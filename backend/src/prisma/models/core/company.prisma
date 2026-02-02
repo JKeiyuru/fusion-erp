@@ -1,0 +1,40 @@
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  kraPin    String?
+  address   String?
+  city      String?
+  logo      String?
+  currency  String   @default("KES")
+  timezone  String   @default("Africa/Nairobi")
+  isActive  Boolean  @default(true)
+  settings  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users              User[]
+  customers          Customer[]
+  suppliers          Supplier[]
+  products           Product[]
+  warehouses         Warehouse[]
+  accounts           Account[]
+  journalEntries     JournalEntry[]
+  invoices           Invoice[]
+  salesOrders        SalesOrder[]
+  quotations         Quotation[]
+  purchaseOrders     PurchaseOrder[]
+  bills              Bill[]
+  posSessions        PosSession[]
+  posSales           PosSale[]
+  boms               Bom[]
+  productionOrders   ProductionOrder[]
+  employees          Employee[]
+  stockMovements     StockMovement[]
+  stockAdjustments   StockAdjustment[]
+  roles              Role[]
+  modules            TenantModule[]
+  auditLogs          AuditLog[]
+}

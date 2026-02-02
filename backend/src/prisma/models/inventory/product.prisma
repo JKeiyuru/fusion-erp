@@ -1,0 +1,35 @@
+model Product {
+  id              String      @id @default(uuid())
+  companyId       String
+  sku             String
+  name            String
+  description     String?
+  type            ProductType @default(GOOD)
+  categoryId      String?
+  barcode         String?
+  unit            String?
+  costPrice       Decimal     @db.Decimal(15, 2)
+  sellingPrice    Decimal     @db.Decimal(15, 2)
+  trackInventory  Boolean     @default(true)
+  reorderLevel    Decimal?    @db.Decimal(15, 2)
+  reorderQuantity Decimal?    @db.Decimal(15, 2)
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  company             Company              @relation(fields: [companyId], references: [id])
+  category            ProductCategory?     @relation(fields: [categoryId], references: [id])
+  stocks              Stock[]
+  stockMovements      StockMovement[]
+  invoiceLines        InvoiceLine[]
+  salesOrderLines     SalesOrderLine[]
+  quotationLines      QuotationLine[]
+  purchaseOrderLines  PurchaseOrderLine[]
+  billLines           BillLine[]
+  posSaleLines        PosSaleLine[]
+  bom                 Bom[]
+  bomComponents       BomComponent[]
+  productionOrders    ProductionOrder[]
+
+  @@unique([companyId, sku])
+}

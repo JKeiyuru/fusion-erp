@@ -1,0 +1,25 @@
+model ProductionOrder {
+  id               String                @id @default(uuid())
+  companyId        String
+  orderNumber      String
+  bomId            String
+  productId        String
+  quantity         Decimal               @db.Decimal(15, 2)
+  producedQuantity Decimal               @default(0) @db.Decimal(15, 2)
+  scheduledDate    DateTime
+  warehouseId      String
+  notes            String?
+  status           ProductionOrderStatus @default(DRAFT)
+  confirmedAt      DateTime?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  company   Company   @relation(fields: [companyId], references: [id])
+  bom       Bom       @relation(fields: [bomId], references: [id])
+  product   Product   @relation(fields: [productId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+
+  @@unique([companyId, orderNumber])
+}

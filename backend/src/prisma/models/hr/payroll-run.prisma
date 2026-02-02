@@ -1,0 +1,19 @@
+model PayrollRun {
+  id         String        @id @default(uuid())
+  employeeId String
+  periodStart DateTime
+  periodEnd   DateTime
+  basicSalary Decimal       @db.Decimal(15, 2)
+  allowances  Decimal       @default(0) @db.Decimal(15, 2)
+  grossPay    Decimal       @db.Decimal(15, 2)
+  paye        Decimal       @default(0) @db.Decimal(15, 2)
+  nhif        Decimal       @default(0) @db.Decimal(15, 2)
+  nssf        Decimal       @default(0) @db.Decimal(15, 2)
+  deductions  Decimal       @default(0) @db.Decimal(15, 2)
+  netPay      Decimal       @db.Decimal(15, 2)
+  status      PayrollStatus @default(DRAFT)
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+}

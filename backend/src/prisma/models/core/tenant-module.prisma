@@ -1,0 +1,13 @@
+model TenantModule {
+  id         String   @id @default(uuid())
+  companyId  String
+  moduleCode String
+  enabled    Boolean  @default(true)
+  settings   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id])
+
+  @@unique([companyId, moduleCode])
+}

@@ -1,0 +1,38 @@
+model Bill {
+  id              String     @id @default(uuid())
+  companyId       String
+  billNumber      String
+  supplierId      String
+  purchaseOrderId String?
+  date            DateTime
+  dueDate         DateTime
+  subtotal        Decimal    @db.Decimal(15, 2)
+  taxAmount       Decimal    @db.Decimal(15, 2)
+  total           Decimal    @db.Decimal(15, 2)
+  paidAmount      Decimal    @default(0) @db.Decimal(15, 2)
+  notes           String?
+  status          BillStatus @default(DRAFT)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  company       Company        @relation(fields: [companyId], references: [id])
+  supplier      Supplier       @relation(fields: [supplierId], references: [id])
+  purchaseOrder PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id])
+  lines         BillLine[]
+
+  @@unique([companyId, billNumber])
+}
+
+model BillLine {
+  id          String  @id @default(uuid())
+  billId      String
+  productId   String
+  description String
+  quantity    Decimal @db.Decimal(15, 2)
+  unitPrice   Decimal @db.Decimal(15, 2)
+  taxRate     Decimal @db.Decimal(5, 2)
+  amount      Decimal @db.Decimal(15, 2)
+
+  bill    Bill    @relation(fields: [billId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}

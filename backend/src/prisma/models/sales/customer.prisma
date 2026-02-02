@@ -1,0 +1,24 @@
+model Customer {
+  id           String   @id @default(uuid())
+  companyId    String
+  code         String
+  name         String
+  email        String?
+  phone        String?
+  kraPin       String?
+  address      String?
+  city         String?
+  creditLimit  Decimal? @db.Decimal(15, 2)
+  paymentTerms Int?     // Days
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  company     Company       @relation(fields: [companyId], references: [id])
+  invoices    Invoice[]
+  salesOrders SalesOrder[]
+  quotations  Quotation[]
+  posSales    PosSale[]
+
+  @@unique([companyId, code])
+}

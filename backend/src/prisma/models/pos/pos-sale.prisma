@@ -1,0 +1,34 @@
+model PosSale {
+  id            String        @id @default(uuid())
+  companyId     String
+  sessionId     String
+  saleNumber    String
+  customerId    String?
+  date          DateTime
+  subtotal      Decimal       @db.Decimal(15, 2)
+  taxAmount     Decimal       @db.Decimal(15, 2)
+  total         Decimal       @db.Decimal(15, 2)
+  paymentMethod PaymentMethod
+  mpesaCode     String?
+  createdAt     DateTime      @default(now())
+
+  company  Company       @relation(fields: [companyId], references: [id])
+  session  PosSession    @relation(fields: [sessionId], references: [id])
+  customer Customer?     @relation(fields: [customerId], references: [id])
+  lines    PosSaleLine[]
+
+  @@unique([companyId, saleNumber])
+}
+
+model PosSaleLine {
+  id        String  @id @default(uuid())
+  saleId    String
+  productId String
+  quantity  Decimal @db.Decimal(15, 2)
+  unitPrice Decimal @db.Decimal(15, 2)
+  taxRate   Decimal @db.Decimal(5, 2)
+  amount    Decimal @db.Decimal(15, 2)
+
+  sale    PosSale @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}

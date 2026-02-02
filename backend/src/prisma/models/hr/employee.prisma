@@ -1,0 +1,25 @@
+model Employee {
+  id          String    @id @default(uuid())
+  companyId   String
+  employeeNo  String
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String?
+  kraPin      String?
+  nssf        String?
+  nhif        String?
+  position    String?
+  department  String?
+  salary      Decimal   @db.Decimal(15, 2)
+  hireDate    DateTime
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  company      Company       @relation(fields: [companyId], references: [id])
+  payrollRuns  PayrollRun[]
+  leaveRecords LeaveRecord[]
+
+  @@unique([companyId, employeeNo])
+}

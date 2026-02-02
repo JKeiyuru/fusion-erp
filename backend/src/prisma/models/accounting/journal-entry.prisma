@@ -1,0 +1,19 @@
+model JournalEntry {
+  id          String             @id @default(uuid())
+  companyId   String
+  entryNumber String
+  date        DateTime
+  reference   String?
+  description String?
+  status      JournalEntryStatus @default(DRAFT)
+  createdBy   String
+  postedAt    DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  company Company       @relation(fields: [companyId], references: [id])
+  creator User          @relation(fields: [createdBy], references: [id])
+  lines   JournalLine[]
+
+  @@unique([companyId, entryNumber])
+}

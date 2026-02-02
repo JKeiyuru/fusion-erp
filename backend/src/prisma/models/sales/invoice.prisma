@@ -1,0 +1,39 @@
+model Invoice {
+  id            String        @id @default(uuid())
+  companyId     String
+  invoiceNumber String
+  customerId    String
+  salesOrderId  String?
+  date          DateTime
+  dueDate       DateTime
+  subtotal      Decimal       @db.Decimal(15, 2)
+  taxAmount     Decimal       @db.Decimal(15, 2)
+  total         Decimal       @db.Decimal(15, 2)
+  paidAmount    Decimal       @default(0) @db.Decimal(15, 2)
+  notes         String?
+  status        InvoiceStatus @default(DRAFT)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  company    Company       @relation(fields: [companyId], references: [id])
+  customer   Customer      @relation(fields: [customerId], references: [id])
+  salesOrder SalesOrder?   @relation(fields: [salesOrderId], references: [id])
+  lines      InvoiceLine[]
+  payments   Payment[]
+
+  @@unique([companyId, invoiceNumber])
+}
+
+model InvoiceLine {
+  id          String  @id @default(uuid())
+  invoiceId   String
+  productId   String
+  description String
+  quantity    Decimal @db.Decimal(15, 2)
+  unitPrice   Decimal @db.Decimal(15, 2)
+  taxRate     Decimal @db.Decimal(5, 2)
+  amount      Decimal @db.Decimal(15, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}

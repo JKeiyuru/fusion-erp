@@ -1,0 +1,19 @@
+model Account {
+  id           String      @id @default(uuid())
+  companyId    String
+  code         String
+  name         String
+  type         AccountType
+  parentId     String?
+  balance      Decimal     @default(0) @db.Decimal(15, 2)
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  company      Company       @relation(fields: [companyId], references: [id])
+  parent       Account?      @relation("AccountHierarchy", fields: [parentId], references: [id])
+  children     Account[]     @relation("AccountHierarchy")
+  journalLines JournalLine[]
+
+  @@unique([companyId, code])
+}

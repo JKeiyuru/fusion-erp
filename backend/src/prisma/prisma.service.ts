@@ -1,6 +1,7 @@
 // ============================================
 // FILE: backend/src/prisma/prisma.service.ts
 // Location: backend/src/prisma/prisma.service.ts
+// COMPLETE FIXED VERSION
 // ============================================
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
@@ -23,7 +24,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   // Tenant-specific query helpers
-  async withTenant<T>(tenantId: string, callback: (prisma: PrismaClient) => Promise<T>): Promise<T> {
+  async withTenant<T>(tenantId: string, callback: (prisma: any) => Promise<T>): Promise<T> {
     return this.$transaction(async (prisma) => {
       // Set tenant context
       await prisma.$executeRaw`SELECT set_config('app.tenant_id', ${tenantId}, true)`;

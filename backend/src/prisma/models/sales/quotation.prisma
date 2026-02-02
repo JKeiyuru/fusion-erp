@@ -1,0 +1,35 @@
+model Quotation {
+  id              String          @id @default(uuid())
+  companyId       String
+  quotationNumber String
+  customerId      String
+  date            DateTime
+  validUntil      DateTime
+  subtotal        Decimal         @db.Decimal(15, 2)
+  taxAmount       Decimal         @db.Decimal(15, 2)
+  total           Decimal         @db.Decimal(15, 2)
+  notes           String?
+  status          QuotationStatus @default(DRAFT)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  company  Company          @relation(fields: [companyId], references: [id])
+  customer Customer         @relation(fields: [customerId], references: [id])
+  lines    QuotationLine[]
+
+  @@unique([companyId, quotationNumber])
+}
+
+model QuotationLine {
+  id           String  @id @default(uuid())
+  quotationId  String
+  productId    String
+  description  String
+  quantity     Decimal @db.Decimal(15, 2)
+  unitPrice    Decimal @db.Decimal(15, 2)
+  taxRate      Decimal @db.Decimal(5, 2)
+  amount       Decimal @db.Decimal(15, 2)
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id])
+}

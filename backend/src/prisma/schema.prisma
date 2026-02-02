@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Import all models and enums
+
+// Core models
+import "./models/core/company.prisma"
+import "./models/core/user.prisma"
+import "./models/core/role-permission.prisma"
+import "./models/core/tenant-module.prisma"
+
+// Inventory models
+import "./models/inventory/product.prisma"
+import "./models/inventory/product-category.prisma"
+import "./models/inventory/warehouse.prisma"
+import "./models/inventory/stock.prisma"
+import "./models/inventory/stock-movement.prisma"
+import "./models/inventory/stock-adjustment.prisma"
+
+// Sales models
+import "./models/sales/customer.prisma"
+import "./models/sales/quotation.prisma"
+import "./models/sales/sales-order.prisma"
+import "./models/sales/invoice.prisma"
+
+// Procurement models
+import "./models/procurement/supplier.prisma"
+import "./models/procurement/purchase-order.prisma"
+import "./models/procurement/bill.prisma"
+
+// Accounting models
+import "./models/accounting/account.prisma"
+import "./models/accounting/journal-entry.prisma"
+import "./models/accounting/journal-line.prisma"
+import "./models/accounting/payment.prisma"
+
+// Manufacturing models
+import "./models/manufacturing/bom.prisma"
+import "./models/manufacturing/production-order.prisma"
+
+// POS models
+import "./models/pos/pos-session.prisma"
+import "./models/pos/pos-sale.prisma"
+
+// HR models
+import "./models/hr/employee.prisma"
+import "./models/hr/payroll-run.prisma"
+import "./models/hr/leave-record.prisma"
+
+// Audit models
+import "./models/audit/audit-log.prisma"

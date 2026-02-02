@@ -1,0 +1,20 @@
+model PosSession {
+  id            String           @id @default(uuid())
+  companyId     String
+  sessionNumber String
+  userId        String
+  openedAt      DateTime
+  closedAt      DateTime?
+  openingCash   Decimal          @db.Decimal(15, 2)
+  closingCash   Decimal?         @db.Decimal(15, 2)
+  totalSales    Decimal          @default(0) @db.Decimal(15, 2)
+  status        PosSessionStatus @default(OPEN)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  company Company   @relation(fields: [companyId], references: [id])
+  user    User      @relation(fields: [userId], references: [id])
+  sales   PosSale[]
+
+  @@unique([companyId, sessionNumber])
+}

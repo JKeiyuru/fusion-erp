@@ -1,0 +1,23 @@
+model User {
+  id           String    @id @default(uuid())
+  companyId    String
+  email        String
+  password     String
+  firstName    String
+  lastName     String
+  phone        String?
+  avatar       String?
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  refreshToken String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  company            Company            @relation(fields: [companyId], references: [id])
+  roles              UserRole[]
+  createdJournals    JournalEntry[]
+  posSessions        PosSession[]
+  stockAdjustments   StockAdjustment[]
+
+  @@unique([companyId, email])
+}

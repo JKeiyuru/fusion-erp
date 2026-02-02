@@ -1,0 +1,11 @@
+model JournalLine {
+  id          String  @id @default(uuid())
+  entryId     String
+  accountId   String
+  description String?
+  debit       Decimal @default(0) @db.Decimal(15, 2)
+  credit      Decimal @default(0) @db.Decimal(15, 2)
+
+  entry   JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  account Account      @relation(fields: [accountId], references: [id])
+}
