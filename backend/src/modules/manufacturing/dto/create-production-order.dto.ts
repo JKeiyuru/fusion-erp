@@ -1,9 +1,5 @@
-// ============================================
-// FILE: backend/src/modules/manufacturing/dto/create-production-order.dto.ts
-// Location: backend/src/modules/manufacturing/dto/create-production-order.dto.ts
-// ============================================
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsNumber, IsDate, IsOptional, IsString, Min } from 'class-validator';
+import { IsUUID, IsNumber, IsDate, IsOptional, IsString, IsBoolean } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateProductionOrderDto {
@@ -13,23 +9,30 @@ export class CreateProductionOrderDto {
 
   @ApiProperty()
   @IsNumber()
-  @Min(1)
-  plannedQuantity: number;
+  quantity: number;
 
   @ApiProperty()
   @IsDate()
   @Type(() => Date)
-  plannedDate: Date;
+  scheduledDate: Date;
+
+  @ApiProperty()
+  @IsUUID()
+  warehouseId: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @ApiProperty({ required: false, default: false })
+  @IsOptional()
+  @IsBoolean()
+  forceProduce?: boolean;
 }
 
 export class CompleteProductionOrderDto {
   @ApiProperty()
   @IsNumber()
-  @Min(1)
   producedQuantity: number;
 }

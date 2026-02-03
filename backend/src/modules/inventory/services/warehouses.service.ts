@@ -1,11 +1,11 @@
-/ ============================================
+// ============================================
 // FILE: backend/src/modules/inventory/services/warehouses.service.ts
 // Location: backend/src/modules/inventory/services/warehouses.service.ts
 // ============================================
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service';
-import { CreateWarehouseDto } from '../dto/create-warehouse.dto';
-import { UpdateWarehouseDto } from '../dto/update-warehouse.dto';
+import { CreateWarehouseDto, UpdateWarehouseDto} from '../dto/create-warehouse.dto';
+
 
 @Injectable()
 export class WarehousesService {
@@ -39,7 +39,7 @@ export class WarehousesService {
       include: {
         _count: {
           select: {
-            stocks: true,
+            stock: true,
           },
         },
       },
@@ -51,7 +51,7 @@ export class WarehousesService {
     const warehouse = await this.prisma.warehouse.findFirst({
       where: { id, companyId: tenantId },
       include: {
-        stocks: {
+        stock: {
           include: {
             product: true,
           },

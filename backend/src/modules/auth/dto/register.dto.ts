@@ -1,48 +1,45 @@
-// ============================================
-// FILE: backend/src/modules/auth/dto/register.dto.ts
-// Location: backend/src/modules/auth/dto/register.dto.ts
-// ============================================
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, IsPhoneNumber } from 'class-validator';
 
 export class RegisterDto {
-  @ApiProperty({ example: 'My Company Ltd' })
-  @IsString()
-  companyName: string;
-
-  @ApiProperty({ example: 'info@mycompany.com' })
-  @IsEmail()
-  companyEmail: string;
-
-  @ApiProperty({ example: '+254712345678' })
-  @IsOptional()
-  @IsString()
-  companyPhone?: string;
-
-  @ApiProperty({ example: 'A001234567P' })
-  @IsOptional()
-  @IsString()
-  kraPin?: string;
-
-  @ApiProperty({ example: 'John' })
+  @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   firstName: string;
 
-  @ApiProperty({ example: 'Doe' })
+  @ApiProperty()
+  @IsNotEmpty()
   @IsString()
   lastName: string;
 
-  @ApiProperty({ example: 'john@mycompany.com' })
+  @ApiProperty()
+  @IsNotEmpty()
   @IsEmail()
   email: string;
 
-  @ApiProperty({ example: '+254712345678' })
+  @ApiProperty()
+  @IsNotEmpty()
+  @MinLength(6)
+  password: string;
+
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
   phone?: string;
 
-  @ApiProperty({ example: 'password123' })
+  // Company details
+  @ApiProperty()
+  @IsNotEmpty()
   @IsString()
-  @MinLength(6)
-  password: string;
+  companyName: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsPhoneNumber()
+  companyPhone?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  kraPin?: string;
 }

@@ -11,7 +11,7 @@ model Warehouse {
   updatedAt DateTime @updatedAt
 
   company            Company            @relation(fields: [companyId], references: [id])
-  stocks             Stock[]
+  stock             Stock[]
   stockMovements     StockMovement[]
   stockAdjustments   StockAdjustment[]
   productionOrders   ProductionOrder[]

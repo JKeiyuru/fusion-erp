@@ -1,6 +1,5 @@
-// FILE: backend/src/modules/roles/dto/create-role.dto.ts
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsString, IsOptional, IsArray } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsOptional, IsArray, IsUUID } from 'class-validator';
 
 export class CreateRoleDto {
   @ApiProperty()
@@ -13,10 +12,9 @@ export class CreateRoleDto {
   description?: string;
 }
 
-export class UpdateRoleDto extends PartialType(CreateRoleDto) {}
-
 export class AssignPermissionsDto {
-  @ApiProperty()
+  @ApiProperty({ type: [String] })
   @IsArray()
+  @IsUUID('4', { each: true })
   permissionIds: string[];
 }

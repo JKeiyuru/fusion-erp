@@ -1,4 +1,6 @@
+// ============================================
 // FILE: backend/src/modules/hr/controllers/employees.controller.ts
+// ============================================
 import {
   Controller,
   Get,
@@ -34,12 +36,31 @@ export class EmployeesController {
   @ApiOperation({ summary: 'Get all employees' })
   findAll(
     @CurrentTenant() tenantId: string,
-    @Query('status') status?: string,
+    @Query('search') search?: string,
     @Query('department') department?: string,
+    @Query('isActive') isActive?: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
-    return this.employeesService.findAll(tenantId, { status, department, page, limit });
+    return this.employeesService.findAll(tenantId, {
+      search,
+      department,
+      isActive,
+      page,
+      limit,
+    });
+  }
+
+  @Get('departments')
+  @ApiOperation({ summary: 'Get all departments' })
+  getDepartments(@CurrentTenant() tenantId: string) {
+    return this.employeesService.getDepartments(tenantId);
+  }
+
+  @Get('stats')
+  @ApiOperation({ summary: 'Get employee statistics' })
+  getStats(@CurrentTenant() tenantId: string) {
+    return this.employeesService.getEmployeeStats(tenantId);
   }
 
   @Get(':id')

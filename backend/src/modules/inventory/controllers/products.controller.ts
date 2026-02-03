@@ -1,6 +1,5 @@
 // ============================================
 // FILE: backend/src/modules/inventory/controllers/products.controller.ts
-// Location: backend/src/modules/inventory/controllers/products.controller.ts
 // ============================================
 import {
   Controller,
@@ -38,18 +37,38 @@ export class ProductsController {
   findAll(
     @CurrentTenant() tenantId: string,
     @Query('search') search?: string,
-    @Query('type') type?: string,
     @Query('categoryId') categoryId?: string,
+    @Query('type') type?: string,
+    @Query('isActive') isActive?: string,
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
-    return this.productsService.findAll(tenantId, { search, type, categoryId, page, limit });
+    return this.productsService.findAll(tenantId, {
+      search,
+      categoryId,
+      type,
+      isActive,
+      page,
+      limit,
+    });
+  }
+
+  @Get('low-stock')
+  @ApiOperation({ summary: 'Get low stock products' })
+  getLowStock(@CurrentTenant() tenantId: string) {
+    return this.productsService.getLowStockProducts(tenantId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get product by ID' })
   findOne(@CurrentTenant() tenantId: string, @Param('id') id: string) {
     return this.productsService.findOne(tenantId, id);
+  }
+
+  @Get(':id/stock')
+  @ApiOperation({ summary: 'Get product stock levels' })
+  getStock(@CurrentTenant() tenantId: string, @Param('id') id: string) {
+    return this.productsService.getStock(tenantId, id);
   }
 
   @Put(':id')
@@ -66,11 +85,5 @@ export class ProductsController {
   @ApiOperation({ summary: 'Delete product' })
   remove(@CurrentTenant() tenantId: string, @Param('id') id: string) {
     return this.productsService.remove(tenantId, id);
-  }
-
-  @Get(':id/stock')
-  @ApiOperation({ summary: 'Get product stock levels' })
-  getStock(@CurrentTenant() tenantId: string, @Param('id') id: string) {
-    return this.productsService.getStock(tenantId, id);
   }
 }

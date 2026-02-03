@@ -3,9 +3,9 @@
 // Location: backend/src/modules/accounting/services/accounts.service.ts
 // ============================================
 import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service';
-import { CreateAccountDto } from '../dto/create-account.dto';
-import { UpdateAccountDto } from '../dto/update-account.dto';
+import { PrismaService } from '../../prisma/prisma.service';
+import { CreateAccountDto } from '../accounting/dto/create-account.dto';
+import { UpdateAccountDto } from '../accounting/dto/update-account.dto';
 
 @Injectable()
 export class AccountsService {

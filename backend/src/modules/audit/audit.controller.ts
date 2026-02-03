@@ -1,5 +1,13 @@
+// ============================================
 // FILE: backend/src/modules/audit/audit.controller.ts
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+// ============================================
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { TenantGuard } from '../../common/guards/tenant.guard';
@@ -13,9 +21,9 @@ import { AuditService } from './audit.service';
 export class AuditController {
   constructor(private auditService: AuditService) {}
 
-  @Get('logs')
-  @ApiOperation({ summary: 'Get audit logs' })
-  getLogs(
+  @Get()
+  @ApiOperation({ summary: 'Get all audit logs' })
+  findAll(
     @CurrentTenant() tenantId: string,
     @Query('userId') userId?: string,
     @Query('entity') entity?: string,
@@ -25,7 +33,7 @@ export class AuditController {
     @Query('page') page?: number,
     @Query('limit') limit?: number,
   ) {
-    return this.auditService.getLogs(tenantId, {
+    return this.auditService.findAll(tenantId, {
       userId,
       entity,
       action,
@@ -36,12 +44,29 @@ export class AuditController {
     });
   }
 
-  @Get('activity')
-  @ApiOperation({ summary: 'Get recent activity' })
-  getActivity(
+  @Get('entity/:entity/:entityId')
+  @ApiOperation({ summary: 'Get entity history' })
+  getEntityHistory(
     @CurrentTenant() tenantId: string,
-    @Query('limit') limit?: number,
+    @Param('entity') entity: string,
+    @Param('entityId') entityId: string,
   ) {
-    return this.auditService.getRecentActivity(tenantId, limit);
+    return this.auditService.getEntityHistory(tenantId, entity, entityId);
+  }
+
+  @Get('user/:userId')
+  @ApiOperation({ summary: 'Get user activity' })
+  getUserActivity(
+    @CurrentTenant() tenantId: string,
+    @Param('userId') userId: string,
+    @Query('days') days?: number,
+  ) {
+    return this.auditService.getUserActivity(tenantId, userId, Number(days) || 30);
+  }
+
+  @Get('summary')
+  @ApiOperation({ summary: 'Get activity summary' })
+  getSummary(@CurrentTenant() tenantId: string, @Query('days') days?: number) {
+    return this.auditService.getActivitySummary(tenantId, Number(days) || 7);
   }
 }

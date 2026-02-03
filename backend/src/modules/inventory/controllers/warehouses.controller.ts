@@ -1,6 +1,5 @@
 // ============================================
 // FILE: backend/src/modules/inventory/controllers/warehouses.controller.ts
-// Location: backend/src/modules/inventory/controllers/warehouses.controller.ts
 // ============================================
 import {
   Controller,

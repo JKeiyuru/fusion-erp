@@ -1,17 +1,14 @@
-// ============================================
-// FILE: backend/src/modules/auth/dto/login.dto.ts
-// Location: backend/src/modules/auth/dto/login.dto.ts
-// ============================================
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
 export class LoginDto {
-  @ApiProperty({ example: 'admin@company.com' })
+  @ApiProperty()
+  @IsNotEmpty()
   @IsEmail()
   email: string;
 
-  @ApiProperty({ example: 'password123' })
-  @IsString()
+  @ApiProperty()
+  @IsNotEmpty()
   @MinLength(6)
   password: string;
 }

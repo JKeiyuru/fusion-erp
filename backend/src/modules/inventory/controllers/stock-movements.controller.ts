@@ -1,12 +1,12 @@
 // ============================================
 // FILE: backend/src/modules/inventory/controllers/stock-movements.controller.ts
-// Location: backend/src/modules/inventory/controllers/stock-movements.controller.ts
 // ============================================
 import {
   Controller,
   Get,
   Post,
   Body,
+  Param,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -25,13 +25,13 @@ export class StockMovementsController {
   constructor(private stockMovementsService: StockMovementsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create stock movement' })
+  @ApiOperation({ summary: 'Create a stock movement' })
   create(@CurrentTenant() tenantId: string, @Body() createDto: CreateStockMovementDto) {
     return this.stockMovementsService.create(tenantId, createDto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get stock movements' })
+  @ApiOperation({ summary: 'Get all stock movements' })
   findAll(
     @CurrentTenant() tenantId: string,
     @Query('productId') productId?: string,
@@ -51,5 +51,11 @@ export class StockMovementsController {
       page,
       limit,
     });
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get stock movement by ID' })
+  findOne(@CurrentTenant() tenantId: string, @Param('id') id: string) {
+    return this.stockMovementsService.findOne(tenantId, id);
   }
 }

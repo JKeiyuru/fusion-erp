@@ -1,6 +1,5 @@
 // ============================================
-// FILE: backend/prisma/schema.prisma
-// Location: backend/prisma/schema.prisma
+// UPDATED PRISMA SCHEMA - Fixed Relations
 // ============================================
 
 generator client {
@@ -13,163 +12,15 @@ datasource db {
 }
 
 // ============================================
-// CORE TABLES
+// ENUMS (UPDATED)
 // ============================================
 
-model Company {
-  id              String   @id @default(uuid())
-  name            String
-  email           String   @unique
-  phone           String?
-  kraPin          String?  @map("kra_pin")
-  etimsDeviceId   String?  @map("etims_device_id")
-  currency        String   @default("KES")
-  timezone        String   @default("Africa/Nairobi")
-  fiscalYearStart DateTime @default(now()) @map("fiscal_year_start")
-  logo            String?
-  address         String?
-  city            String?
-  country         String   @default("Kenya")
-  settings        Json?
-  isActive        Boolean  @default(true) @map("is_active")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-
-  // Relations
-  users          User[]
-  roles          Role[]
-  modules        TenantModule[]
-  accounts       Account[]
-  journalEntries JournalEntry[]
-  customers      Customer[]
-  suppliers      Supplier[]
-  products       Product[]
-  warehouses     Warehouse[]
-  employees      Employee[]
-  auditLogs      AuditLog[]
-
-  // Fixed relations (added based on errors)
-  quotations        Quotation[]
-  salesOrders       SalesOrder[]
-  invoices          Invoice[]
-  payments          Payment[]
-  productCategories ProductCategory[]
-  stockMovements    StockMovement[]
-  billOfMaterials   BillOfMaterials[]
-  productionOrders  ProductionOrder[]
-  payrollEntries    PayrollEntry[]
-  leaveRequests     LeaveRequest[]
-  purchaseOrders    PurchaseOrder[]
-  bills             Bill[]
-  billPayments      BillPayment[]
-  posSessions       PosSession[]
-  posSales          PosSale[]
-  etimsLogs         EtimsLog[]
-  mpesaTransactions MpesaTransaction[]
-
-  @@map("companies")
+enum ProductType {
+  GOOD
+  SERVICE
+  CONSUMABLE
+  STORABLE // Added for reporting
 }
-
-model User {
-  id           String    @id @default(uuid())
-  companyId    String    @map("company_id")
-  email        String
-  password     String
-  firstName    String    @map("first_name")
-  lastName     String    @map("last_name")
-  phone        String?
-  avatar       String?
-  isActive     Boolean   @default(true) @map("is_active")
-  lastLoginAt  DateTime? @map("last_login_at")
-  refreshToken String?   @map("refresh_token")
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
-
-  company         Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  roles           UserRole[]
-  createdJournals JournalEntry[] @relation("CreatedBy")
-  auditLogs       AuditLog[]     @relation("PerformedBy")
-  posSessions     PosSession[] // Fixed: added missing relation
-
-  @@unique([companyId, email])
-  @@index([companyId])
-  @@map("users")
-}
-
-model Role {
-  id          String   @id @default(uuid())
-  companyId   String   @map("company_id")
-  name        String
-  description String?
-  isSystem    Boolean  @default(false) @map("is_system")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
-
-  company     Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  users       UserRole[]
-  permissions RolePermission[]
-
-  @@unique([companyId, name])
-  @@index([companyId])
-  @@map("roles")
-}
-
-model UserRole {
-  userId     String   @map("user_id")
-  roleId     String   @map("role_id")
-  assignedAt DateTime @default(now()) @map("assigned_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
-
-  @@id([userId, roleId])
-  @@map("user_roles")
-}
-
-model Permission {
-  id          String   @id @default(uuid())
-  code        String   @unique
-  module      String
-  action      String
-  description String?
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  roles RolePermission[]
-
-  @@map("permissions")
-}
-
-model RolePermission {
-  roleId       String   @map("role_id")
-  permissionId String   @map("permission_id")
-  grantedAt    DateTime @default(now()) @map("granted_at")
-
-  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-
-  @@id([roleId, permissionId])
-  @@map("role_permissions")
-}
-
-model TenantModule {
-  id         String   @id @default(uuid())
-  companyId  String   @map("company_id")
-  moduleCode String   @map("module_code")
-  enabled    Boolean  @default(true)
-  settings   Json?
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@unique([companyId, moduleCode])
-  @@index([companyId])
-  @@map("tenant_modules")
-}
-
-// ============================================
-// ACCOUNTING MODULE
-// ============================================
 
 enum AccountType {
   ASSET
@@ -177,104 +28,6 @@ enum AccountType {
   EQUITY
   INCOME
   EXPENSE
-}
-
-model Account {
-  id        String      @id @default(uuid())
-  companyId String      @map("company_id")
-  code      String
-  name      String
-  type      AccountType
-  parentId  String?     @map("parent_id")
-  isActive  Boolean     @default(true) @map("is_active")
-  balance   Decimal     @default(0) @db.Decimal(15, 2)
-  createdAt DateTime    @default(now()) @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
-
-  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  parent       Account?      @relation("AccountHierarchy", fields: [parentId], references: [id])
-  children     Account[]     @relation("AccountHierarchy")
-  journalLines JournalLine[]
-
-  @@unique([companyId, code])
-  @@index([companyId])
-  @@map("accounts")
-}
-
-enum JournalEntryStatus {
-  DRAFT
-  POSTED
-  CANCELLED
-}
-
-model JournalEntry {
-  id          String             @id @default(uuid())
-  companyId   String             @map("company_id")
-  entryNumber String             @map("entry_number")
-  date        DateTime
-  reference   String?
-  description String?
-  status      JournalEntryStatus @default(DRAFT)
-  createdBy   String             @map("created_by")
-  postedAt    DateTime?          @map("posted_at")
-  createdAt   DateTime           @default(now()) @map("created_at")
-  updatedAt   DateTime           @updatedAt @map("updated_at")
-
-  company Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  creator User          @relation("CreatedBy", fields: [createdBy], references: [id])
-  lines   JournalLine[]
-
-  @@unique([companyId, entryNumber])
-  @@index([companyId])
-  @@index([status])
-  @@map("journal_entries")
-}
-
-model JournalLine {
-  id          String  @id @default(uuid())
-  entryId     String  @map("entry_id")
-  accountId   String  @map("account_id")
-  debit       Decimal @default(0) @db.Decimal(15, 2)
-  credit      Decimal @default(0) @db.Decimal(15, 2)
-  description String?
-
-  entry   JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
-  account Account      @relation(fields: [accountId], references: [id])
-
-  @@index([entryId])
-  @@index([accountId])
-  @@map("journal_lines")
-}
-
-// ============================================
-// SALES MODULE
-// ============================================
-
-model Customer {
-  id           String   @id @default(uuid())
-  companyId    String   @map("company_id")
-  code         String
-  name         String
-  email        String?
-  phone        String?
-  kraPin       String?  @map("kra_pin")
-  address      String?
-  city         String?
-  creditLimit  Decimal? @map("credit_limit") @db.Decimal(15, 2)
-  paymentTerms Int?     @map("payment_terms")
-  isActive     Boolean  @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  quotations  Quotation[]
-  salesOrders SalesOrder[]
-  invoices    Invoice[]
-  posSales    PosSale[] // Fixed: added missing relation
-
-  @@unique([companyId, code])
-  @@index([companyId])
-  @@map("customers")
 }
 
 enum QuotationStatus {
@@ -285,156 +38,22 @@ enum QuotationStatus {
   EXPIRED
 }
 
-model Quotation {
-  id              String          @id @default(uuid())
-  companyId       String          @map("company_id")
-  quotationNumber String          @map("quotation_number")
-  customerId      String          @map("customer_id")
-  date            DateTime
-  validUntil      DateTime        @map("valid_until")
-  status          QuotationStatus @default(DRAFT)
-  subtotal        Decimal         @db.Decimal(15, 2)
-  taxAmount       Decimal         @map("tax_amount") @db.Decimal(15, 2)
-  total           Decimal         @db.Decimal(15, 2)
-  notes           String?
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @updatedAt @map("updated_at")
-
-  company  Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer Customer        @relation(fields: [customerId], references: [id])
-  lines    QuotationLine[]
-
-  @@unique([companyId, quotationNumber])
-  @@index([companyId])
-  @@index([customerId])
-  @@map("quotations")
-}
-
-model QuotationLine {
-  id          String  @id @default(uuid())
-  quotationId String  @map("quotation_id")
-  productId   String  @map("product_id")
-  description String
-  quantity    Decimal @db.Decimal(15, 3)
-  unitPrice   Decimal @map("unit_price") @db.Decimal(15, 2)
-  taxRate     Decimal @map("tax_rate") @db.Decimal(5, 2)
-  amount      Decimal @db.Decimal(15, 2)
-
-  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
-  product   Product   @relation(fields: [productId], references: [id])
-
-  @@index([quotationId])
-  @@map("quotation_lines")
-}
-
 enum SalesOrderStatus {
   DRAFT
   CONFIRMED
-  IN_PROGRESS
-  COMPLETED
+  DELIVERED
   CANCELLED
-}
-
-model SalesOrder {
-  id           String           @id @default(uuid())
-  companyId    String           @map("company_id")
-  orderNumber  String           @map("order_number")
-  customerId   String           @map("customer_id")
-  date         DateTime
-  expectedDate DateTime?        @map("expected_date")
-  status       SalesOrderStatus @default(DRAFT)
-  subtotal     Decimal          @db.Decimal(15, 2)
-  taxAmount    Decimal          @map("tax_amount") @db.Decimal(15, 2)
-  total        Decimal          @db.Decimal(15, 2)
-  notes        String?
-  createdAt    DateTime         @default(now()) @map("created_at")
-  updatedAt    DateTime         @updatedAt @map("updated_at")
-
-  company  Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer Customer         @relation(fields: [customerId], references: [id])
-  lines    SalesOrderLine[]
-  invoices Invoice[]
-
-  @@unique([companyId, orderNumber])
-  @@index([companyId])
-  @@index([customerId])
-  @@map("sales_orders")
-}
-
-model SalesOrderLine {
-  id          String  @id @default(uuid())
-  orderId     String  @map("order_id")
-  productId   String  @map("product_id")
-  description String
-  quantity    Decimal @db.Decimal(15, 3)
-  unitPrice   Decimal @map("unit_price") @db.Decimal(15, 2)
-  taxRate     Decimal @map("tax_rate") @db.Decimal(5, 2)
-  amount      Decimal @db.Decimal(15, 2)
-
-  order   SalesOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product Product    @relation(fields: [productId], references: [id])
-
-  @@index([orderId])
-  @@map("sales_order_lines")
+  COMPLETED // Added for orders.service.ts
 }
 
 enum InvoiceStatus {
   DRAFT
   SENT
-  PARTIALLY_PAID
   PAID
+  PARTIAL
   OVERDUE
   CANCELLED
-}
-
-model Invoice {
-  id             String        @id @default(uuid())
-  companyId      String        @map("company_id")
-  invoiceNumber  String        @map("invoice_number")
-  customerId     String        @map("customer_id")
-  salesOrderId   String?       @map("sales_order_id")
-  date           DateTime
-  dueDate        DateTime      @map("due_date")
-  status         InvoiceStatus @default(DRAFT)
-  subtotal       Decimal       @db.Decimal(15, 2)
-  taxAmount      Decimal       @map("tax_amount") @db.Decimal(15, 2)
-  total          Decimal       @db.Decimal(15, 2)
-  paidAmount     Decimal       @default(0) @map("paid_amount") @db.Decimal(15, 2)
-  etimsSubmitted Boolean       @default(false) @map("etims_submitted")
-  etimsInvoiceNo String?       @map("etims_invoice_no")
-  notes          String?
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
-
-  company    Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  customer   Customer      @relation(fields: [customerId], references: [id])
-  salesOrder SalesOrder?   @relation(fields: [salesOrderId], references: [id])
-  lines      InvoiceLine[]
-  payments   Payment[]
-  etimsLogs  EtimsLog[]
-
-  @@unique([companyId, invoiceNumber])
-  @@index([companyId])
-  @@index([customerId])
-  @@index([status])
-  @@map("invoices")
-}
-
-model InvoiceLine {
-  id          String  @id @default(uuid())
-  invoiceId   String  @map("invoice_id")
-  productId   String  @map("product_id")
-  description String
-  quantity    Decimal @db.Decimal(15, 3)
-  unitPrice   Decimal @map("unit_price") @db.Decimal(15, 2)
-  taxRate     Decimal @map("tax_rate") @db.Decimal(5, 2)
-  amount      Decimal @db.Decimal(15, 2)
-
-  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  product Product @relation(fields: [productId], references: [id])
-
-  @@index([invoiceId])
-  @@map("invoice_lines")
+  PARTIALLY_PAID // Added for reporting
 }
 
 enum PaymentMethod {
@@ -445,206 +64,40 @@ enum PaymentMethod {
   CARD
 }
 
-enum PaymentStatus {
-  PENDING
-  COMPLETED
-  FAILED
-  REFUNDED
+enum PurchaseOrderStatus {
+  DRAFT
+  SENT
+  RECEIVED
+  CANCELLED
 }
 
-model Payment {
-  id            String        @id @default(uuid())
-  companyId     String        @map("company_id")
-  invoiceId     String        @map("invoice_id")
-  paymentNumber String        @map("payment_number")
-  date          DateTime
-  amount        Decimal       @db.Decimal(15, 2)
-  method        PaymentMethod
-  status        PaymentStatus @default(PENDING)
-  reference     String?
-  mpesaCode     String?       @map("mpesa_code")
-  notes         String?
-  createdAt     DateTime      @default(now()) @map("created_at")
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  invoice Invoice @relation(fields: [invoiceId], references: [id])
-
-  @@unique([companyId, paymentNumber])
-  @@index([companyId])
-  @@index([invoiceId])
-  @@map("payments")
+enum BillStatus {
+  DRAFT
+  SUBMITTED // Added for bills.service.ts
+  RECEIVED
+  PAID
+  PARTIAL
+  OVERDUE
+  CANCELLED
+  PARTIALLY_PAID // Added for reporting
 }
 
-// ============================================
-// INVENTORY MODULE
-// ============================================
-
-enum ProductType {
-  STORABLE
-  CONSUMABLE
-  SERVICE
+enum PosSessionStatus {
+  OPEN
+  CLOSED
 }
 
-model Product {
-  id            String      @id @default(uuid())
-  companyId     String      @map("company_id")
-  code          String
-  name          String
-  type          ProductType @default(STORABLE)
-  description   String?
-  barcode       String?
-  categoryId    String?     @map("category_id")
-  unitOfMeasure String      @map("unit_of_measure")
-  cost          Decimal     @db.Decimal(15, 2)
-  price         Decimal     @db.Decimal(15, 2)
-  taxRate       Decimal     @default(16) @map("tax_rate") @db.Decimal(5, 2)
-  reorderLevel  Decimal?    @map("reorder_level") @db.Decimal(15, 3)
-  isActive      Boolean     @default(true) @map("is_active")
-  image         String?
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
-
-  company            Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  category           ProductCategory?    @relation(fields: [categoryId], references: [id])
-  stock              Stock[]
-  stockMovements     StockMovement[]
-  quotationLines     QuotationLine[]
-  salesOrderLines    SalesOrderLine[]
-  invoiceLines       InvoiceLine[]
-  purchaseOrderLines PurchaseOrderLine[]
-  billLines          BillLine[]
-  bomLines           BomLine[]           @relation("BomProduct")
-  components         BomLine[]           @relation("BomComponent")
-  posSaleLines       PosSaleLine[] // Fixed: added missing relation
-  billOfMaterials    BillOfMaterials[] // Fixed: added missing relation
-
-  @@unique([companyId, code])
-  @@index([companyId])
-  @@index([barcode])
-  @@map("products")
-}
-
-model ProductCategory {
-  id        String  @id @default(uuid())
-  companyId String  @map("company_id")
-  name      String
-  parentId  String? @map("parent_id")
-
-  company  Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  parent   ProductCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children ProductCategory[] @relation("CategoryHierarchy")
-  products Product[]
-
-  @@unique([companyId, name])
-  @@map("product_categories")
-}
-
-model Warehouse {
-  id        String   @id @default(uuid())
-  companyId String   @map("company_id")
-  code      String
-  name      String
-  address   String?
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  stock          Stock[]
-  stockMovements StockMovement[]
-
-  @@unique([companyId, code])
-  @@index([companyId])
-  @@map("warehouses")
-}
-
-model Stock {
-  id               String   @id @default(uuid())
-  productId        String   @map("product_id")
-  warehouseId      String   @map("warehouse_id")
-  quantity         Decimal  @default(0) @db.Decimal(15, 3)
-  reservedQuantity Decimal  @default(0) @map("reserved_quantity") @db.Decimal(15, 3)
-  updatedAt        DateTime @updatedAt @map("updated_at")
-
-  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
-
-  @@unique([productId, warehouseId])
-  @@index([productId])
-  @@index([warehouseId])
-  @@map("stock")
-}
-
-enum MovementType {
+enum StockMovementType { // Changed from MovementType
   IN
   OUT
   TRANSFER
   ADJUSTMENT
 }
 
-model StockMovement {
-  id          String       @id @default(uuid())
-  companyId   String       @map("company_id")
-  productId   String       @map("product_id")
-  warehouseId String       @map("warehouse_id")
-  type        MovementType
-  quantity    Decimal      @db.Decimal(15, 3)
-  reference   String?
-  notes       String?
-  date        DateTime
-  createdAt   DateTime     @default(now()) @map("created_at")
-
-  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  product   Product   @relation(fields: [productId], references: [id])
-  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
-
-  @@index([companyId])
-  @@index([productId])
-  @@index([warehouseId])
-  @@index([date])
-  @@map("stock_movements")
-}
-
-// ============================================
-// FILE: backend/prisma/schema.prisma (CONTINUED)
-// Location: backend/prisma/schema.prisma
-// ============================================
-
-// ============================================
-// MANUFACTURING MODULE
-// ============================================
-
-model BillOfMaterials {
-  id        String   @id @default(uuid())
-  companyId String   @map("company_id")
-  productId String   @map("product_id")
-  name      String
-  quantity  Decimal  @db.Decimal(15, 3)
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  product          Product           @relation(fields: [productId], references: [id])
-  lines            BomLine[]
-  productionOrders ProductionOrder[]
-
-  @@index([companyId])
-  @@index([productId])
-  @@map("bill_of_materials")
-}
-
-model BomLine {
-  id          String  @id @default(uuid())
-  bomId       String  @map("bom_id")
-  componentId String  @map("component_id")
-  quantity    Decimal @db.Decimal(15, 3)
-
-  bom        BillOfMaterials @relation(fields: [bomId], references: [id], onDelete: Cascade)
-  component  Product         @relation("BomComponent", fields: [componentId], references: [id])
-  bomProduct Product?        @relation("BomProduct", fields: [productId], references: [id]) // Fixed: added missing relation
-  productId  String?
-
-  @@index([bomId])
-  @@map("bom_lines")
+enum JournalEntryStatus {
+  DRAFT
+  POSTED
+  CANCELLED
 }
 
 enum ProductionOrderStatus {
@@ -655,437 +108,818 @@ enum ProductionOrderStatus {
   CANCELLED
 }
 
-model ProductionOrder {
-  id               String                @id @default(uuid())
-  companyId        String                @map("company_id")
-  orderNumber      String                @map("order_number")
-  bomId            String                @map("bom_id")
-  plannedQuantity  Decimal               @map("planned_quantity") @db.Decimal(15, 3)
-  producedQuantity Decimal               @default(0) @map("produced_quantity") @db.Decimal(15, 3)
-  status           ProductionOrderStatus @default(DRAFT)
-  plannedDate      DateTime              @map("planned_date")
-  completedDate    DateTime?             @map("completed_date")
-  notes            String?
-  createdAt        DateTime              @default(now()) @map("created_at")
-  updatedAt        DateTime              @updatedAt @map("updated_at")
-
-  company Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  bom     BillOfMaterials @relation(fields: [bomId], references: [id])
-
-  @@unique([companyId, orderNumber])
-  @@index([companyId])
-  @@index([status])
-  @@map("production_orders")
-}
-
-// ============================================
-// HR & PAYROLL MODULE
-// ============================================
-
-enum EmploymentStatus {
-  ACTIVE
-  ON_LEAVE
-  SUSPENDED
-  TERMINATED
-}
-
-model Employee {
-  id             String           @id @default(uuid())
-  companyId      String           @map("company_id")
-  employeeNumber String           @map("employee_number")
-  firstName      String           @map("first_name")
-  lastName       String           @map("last_name")
-  email          String
-  phone          String?
-  nationalId     String?          @map("national_id")
-  kraPin         String?          @map("kra_pin")
-  nssfNo         String?          @map("nssf_no")
-  nhifNo         String?          @map("nhif_no")
-  department     String?
-  position       String?
-  hireDate       DateTime         @map("hire_date")
-  salary         Decimal          @db.Decimal(15, 2)
-  status         EmploymentStatus @default(ACTIVE)
-  bankAccount    String?          @map("bank_account")
-  bankName       String?          @map("bank_name")
-  createdAt      DateTime         @default(now()) @map("created_at")
-  updatedAt      DateTime         @updatedAt @map("updated_at")
-
-  company  Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  payrolls PayrollEntry[]
-  leaves   LeaveRequest[]
-
-  @@unique([companyId, employeeNumber])
-  @@index([companyId])
-  @@index([status])
-  @@map("employees")
-}
-
 enum PayrollStatus {
   DRAFT
+  APPROVED // Added for payroll.service.ts
   PROCESSED
   PAID
 }
 
-model PayrollEntry {
-  id              String        @id @default(uuid())
-  companyId       String        @map("company_id")
-  employeeId      String        @map("employee_id")
-  period          String
-  basicSalary     Decimal       @map("basic_salary") @db.Decimal(15, 2)
-  grossSalary     Decimal       @map("gross_salary") @db.Decimal(15, 2)
-  payeDeduction   Decimal       @map("paye_deduction") @db.Decimal(15, 2)
-  nhifDeduction   Decimal       @map("nhif_deduction") @db.Decimal(15, 2)
-  nssfDeduction   Decimal       @map("nssf_deduction") @db.Decimal(15, 2)
-  otherDeductions Decimal       @default(0) @map("other_deductions") @db.Decimal(15, 2)
-  netSalary       Decimal       @map("net_salary") @db.Decimal(15, 2)
-  status          PayrollStatus @default(DRAFT)
-  paidDate        DateTime?     @map("paid_date")
-  createdAt       DateTime      @default(now()) @map("created_at")
-
-  company  Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  employee Employee @relation(fields: [employeeId], references: [id])
-
-  @@unique([companyId, employeeId, period])
-  @@index([companyId])
-  @@index([employeeId])
-  @@index([period])
-  @@map("payroll_entries")
+enum LeaveType {
+  ANNUAL
+  SICK
+  MATERNITY
+  PATERNITY
+  UNPAID
 }
 
 enum LeaveStatus {
   PENDING
   APPROVED
   REJECTED
-  CANCELLED
-}
-
-model LeaveRequest {
-  id         String      @id @default(uuid())
-  companyId  String      @map("company_id")
-  employeeId String      @map("employee_id")
-  leaveType  String      @map("leave_type")
-  startDate  DateTime    @map("start_date")
-  endDate    DateTime    @map("end_date")
-  days       Int
-  reason     String?
-  status     LeaveStatus @default(PENDING)
-  approvedBy String?     @map("approved_by")
-  approvedAt DateTime?   @map("approved_at")
-  createdAt  DateTime    @default(now()) @map("created_at")
-
-  company  Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  employee Employee @relation(fields: [employeeId], references: [id])
-
-  @@index([companyId])
-  @@index([employeeId])
-  @@index([status])
-  @@map("leave_requests")
 }
 
 // ============================================
-// PROCUREMENT MODULE
+// CORE MODELS (UPDATED)
+// ============================================
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  address   String?
+  kraPin    String?
+  currency  String   @default("KES") // Added for auth.service.ts
+  timezone  String   @default("Africa/Nairobi") // Added for auth.service.ts
+  logo      String?  // Added for auth.service.ts
+  isActive  Boolean  @default(true) // Added for auth.service.ts
+  settings  Json?    // Added for auth.service.ts
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users              User[]
+  customers          Customer[]
+  suppliers          Supplier[]
+  products           Product[]
+  productCategories  ProductCategory[]
+  warehouses         Warehouse[]
+  accounts           Account[]
+  journalEntries     JournalEntry[]
+  quotations         Quotation[]
+  salesOrders        SalesOrder[]
+  invoices           Invoice[]
+  payments           Payment[]
+  purchaseOrders     PurchaseOrder[]
+  bills              Bill[]
+  posSessions        PosSession[]
+  boms               BillOfMaterials[]
+  productionOrders   ProductionOrder[]
+  employees          Employee[]
+  stockMovements     StockMovement[]
+  stockAdjustments   StockAdjustment[]
+  roles              Role[]
+  auditLogs          AuditLog[]
+  tenantModules      TenantModule[]
+
+  @@unique([name])
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  avatar        String?  // Added for auth.service.ts
+  isActive      Boolean  @default(true)
+  companyId     String
+  refreshToken  String?
+  lastLoginAt   DateTime? // Added for auth.service.ts
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  company      Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  roles        UserRole[]
+  auditLogs    AuditLog[]
+  posSessions  PosSession[]      // Added for pos sessions
+  stockAdjustments StockAdjustment[] // Added for inventory
+  journalEntries JournalEntry[]  // Added for accounting
+
+  @@unique([companyId, email]) // Added for users.service.ts
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  isSystem    Boolean  @default(false) // Added for auth.service.ts
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company     Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@unique([companyId, name])
+}
+
+model Permission {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String   // Added for roles.service.ts
+  module      String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  roles RolePermission[]
+}
+
+model UserRole {
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+model TenantModule {
+  id          String   @id @default(uuid())
+  companyId   String
+  module      String
+  moduleCode  String   // Added for auth.service.ts
+  isEnabled   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, module])
+  @@unique([companyId, moduleCode]) // Added for auth.service.ts
+}
+
+// ============================================
+// SALES MODELS (UPDATED)
+// ============================================
+
+model Customer {
+  id          String   @id @default(uuid())
+  code        String   // Added for customers.service.ts
+  name        String
+  email       String?
+  phone       String?
+  address     String?
+  kraPin      String?
+  balance     Decimal  @default(0) @db.Decimal(15, 2)
+  isActive    Boolean  @default(true) // Added for customers.service.ts
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  quotations   Quotation[]
+  salesOrders  SalesOrder[]
+  invoices     Invoice[]
+  payments     Payment[]
+  posSales     PosSale[]     // Added for POS
+
+  @@unique([companyId, code]) // Added for customers.service.ts
+}
+
+model Quotation {
+  id             String          @id @default(uuid())
+  quotationNumber String
+  customerId     String
+  date           DateTime        @default(now())
+  validUntil     DateTime        // Added for quotations.service.ts
+  expiryDate     DateTime
+  status         QuotationStatus @default(DRAFT)
+  subtotal       Decimal         @default(0) @db.Decimal(15, 2)
+  taxAmount      Decimal         @default(0) @db.Decimal(15, 2)
+  total          Decimal         @default(0) @db.Decimal(15, 2)
+  notes          String?
+  companyId      String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  company  Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer Customer        @relation(fields: [customerId], references: [id])
+  lines    QuotationLine[]
+
+  @@unique([companyId, quotationNumber])
+}
+
+model QuotationLine {
+  id           String  @id @default(uuid())
+  quotationId  String
+  productId    String
+  description  String?
+  quantity     Decimal @db.Decimal(15, 2)
+  unitPrice    Decimal @db.Decimal(15, 2)
+  taxRate      Decimal @db.Decimal(5, 2)
+  amount       Decimal @db.Decimal(15, 2)
+
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id])
+}
+
+model SalesOrder {
+  id              String           @id @default(uuid())
+  orderNumber     String
+  customerId      String
+  date            DateTime         @default(now())
+  expectedDate    DateTime?        // Added for orders.service.ts
+  deliveryDate    DateTime?
+  status          SalesOrderStatus @default(DRAFT)
+  subtotal        Decimal          @default(0) @db.Decimal(15, 2)
+  taxAmount       Decimal          @default(0) @db.Decimal(15, 2)
+  total           Decimal          @default(0) @db.Decimal(15, 2)
+  notes           String?
+  companyId       String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  company  Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer Customer         @relation(fields: [customerId], references: [id])
+  lines    SalesOrderLine[]
+  invoices Invoice[]        // Added for invoices.service.ts
+
+  @@unique([companyId, orderNumber])
+}
+
+model SalesOrderLine {
+  id          String  @id @default(uuid())
+  orderId     String
+  productId   String
+  description String?
+  quantity    Decimal @db.Decimal(15, 2)
+  unitPrice   Decimal @db.Decimal(15, 2)
+  taxRate     Decimal @db.Decimal(5, 2)
+  amount      Decimal @db.Decimal(15, 2)
+
+  order   SalesOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product    @relation(fields: [productId], references: [id])
+}
+
+model Invoice {
+  id             String        @id @default(uuid())
+  invoiceNumber  String
+  customerId     String
+  date           DateTime      @default(now())
+  dueDate        DateTime
+  status         InvoiceStatus @default(DRAFT)
+  subtotal       Decimal       @default(0) @db.Decimal(15, 2)
+  taxAmount      Decimal       @default(0) @db.Decimal(15, 2)
+  total          Decimal       @default(0) @db.Decimal(15, 2)
+  paidAmount     Decimal       @default(0) @db.Decimal(15, 2)
+  notes          String?
+  companyId      String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  company    Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer   Customer      @relation(fields: [customerId], references: [id])
+  lines      InvoiceLine[]
+  payments   Payment[]
+  salesOrder SalesOrder?   @relation(fields: [salesOrderId], references: [id]) // Added for invoices.service.ts
+  salesOrderId String?     // Added for invoices.service.ts
+
+  @@unique([companyId, invoiceNumber])
+}
+
+model InvoiceLine {
+  id          String  @id @default(uuid())
+  invoiceId   String
+  productId   String
+  description String?
+  quantity    Decimal @db.Decimal(15, 2)
+  unitPrice   Decimal @db.Decimal(15, 2)
+  taxRate     Decimal @db.Decimal(5, 2)
+  amount      Decimal @db.Decimal(15, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  invoiceId     String?
+  customerId    String
+  amount        Decimal       @db.Decimal(15, 2)
+  method        PaymentMethod
+  reference     String?
+  mpesaCode     String?
+  date          DateTime      @default(now())
+  notes         String?
+  companyId     String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  customer Customer  @relation(fields: [customerId], references: [id])
+  invoice  Invoice?  @relation(fields: [invoiceId], references: [id])
+}
+
+// ============================================
+// PROCUREMENT MODELS (UPDATED)
 // ============================================
 
 model Supplier {
-  id           String   @id @default(uuid())
-  companyId    String   @map("company_id")
-  code         String
-  name         String
-  email        String?
-  phone        String?
-  kraPin       String?  @map("kra_pin")
-  address      String?
-  city         String?
-  paymentTerms Int?     @map("payment_terms")
-  isActive     Boolean  @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(uuid())
+  code      String   // Added for suppliers.service.ts
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  kraPin    String?
+  balance   Decimal  @default(0) @db.Decimal(15, 2)
+  isActive  Boolean  @default(true) // Added for suppliers.service.ts
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   company        Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
   purchaseOrders PurchaseOrder[]
   bills          Bill[]
 
-  @@unique([companyId, code])
-  @@index([companyId])
-  @@map("suppliers")
-}
-
-enum PurchaseOrderStatus {
-  DRAFT
-  SENT
-  CONFIRMED
-  RECEIVED
-  CANCELLED
+  @@unique([companyId, code]) // Added for suppliers.service.ts
 }
 
 model PurchaseOrder {
-  id           String              @id @default(uuid())
-  companyId    String              @map("company_id")
-  orderNumber  String              @map("order_number")
-  supplierId   String              @map("supplier_id")
-  date         DateTime
-  expectedDate DateTime?           @map("expected_date")
-  status       PurchaseOrderStatus @default(DRAFT)
-  subtotal     Decimal             @db.Decimal(15, 2)
-  taxAmount    Decimal             @map("tax_amount") @db.Decimal(15, 2)
-  total        Decimal             @db.Decimal(15, 2)
-  notes        String?
-  createdAt    DateTime            @default(now()) @map("created_at")
-  updatedAt    DateTime            @updatedAt @map("updated_at")
+  id              String              @id @default(uuid())
+  orderNumber     String
+  supplierId      String
+  date            DateTime            @default(now())
+  expectedDate    DateTime?
+  status          PurchaseOrderStatus @default(DRAFT)
+  subtotal        Decimal             @default(0) @db.Decimal(15, 2)
+  taxAmount       Decimal             @default(0) @db.Decimal(15, 2)
+  total           Decimal             @default(0) @db.Decimal(15, 2)
+  notes           String?
+  companyId       String
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
 
-  company  Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  supplier Supplier            @relation(fields: [supplierId], references: [id])
+  company  Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  supplier Supplier           @relation(fields: [supplierId], references: [id])
   lines    PurchaseOrderLine[]
-  bills    Bill[]
+  bills    Bill[]             // Added for bills.service.ts
 
   @@unique([companyId, orderNumber])
-  @@index([companyId])
-  @@index([supplierId])
-  @@map("purchase_orders")
 }
 
 model PurchaseOrderLine {
   id          String  @id @default(uuid())
-  orderId     String  @map("order_id")
-  productId   String  @map("product_id")
-  description String
-  quantity    Decimal @db.Decimal(15, 3)
-  unitPrice   Decimal @map("unit_price") @db.Decimal(15, 2)
-  taxRate     Decimal @map("tax_rate") @db.Decimal(5, 2)
+  orderId     String
+  productId   String
+  description String?
+  quantity    Decimal @db.Decimal(15, 2)
+  unitPrice   Decimal @db.Decimal(15, 2)
+  taxRate     Decimal @db.Decimal(5, 2)
   amount      Decimal @db.Decimal(15, 2)
 
   order   PurchaseOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product       @relation(fields: [productId], references: [id])
-
-  @@index([orderId])
-  @@map("purchase_order_lines")
-}
-
-enum BillStatus {
-  DRAFT
-  SUBMITTED
-  PARTIALLY_PAID
-  PAID
-  CANCELLED
 }
 
 model Bill {
   id              String     @id @default(uuid())
-  companyId       String     @map("company_id")
-  billNumber      String     @map("bill_number")
-  supplierId      String     @map("supplier_id")
-  purchaseOrderId String?    @map("purchase_order_id")
-  date            DateTime
-  dueDate         DateTime   @map("due_date")
+  billNumber      String
+  supplierId      String
+  purchaseOrderId String?    // Added for bills.service.ts
+  date            DateTime   @default(now())
+  dueDate         DateTime
   status          BillStatus @default(DRAFT)
-  subtotal        Decimal    @db.Decimal(15, 2)
-  taxAmount       Decimal    @map("tax_amount") @db.Decimal(15, 2)
-  total           Decimal    @db.Decimal(15, 2)
-  paidAmount      Decimal    @default(0) @map("paid_amount") @db.Decimal(15, 2)
+  subtotal        Decimal    @default(0) @db.Decimal(15, 2)
+  taxAmount       Decimal    @default(0) @db.Decimal(15, 2)
+  total           Decimal    @default(0) @db.Decimal(15, 2)
+  paidAmount      Decimal    @default(0) @db.Decimal(15, 2)
   notes           String?
-  createdAt       DateTime   @default(now()) @map("created_at")
-  updatedAt       DateTime   @updatedAt @map("updated_at")
+  companyId       String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
-  company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  supplier      Supplier       @relation(fields: [supplierId], references: [id])
-  purchaseOrder PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id])
+  company       Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  supplier      Supplier   @relation(fields: [supplierId], references: [id])
+  purchaseOrder PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id]) // Added for bills.service.ts
   lines         BillLine[]
-  payments      BillPayment[]
 
   @@unique([companyId, billNumber])
-  @@index([companyId])
-  @@index([supplierId])
-  @@index([status])
-  @@map("bills")
 }
 
 model BillLine {
   id          String  @id @default(uuid())
-  billId      String  @map("bill_id")
-  productId   String  @map("product_id")
-  description String
-  quantity    Decimal @db.Decimal(15, 3)
-  unitPrice   Decimal @map("unit_price") @db.Decimal(15, 2)
-  taxRate     Decimal @map("tax_rate") @db.Decimal(5, 2)
+  billId      String
+  productId   String
+  description String?
+  quantity    Decimal @db.Decimal(15, 2)
+  unitPrice   Decimal @db.Decimal(15, 2)
+  taxRate     Decimal @db.Decimal(5, 2)
   amount      Decimal @db.Decimal(15, 2)
 
   bill    Bill    @relation(fields: [billId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
-
-  @@index([billId])
-  @@map("bill_lines")
-}
-
-model BillPayment {
-  id            String        @id @default(uuid())
-  companyId     String        @map("company_id")
-  billId        String        @map("bill_id")
-  paymentNumber String        @map("payment_number")
-  date          DateTime
-  amount        Decimal       @db.Decimal(15, 2)
-  method        PaymentMethod
-  reference     String?
-  notes         String?
-  createdAt     DateTime      @default(now()) @map("created_at")
-
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  bill    Bill    @relation(fields: [billId], references: [id])
-
-  @@unique([companyId, paymentNumber])
-  @@index([companyId])
-  @@index([billId])
-  @@map("bill_payments")
 }
 
 // ============================================
-// POS MODULE
+// INVENTORY MODELS (UPDATED)
 // ============================================
 
-enum PosSessionStatus {
-  OPEN
-  CLOSED
+model ProductCategory {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  parentId    String?
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company  Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  parent   ProductCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children ProductCategory[] @relation("CategoryTree")
+  products Product[]
+
+  @@unique([companyId, name])
 }
+
+model Product {
+  id              String      @id @default(uuid())
+  sku             String      @map("code") // This maps 'sku' field to 'code' column in DB
+  name            String
+  description     String?
+  type            ProductType @default(GOOD)
+  categoryId      String?
+  costPrice       Decimal     @db.Decimal(15, 2) @map("unitPrice") // Maps costPrice to unitPrice column
+  sellingPrice    Decimal     @db.Decimal(15, 2) @map("salePrice") // Maps sellingPrice to salePrice column
+  barcode         String?
+  taxRate         Decimal     @default(16) @db.Decimal(5, 2)
+  reorderLevel    Decimal?    @db.Decimal(15, 2)
+  reorderQuantity Decimal?    @db.Decimal(15, 2) @map("reorderQty") // Maps reorderQuantity to reorderQty column
+  trackInventory  Boolean     @default(true)
+  isActive        Boolean     @default(true)
+  image           String?
+  companyId       String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  company           Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  category          ProductCategory?    @relation(fields: [categoryId], references: [id])
+  stock             Stock[]
+  stockMovements    StockMovement[]
+  stockAdjustments  StockAdjustment[]
+  quotationLines    QuotationLine[]
+  salesOrderLines   SalesOrderLine[]
+  invoiceLines      InvoiceLine[]
+  purchaseOrderLines PurchaseOrderLine[]
+  billLines         BillLine[]
+  posSaleLines      PosSaleLine[]
+  bomComponents     BomComponent[]
+  boms              BillOfMaterials[]
+
+  @@unique([companyId, sku]) // Changed from 'code' to 'sku'
+}
+
+model Warehouse {
+  id        String   @id @default(uuid())
+  code      String
+  name      String
+  address   String?
+  city      String?
+  phone     String?
+  isActive  Boolean  @default(true)
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  stock            Stock[]
+  stockMovements   StockMovement[]
+  stockAdjustments StockAdjustment[]
+  productionOrders ProductionOrder[]
+
+  @@unique([companyId, code])
+}
+
+model Stock {
+  productId        String
+  warehouseId      String
+  quantity         Decimal @default(0) @db.Decimal(15, 2)
+  reservedQuantity Decimal @default(0) @db.Decimal(15, 2)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+
+  @@id([productId, warehouseId])
+}
+
+model StockMovement {
+  id          String            @id @default(uuid())
+  productId   String
+  warehouseId String
+  type        StockMovementType // Changed from MovementType
+  quantity    Decimal      @db.Decimal(15, 2)
+  reference   String?
+  notes       String?
+  date        DateTime     @default(now())
+  companyId   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  product   Product   @relation(fields: [productId], references: [id])
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id])
+}
+
+model StockAdjustment {
+  id          String   @id @default(uuid())
+  productId   String
+  warehouseId String
+  oldQuantity Decimal  @db.Decimal(15, 2)
+  newQuantity Decimal  @db.Decimal(15, 2)
+  difference  Decimal  @db.Decimal(15, 2)
+  reason      String
+  notes       String?
+  adjustedBy  String
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company       Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  product       Product @relation(fields: [productId], references: [id])
+  warehouse     Warehouse @relation(fields: [warehouseId], references: [id])
+  adjustedByUser User?   @relation(fields: [adjustedBy], references: [id]) // Added for adjustments.service.ts
+
+  @@unique([productId, warehouseId, createdAt])
+}
+
+// ============================================
+// ACCOUNTING MODELS (UPDATED)
+// ============================================
+
+model Account {
+  id            String      @id @default(uuid())
+  code          String
+  name          String
+  type          AccountType
+  parentId      String?
+  balance       Decimal     @default(0) @db.Decimal(15, 2)
+  isActive      Boolean     @default(true)
+  companyId     String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  company      Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  parent       Account?       @relation("AccountTree", fields: [parentId], references: [id])
+  children     Account[]      @relation("AccountTree")
+  journalLines JournalLine[]
+
+  @@unique([companyId, code])
+}
+
+model JournalEntry {
+  id          String             @id @default(uuid())
+  entryNumber String
+  date        DateTime           @default(now())
+  reference   String?
+  description String?
+  status      JournalEntryStatus @default(DRAFT)
+  postedAt    DateTime?          // Added for journal-entries.service.ts
+  createdBy   String             // Added for journal-entries.service.ts
+  companyId   String
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  company    Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creator    User?         @relation(fields: [createdBy], references: [id]) // Added for journal-entries.service.ts
+  lines      JournalLine[]
+
+  @@unique([companyId, entryNumber])
+}
+
+model JournalLine {
+  id        String  @id @default(uuid())
+  entryId   String
+  accountId String
+  debit     Decimal @default(0) @db.Decimal(15, 2)
+  credit    Decimal @default(0) @db.Decimal(15, 2)
+  notes     String?
+
+  entry   JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  account Account      @relation(fields: [accountId], references: [id])
+}
+
+// ============================================
+// POS MODELS (UPDATED)
+// ============================================
 
 model PosSession {
   id            String           @id @default(uuid())
-  companyId     String           @map("company_id")
-  sessionNumber String           @map("session_number")
-  userId        String           @map("user_id")
-  openedAt      DateTime         @map("opened_at")
-  closedAt      DateTime?        @map("closed_at")
-  openingCash   Decimal          @map("opening_cash") @db.Decimal(15, 2)
-  closingCash   Decimal?         @map("closing_cash") @db.Decimal(15, 2)
-  totalSales    Decimal          @default(0) @map("total_sales") @db.Decimal(15, 2)
+  sessionNumber String
+  userId        String           // Added for sessions.service.ts
+  openedAt      DateTime         @default(now())
+  closedAt      DateTime?
+  openingCash   Decimal          @db.Decimal(15, 2)
+  closingCash   Decimal?         @db.Decimal(15, 2)
+  totalSales    Decimal?         @db.Decimal(15, 2) // Added for sessions.service.ts
   status        PosSessionStatus @default(OPEN)
+  companyId     String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 
-  company Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user    User      @relation(fields: [userId], references: [id])
+  company Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user    User       @relation(fields: [userId], references: [id]) // Added for sessions.service.ts
   sales   PosSale[]
 
   @@unique([companyId, sessionNumber])
-  @@index([companyId])
-  @@index([userId])
-  @@map("pos_sessions")
 }
 
 model PosSale {
   id            String        @id @default(uuid())
-  companyId     String        @map("company_id")
-  sessionId     String        @map("session_id")
-  saleNumber    String        @map("sale_number")
-  customerId    String?       @map("customer_id")
-  date          DateTime
+  saleNumber    String
+  sessionId     String
+  customerId    String?
+  date          DateTime      @default(now()) // Added for sales.service.ts
   subtotal      Decimal       @db.Decimal(15, 2)
-  taxAmount     Decimal       @map("tax_amount") @db.Decimal(15, 2)
+  taxAmount     Decimal       @db.Decimal(15, 2)
   total         Decimal       @db.Decimal(15, 2)
-  paymentMethod PaymentMethod @map("payment_method")
-  mpesaCode     String?       @map("mpesa_code")
-  createdAt     DateTime      @default(now()) @map("created_at")
+  paymentMethod PaymentMethod
+  mpesaCode     String?
+  companyId     String        // Added for sales.service.ts
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
-  company  Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  session  PosSession    @relation(fields: [sessionId], references: [id])
-  customer Customer?     @relation(fields: [customerId], references: [id])
+  session  PosSession    @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  customer Customer?     @relation(fields: [customerId], references: [id]) // Made optional
   lines    PosSaleLine[]
 
   @@unique([companyId, saleNumber])
-  @@index([companyId])
-  @@index([sessionId])
-  @@index([date])
-  @@map("pos_sales")
 }
 
 model PosSaleLine {
   id        String  @id @default(uuid())
-  saleId    String  @map("sale_id")
-  productId String  @map("product_id")
-  quantity  Decimal @db.Decimal(15, 3)
-  unitPrice Decimal @map("unit_price") @db.Decimal(15, 2)
-  taxRate   Decimal @map("tax_rate") @db.Decimal(5, 2)
+  saleId    String
+  productId String
+  quantity  Decimal @db.Decimal(15, 2)
+  unitPrice Decimal @db.Decimal(15, 2)
+  taxRate   Decimal @db.Decimal(5, 2)
   amount    Decimal @db.Decimal(15, 2)
 
   sale    PosSale @relation(fields: [saleId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
-
-  @@index([saleId])
-  @@map("pos_sale_lines")
 }
 
 // ============================================
-// INTEGRATION LOGS
+// MANUFACTURING MODELS (UPDATED)
 // ============================================
 
-enum EtimsStatus {
-  PENDING
-  SUCCESS
-  FAILED
+model BillOfMaterials {
+  id          String   @id @default(uuid())
+  bomNumber   String
+  productId   String
+  version     String   @default("1.0")
+  isActive    Boolean  @default(true)
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  product          Product           @relation(fields: [productId], references: [id])
+  components       BomComponent[]
+  productionOrders ProductionOrder[]
+
+  @@unique([companyId, bomNumber])
 }
 
-model EtimsLog {
-  id           String      @id @default(uuid())
-  companyId    String      @map("company_id")
-  invoiceId    String      @map("invoice_id")
-  request      Json
-  response     Json?
-  status       EtimsStatus
-  errorMessage String?     @map("error_message")
-  createdAt    DateTime    @default(now()) @map("created_at")
+model BomComponent {
+  id                 String  @id @default(uuid())
+  bomId              String
+  productId          String
+  quantity           Decimal @db.Decimal(15, 2)
+  unit               String?
+  wastagePercentage  Decimal @default(0) @db.Decimal(5, 2)
 
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  invoice Invoice @relation(fields: [invoiceId], references: [id])
-
-  @@index([companyId])
-  @@index([invoiceId])
-  @@index([status])
-  @@map("etims_logs")
+  bom     BillOfMaterials @relation(fields: [bomId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id])
 }
 
-model MpesaTransaction {
-  id                String   @id @default(uuid())
-  companyId         String   @map("company_id")
-  transactionId     String   @map("transaction_id")
-  amount            Decimal  @db.Decimal(15, 2)
-  phoneNumber       String   @map("phone_number")
-  merchantRequestId String   @map("merchant_request_id")
-  checkoutRequestId String   @map("checkout_request_id")
-  resultCode        String?  @map("result_code")
-  resultDesc        String?  @map("result_desc")
-  mpesaCode         String?  @map("mpesa_code")
-  status            String
-  metadata          Json?
-  createdAt         DateTime @default(now()) @map("created_at")
+model ProductionOrder {
+  id                String                @id @default(uuid())
+  orderNumber       String
+  bomId             String
+  productId         String                // Added for production-orders.service.ts (renamed from finishedProductId)
+  plannedQuantity   Decimal               @db.Decimal(15, 2)
+  producedQuantity  Decimal               @default(0) @db.Decimal(15, 2)
+  scheduledDate     DateTime              // Added for production-orders.service.ts (renamed from plannedDate)
+  completedDate     DateTime?
+  warehouseId       String                // Added for production-orders.service.ts (renamed from destinationWarehouseId)
+  status            ProductionOrderStatus @default(DRAFT)
+  notes             String?
+  companyId         String
+  confirmedAt       DateTime?
+  startedAt         DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
 
-  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company   Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  bom       BillOfMaterials @relation(fields: [bomId], references: [id])
+  warehouse Warehouse       @relation(fields: [warehouseId], references: [id])
 
-  @@unique([transactionId])
-  @@index([companyId])
-  @@index([mpesaCode])
-  @@map("mpesa_transactions")
+  @@unique([companyId, orderNumber])
 }
 
 // ============================================
-// AUDIT LOG
+// HR MODELS (UPDATED)
+// ============================================
+
+model Employee {
+  id          String    @id @default(uuid())
+  employeeNo  String
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String?
+  kraPin      String?
+  nssf        String?
+  nhif        String?
+  position    String?
+  department  String?
+  salary      Decimal   @db.Decimal(15, 2)
+  hireDate    DateTime
+  status      String?   @default("ACTIVE") // Added for reporting.service.ts
+  isActive    Boolean   @default(true)
+  companyId   String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  payrollRuns  PayrollRun[]
+  leaveRecords LeaveRecord[]
+
+  @@unique([companyId, employeeNo])
+}
+
+model PayrollRun {
+  id           String        @id @default(uuid())
+  employeeId   String
+  periodStart  DateTime
+  periodEnd    DateTime
+  basicSalary  Decimal       @db.Decimal(15, 2)
+  allowances   Decimal       @default(0) @db.Decimal(15, 2)
+  grossPay     Decimal       @db.Decimal(15, 2)
+  paye         Decimal       @db.Decimal(15, 2)
+  nhif         Decimal       @db.Decimal(15, 2)
+  nssf         Decimal       @db.Decimal(15, 2)
+  deductions   Decimal       @default(0) @db.Decimal(15, 2)
+  netPay       Decimal       @db.Decimal(15, 2)
+  status       PayrollStatus @default(DRAFT)
+  paidAt       DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model LeaveRecord {
+  id         String      @id @default(uuid())
+  employeeId String
+  type       LeaveType
+  startDate  DateTime
+  endDate    DateTime
+  days       Int
+  reason     String?
+  status     LeaveStatus @default(PENDING)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// AUDIT MODEL (UPDATED)
 // ============================================
 
 model AuditLog {
-  id        String   @id @default(uuid())
-  companyId String   @map("company_id")
-  userId    String   @map("user_id")
-  action    String
-  entity    String
-  entityId  String   @map("entity_id")
-  oldValues Json?    @map("old_values")
-  newValues Json?    @map("new_values")
-  ipAddress String?  @map("ip_address")
-  userAgent String?  @map("user_agent")
-  createdAt DateTime @default(now()) @map("created_at")
+  id         String   @id @default(uuid())
+  companyId  String
+  userId     String?
+  action     String
+  entity     String
+  entityId   String?
+  changes    Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
 
   company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user    User    @relation("PerformedBy", fields: [userId], references: [id])
-
-  @@index([companyId])
-  @@index([userId])
-  @@index([entity])
-  @@index([createdAt])
-  @@map("audit_logs")
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 }

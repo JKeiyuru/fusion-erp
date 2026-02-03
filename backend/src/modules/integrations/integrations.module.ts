@@ -1,10 +1,27 @@
-// FILE: backend/src/modules/integrations/integrations.module.ts
 import { Module } from '@nestjs/common';
-import { EtimsService } from './etims/etims.service';
+import { MpesaController } from './mpesa/mpesa.controller';
+import { EtimsController } from './etims/etims.controller';
 import { MpesaService } from './mpesa/mpesa.service';
+import { EtimsService } from './etims/etims.service';
+import { EmailService } from './notifications/email.service';
+import { SmsService } from './notifications/sms.service';
 
 @Module({
-  providers: [EtimsService, MpesaService],
-  exports: [EtimsService, MpesaService],
+  controllers: [
+    MpesaController,
+    EtimsController,
+  ],
+  providers: [
+    MpesaService,
+    EtimsService,
+    EmailService,
+    SmsService,
+  ],
+  exports: [
+    MpesaService,
+    EtimsService,
+    EmailService,
+    SmsService,
+  ],
 })
 export class IntegrationsModule {}

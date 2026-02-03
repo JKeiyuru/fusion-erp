@@ -1,4 +1,5 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/app.module.ts":
@@ -7,7 +8,6 @@
   \***************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -19,63 +19,44 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AppModule = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
-const bull_1 = __webpack_require__(/*! @nestjs/bull */ "@nestjs/bull");
-const throttler_1 = __webpack_require__(/*! @nestjs/throttler */ "@nestjs/throttler");
 const prisma_module_1 = __webpack_require__(/*! ./prisma/prisma.module */ "./src/prisma/prisma.module.ts");
 const auth_module_1 = __webpack_require__(/*! ./modules/auth/auth.module */ "./src/modules/auth/auth.module.ts");
-const tenancy_module_1 = __webpack_require__(/*! ./modules/tenancy/tenancy.module */ "./src/modules/tenancy/tenancy.module.ts");
-const users_module_1 = __webpack_require__(/*! ./modules/users/users.module */ "./src/modules/users/users.module.ts");
-const roles_module_1 = __webpack_require__(/*! ./modules/roles/roles.module */ "./src/modules/roles/roles.module.ts");
-const accounting_module_1 = __webpack_require__(/*! ./modules/accounting/accounting.module */ "./src/modules/accounting/accounting.module.ts");
 const sales_module_1 = __webpack_require__(/*! ./modules/sales/sales.module */ "./src/modules/sales/sales.module.ts");
-const inventory_module_1 = __webpack_require__(/*! ./modules/inventory/inventory.module */ "./src/modules/inventory/inventory.module.ts");
+const accounting_module_1 = __webpack_require__(/*! ./modules/accounting/accounting.module */ "./src/modules/accounting/accounting.module.ts");
 const pos_module_1 = __webpack_require__(/*! ./modules/pos/pos.module */ "./src/modules/pos/pos.module.ts");
+const procurement_module_1 = __webpack_require__(/*! ./modules/procurement/procurement.module */ "./src/modules/procurement/procurement.module.ts");
+const inventory_module_1 = __webpack_require__(/*! ./modules/inventory/inventory.module */ "./src/modules/inventory/inventory.module.ts");
 const manufacturing_module_1 = __webpack_require__(/*! ./modules/manufacturing/manufacturing.module */ "./src/modules/manufacturing/manufacturing.module.ts");
 const hr_module_1 = __webpack_require__(/*! ./modules/hr/hr.module */ "./src/modules/hr/hr.module.ts");
-const procurement_module_1 = __webpack_require__(/*! ./modules/procurement/procurement.module */ "./src/modules/procurement/procurement.module.ts");
+const audit_module_1 = __webpack_require__(/*! ./modules/audit/audit.module */ "./src/modules/audit/audit.module.ts");
 const integrations_module_1 = __webpack_require__(/*! ./modules/integrations/integrations.module */ "./src/modules/integrations/integrations.module.ts");
 const reporting_module_1 = __webpack_require__(/*! ./modules/reporting/reporting.module */ "./src/modules/reporting/reporting.module.ts");
-const audit_module_1 = __webpack_require__(/*! ./modules/audit/audit.module */ "./src/modules/audit/audit.module.ts");
-const events_module_1 = __webpack_require__(/*! ./events/events.module */ "./src/events/events.module.ts");
+const event_emitter_1 = __webpack_require__(/*! @nestjs/event-emitter */ "@nestjs/event-emitter");
+const roles_module_1 = __webpack_require__(/*! ./modules/roles/roles.module */ "./src/modules/roles/roles.module.ts");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            event_emitter_1.EventEmitterModule.forRoot(),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 envFilePath: '.env',
             }),
-            throttler_1.ThrottlerModule.forRoot([
-                {
-                    ttl: 60000,
-                    limit: 100,
-                },
-            ]),
-            bull_1.BullModule.forRoot({
-                redis: {
-                    host: process.env.REDIS_HOST || 'localhost',
-                    port: parseInt(process.env.REDIS_PORT) || 6379,
-                    password: process.env.REDIS_PASSWORD,
-                },
-            }),
             prisma_module_1.PrismaModule,
             auth_module_1.AuthModule,
-            tenancy_module_1.TenancyModule,
-            users_module_1.UsersModule,
-            roles_module_1.RolesModule,
-            accounting_module_1.AccountingModule,
             sales_module_1.SalesModule,
-            inventory_module_1.InventoryModule,
+            accounting_module_1.AccountingModule,
             pos_module_1.PosModule,
+            procurement_module_1.ProcurementModule,
+            inventory_module_1.InventoryModule,
             manufacturing_module_1.ManufacturingModule,
             hr_module_1.HrModule,
-            procurement_module_1.ProcurementModule,
+            audit_module_1.AuditModule,
             integrations_module_1.IntegrationsModule,
             reporting_module_1.ReportingModule,
-            audit_module_1.AuditModule,
-            events_module_1.EventsModule,
+            roles_module_1.RolesModule,
         ],
     })
 ], AppModule);
@@ -89,7 +70,6 @@ exports.AppModule = AppModule = __decorate([
   \*********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CurrentUser = void 0;
@@ -108,7 +88,6 @@ exports.CurrentUser = (0, common_1.createParamDecorator)((data, ctx) => {
   \***************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Public = exports.IS_PUBLIC_KEY = void 0;
@@ -126,7 +105,6 @@ exports.Public = Public;
   \***************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CurrentTenant = void 0;
@@ -145,7 +123,6 @@ exports.CurrentTenant = (0, common_1.createParamDecorator)((data, ctx) => {
   \*********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -194,7 +171,6 @@ exports.JwtAuthGuard = JwtAuthGuard = __decorate([
   \*******************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -224,98 +200,12 @@ exports.TenantGuard = TenantGuard = __decorate([
 
 /***/ }),
 
-/***/ "./src/events/events.module.ts":
-/*!*************************************!*\
-  !*** ./src/events/events.module.ts ***!
-  \*************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.EventsModule = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const event_emitter_1 = __webpack_require__(/*! @nestjs/event-emitter */ "@nestjs/event-emitter");
-const events_service_1 = __webpack_require__(/*! ./events.service */ "./src/events/events.service.ts");
-let EventsModule = class EventsModule {
-};
-exports.EventsModule = EventsModule;
-exports.EventsModule = EventsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [
-            event_emitter_1.EventEmitterModule.forRoot({
-                wildcard: false,
-                delimiter: '.',
-                newListener: false,
-                removeListener: false,
-                maxListeners: 10,
-                verboseMemoryLeak: false,
-                ignoreErrors: false,
-            }),
-        ],
-        providers: [events_service_1.EventsService],
-        exports: [events_service_1.EventsService],
-    })
-], EventsModule);
-
-
-/***/ }),
-
-/***/ "./src/events/events.service.ts":
-/*!**************************************!*\
-  !*** ./src/events/events.service.ts ***!
-  \**************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.EventsService = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const event_emitter_1 = __webpack_require__(/*! @nestjs/event-emitter */ "@nestjs/event-emitter");
-let EventsService = class EventsService {
-    constructor(eventEmitter) {
-        this.eventEmitter = eventEmitter;
-    }
-    emit(event, payload) {
-        this.eventEmitter.emit(event, payload);
-    }
-    on(event, listener) {
-        this.eventEmitter.on(event, listener);
-    }
-};
-exports.EventsService = EventsService;
-exports.EventsService = EventsService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof event_emitter_1.EventEmitter2 !== "undefined" && event_emitter_1.EventEmitter2) === "function" ? _a : Object])
-], EventsService);
-
-
-/***/ }),
-
 /***/ "./src/modules/accounting/accounting.module.ts":
 /*!*****************************************************!*\
   !*** ./src/modules/accounting/accounting.module.ts ***!
   \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -363,7 +253,6 @@ exports.AccountingModule = AccountingModule = __decorate([
   \*******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -497,7 +386,6 @@ exports.AccountsController = AccountsController = __decorate([
   \**************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -616,7 +504,6 @@ exports.JournalEntriesController = JournalEntriesController = __decorate([
   \******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -714,7 +601,6 @@ exports.ReportsController = ReportsController = __decorate([
   \**********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -771,7 +657,6 @@ __decorate([
   \****************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -850,7 +735,6 @@ __decorate([
   \**********************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdateAccountDto = void 0;
@@ -869,7 +753,6 @@ exports.UpdateAccountDto = UpdateAccountDto;
   \*************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1066,7 +949,6 @@ exports.AccountsService = AccountsService = __decorate([
   \********************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1276,7 +1158,6 @@ exports.JournalEntriesService = JournalEntriesService = __decorate([
   \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1510,7 +1391,6 @@ exports.ReportsService = ReportsService = __decorate([
   \***********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1537,8 +1417,8 @@ let AuditController = class AuditController {
     constructor(auditService) {
         this.auditService = auditService;
     }
-    getLogs(tenantId, userId, entity, action, startDate, endDate, page, limit) {
-        return this.auditService.getLogs(tenantId, {
+    findAll(tenantId, userId, entity, action, startDate, endDate, page, limit) {
+        return this.auditService.findAll(tenantId, {
             userId,
             entity,
             action,
@@ -1548,14 +1428,20 @@ let AuditController = class AuditController {
             limit,
         });
     }
-    getActivity(tenantId, limit) {
-        return this.auditService.getRecentActivity(tenantId, limit);
+    getEntityHistory(tenantId, entity, entityId) {
+        return this.auditService.getEntityHistory(tenantId, entity, entityId);
+    }
+    getUserActivity(tenantId, userId, days) {
+        return this.auditService.getUserActivity(tenantId, userId, Number(days) || 30);
+    }
+    getSummary(tenantId, days) {
+        return this.auditService.getActivitySummary(tenantId, Number(days) || 7);
     }
 };
 exports.AuditController = AuditController;
 __decorate([
-    (0, common_1.Get)('logs'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get audit logs' }),
+    (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all audit logs' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Query)('userId')),
     __param(2, (0, common_1.Query)('entity')),
@@ -1567,16 +1453,36 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String, String, String, String, Number, Number]),
     __metadata("design:returntype", void 0)
-], AuditController.prototype, "getLogs", null);
+], AuditController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('activity'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get recent activity' }),
+    (0, common_1.Get)('entity/:entity/:entityId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get entity history' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Query)('limit')),
+    __param(1, (0, common_1.Param)('entity')),
+    __param(2, (0, common_1.Param)('entityId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], AuditController.prototype, "getEntityHistory", null);
+__decorate([
+    (0, common_1.Get)('user/:userId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get user activity' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Param)('userId')),
+    __param(2, (0, common_1.Query)('days')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Number]),
+    __metadata("design:returntype", void 0)
+], AuditController.prototype, "getUserActivity", null);
+__decorate([
+    (0, common_1.Get)('summary'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get activity summary' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Query)('days')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", void 0)
-], AuditController.prototype, "getActivity", null);
+], AuditController.prototype, "getSummary", null);
 exports.AuditController = AuditController = __decorate([
     (0, swagger_1.ApiTags)('audit'),
     (0, swagger_1.ApiBearerAuth)(),
@@ -1594,7 +1500,6 @@ exports.AuditController = AuditController = __decorate([
   \*******************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1611,7 +1516,6 @@ let AuditModule = class AuditModule {
 };
 exports.AuditModule = AuditModule;
 exports.AuditModule = AuditModule = __decorate([
-    (0, common_1.Global)(),
     (0, common_1.Module)({
         controllers: [audit_controller_1.AuditController],
         providers: [audit_service_1.AuditService],
@@ -1628,7 +1532,6 @@ exports.AuditModule = AuditModule = __decorate([
   \********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1648,20 +1551,34 @@ let AuditService = class AuditService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async createLog(data) {
-        return this.prisma.auditLog.create({ data });
+    async log(tenantId, userId, action, entity, entityId, changes = null, ipAddress, userAgent) {
+        return this.prisma.auditLog.create({
+            data: {
+                companyId: tenantId,
+                userId,
+                action,
+                entity,
+                entityId,
+                changes,
+                ipAddress,
+                userAgent,
+            },
+        });
     }
-    async getLogs(tenantId, options) {
+    async findAll(tenantId, options) {
         const page = options.page || 1;
         const limit = options.limit || 50;
         const skip = (page - 1) * limit;
         const where = { companyId: tenantId };
-        if (options.userId)
+        if (options.userId) {
             where.userId = options.userId;
-        if (options.entity)
+        }
+        if (options.entity) {
             where.entity = options.entity;
-        if (options.action)
-            where.action = options.action;
+        }
+        if (options.action) {
+            where.action = { contains: options.action, mode: 'insensitive' };
+        }
         if (options.startDate || options.endDate) {
             where.createdAt = {};
             if (options.startDate)
@@ -1674,35 +1591,66 @@ let AuditService = class AuditService {
                 where,
                 skip,
                 take: limit,
-                include: {
-                    user: {
-                        select: {
-                            firstName: true,
-                            lastName: true,
-                            email: true,
-                        },
-                    },
-                },
                 orderBy: { createdAt: 'desc' },
             }),
             this.prisma.auditLog.count({ where }),
         ]);
-        return { data: logs, meta: { total, page, limit, totalPages: Math.ceil(total / limit) } };
+        return {
+            data: logs,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
     }
-    async getRecentActivity(tenantId, limit = 20) {
+    async getEntityHistory(tenantId, entity, entityId) {
         return this.prisma.auditLog.findMany({
-            where: { companyId: tenantId },
-            take: limit,
-            include: {
-                user: {
-                    select: {
-                        firstName: true,
-                        lastName: true,
-                    },
-                },
+            where: {
+                companyId: tenantId,
+                entity,
+                entityId,
             },
             orderBy: { createdAt: 'desc' },
         });
+    }
+    async getUserActivity(tenantId, userId, days = 30) {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        return this.prisma.auditLog.findMany({
+            where: {
+                companyId: tenantId,
+                userId,
+                createdAt: { gte: startDate },
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 100,
+        });
+    }
+    async getActivitySummary(tenantId, days = 7) {
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        const logs = await this.prisma.auditLog.findMany({
+            where: {
+                companyId: tenantId,
+                createdAt: { gte: startDate },
+            },
+        });
+        const summary = {
+            totalActions: logs.length,
+            byEntity: {},
+            byAction: {},
+            byUser: {},
+        };
+        logs.forEach((log) => {
+            summary.byEntity[log.entity] = (summary.byEntity[log.entity] || 0) + 1;
+            summary.byAction[log.action] = (summary.byAction[log.action] || 0) + 1;
+            if (log.userId) {
+                summary.byUser[log.userId] = (summary.byUser[log.userId] || 0) + 1;
+            }
+        });
+        return summary;
     }
 };
 exports.AuditService = AuditService;
@@ -1720,7 +1668,6 @@ exports.AuditService = AuditService = __decorate([
   \*********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1740,79 +1687,83 @@ exports.AuthController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const auth_service_1 = __webpack_require__(/*! ./auth.service */ "./src/modules/auth/auth.service.ts");
-const login_dto_1 = __webpack_require__(/*! ./dto/login.dto */ "./src/modules/auth/dto/login.dto.ts");
-const register_dto_1 = __webpack_require__(/*! ./dto/register.dto */ "./src/modules/auth/dto/register.dto.ts");
-const refresh_token_dto_1 = __webpack_require__(/*! ./dto/refresh-token.dto */ "./src/modules/auth/dto/refresh-token.dto.ts");
+const dto_1 = __webpack_require__(/*! ./dto */ "./src/modules/auth/dto/index.ts");
 const public_decorator_1 = __webpack_require__(/*! ../../common/decorators/public.decorator */ "./src/common/decorators/public.decorator.ts");
 const current_user_decorator_1 = __webpack_require__(/*! ../../common/decorators/current-user.decorator */ "./src/common/decorators/current-user.decorator.ts");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async register(registerDto) {
-        return this.authService.register(registerDto);
+    async register(dto) {
+        return this.authService.register(dto);
     }
-    async login(loginDto) {
-        return this.authService.login(loginDto);
+    async login(dto) {
+        return this.authService.login(dto);
     }
-    async refresh(refreshDto) {
-        return this.authService.refreshToken(refreshDto.refreshToken);
+    async refresh(dto) {
+        return { message: 'Refresh token endpoint - implement token validation' };
     }
-    async logout(user) {
-        return this.authService.logout(user.id);
+    async logout(userId) {
+        return this.authService.logout(userId);
     }
-    async getProfile(user) {
-        return this.authService.getProfile(user.id);
+    async getMe(user) {
+        return { data: user };
     }
 };
 exports.AuthController = AuthController;
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)('register'),
-    (0, swagger_1.ApiOperation)({ summary: 'Register new company and admin user' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Register a new user' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_b = typeof register_dto_1.RegisterDto !== "undefined" && register_dto_1.RegisterDto) === "function" ? _b : Object]),
+    __metadata("design:paramtypes", [typeof (_b = typeof dto_1.RegisterDto !== "undefined" && dto_1.RegisterDto) === "function" ? _b : Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)('login'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiOperation)({ summary: 'Login user' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_c = typeof login_dto_1.LoginDto !== "undefined" && login_dto_1.LoginDto) === "function" ? _c : Object]),
+    __metadata("design:paramtypes", [typeof (_c = typeof dto_1.LoginDto !== "undefined" && dto_1.LoginDto) === "function" ? _c : Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)('refresh'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiOperation)({ summary: 'Refresh access token' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_d = typeof refresh_token_dto_1.RefreshTokenDto !== "undefined" && refresh_token_dto_1.RefreshTokenDto) === "function" ? _d : Object]),
+    __metadata("design:paramtypes", [typeof (_d = typeof dto_1.RefreshTokenDto !== "undefined" && dto_1.RefreshTokenDto) === "function" ? _d : Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refresh", null);
 __decorate([
-    (0, common_1.Post)('logout'),
     (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('logout'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiOperation)({ summary: 'Logout user' }),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 __decorate([
-    (0, common_1.Get)('me'),
     (0, swagger_1.ApiBearerAuth)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get current user profile' }),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('me'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get current user' }),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "getProfile", null);
+], AuthController.prototype, "getMe", null);
 exports.AuthController = AuthController = __decorate([
-    (0, swagger_1.ApiTags)('auth'),
+    (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [typeof (_a = typeof auth_service_1.AuthService !== "undefined" && auth_service_1.AuthService) === "function" ? _a : Object])
 ], AuthController);
@@ -1826,7 +1777,6 @@ exports.AuthController = AuthController = __decorate([
   \*****************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1877,7 +1827,6 @@ exports.AuthModule = AuthModule = __decorate([
   \******************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1902,9 +1851,42 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
         this.configService = configService;
     }
+    async validateUser(email, password, tenantId) {
+        const user = await this.prisma.user.findFirst({
+            where: {
+                email,
+                companyId: tenantId,
+                isActive: true,
+            },
+            include: {
+                company: true,
+                roles: {
+                    include: {
+                        role: {
+                            include: {
+                                permissions: {
+                                    include: {
+                                        permission: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+        if (!user) {
+            return null;
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return null;
+        }
+        return user;
+    }
     async register(registerDto) {
         const existingCompany = await this.prisma.company.findUnique({
-            where: { email: registerDto.companyEmail },
+            where: { email: registerDto.companyName },
         });
         if (existingCompany) {
             throw new common_1.ConflictException('Company email already registered');
@@ -1914,7 +1896,7 @@ let AuthService = class AuthService {
             const company = await prisma.company.create({
                 data: {
                     name: registerDto.companyName,
-                    email: registerDto.companyEmail,
+                    email: registerDto.companyName,
                     phone: registerDto.companyPhone,
                     kraPin: registerDto.kraPin,
                     currency: 'KES',
@@ -2163,13 +2145,41 @@ exports.AuthService = AuthService = __decorate([
 
 /***/ }),
 
+/***/ "./src/modules/auth/dto/index.ts":
+/*!***************************************!*\
+  !*** ./src/modules/auth/dto/index.ts ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__webpack_require__(/*! ./register.dto */ "./src/modules/auth/dto/register.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./login.dto */ "./src/modules/auth/dto/login.dto.ts"), exports);
+__exportStar(__webpack_require__(/*! ./refresh-token.dto */ "./src/modules/auth/dto/refresh-token.dto.ts"), exports);
+
+
+/***/ }),
+
 /***/ "./src/modules/auth/dto/login.dto.ts":
 /*!*******************************************!*\
   !*** ./src/modules/auth/dto/login.dto.ts ***!
   \*******************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2188,13 +2198,14 @@ class LoginDto {
 }
 exports.LoginDto = LoginDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'admin@company.com' }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], LoginDto.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'password123' }),
-    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], LoginDto.prototype, "password", void 0);
@@ -2208,7 +2219,6 @@ __decorate([
   \***************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2228,6 +2238,7 @@ class RefreshTokenDto {
 exports.RefreshTokenDto = RefreshTokenDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RefreshTokenDto.prototype, "refreshToken", void 0);
@@ -2241,7 +2252,6 @@ __decorate([
   \**********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2260,54 +2270,53 @@ class RegisterDto {
 }
 exports.RegisterDto = RegisterDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'My Company Ltd' }),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], RegisterDto.prototype, "companyName", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'info@mycompany.com' }),
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], RegisterDto.prototype, "companyEmail", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: '+254712345678' }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], RegisterDto.prototype, "companyPhone", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'A001234567P' }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], RegisterDto.prototype, "kraPin", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 'John' }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "firstName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'Doe' }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "lastName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'john@mycompany.com' }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "email", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '+254712345678' }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MinLength)(6),
+    __metadata("design:type", String)
+], RegisterDto.prototype, "password", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "phone", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: 'password123' }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
-], RegisterDto.prototype, "password", void 0);
+], RegisterDto.prototype, "companyName", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsPhoneNumber)(),
+    __metadata("design:type", String)
+], RegisterDto.prototype, "companyPhone", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], RegisterDto.prototype, "kraPin", void 0);
 
 
 /***/ }),
@@ -2318,7 +2327,6 @@ __decorate([
   \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2337,27 +2345,47 @@ const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport
 const passport_jwt_1 = __webpack_require__(/*! passport-jwt */ "passport-jwt");
 const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
 const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
-let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    constructor(configService, prisma) {
+let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy, 'jwt') {
+    constructor(config, prisma) {
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+            secretOrKey: config.get('JWT_SECRET'),
             ignoreExpiration: false,
-            secretOrKey: configService.get('JWT_SECRET'),
         });
-        this.configService = configService;
+        this.config = config;
         this.prisma = prisma;
     }
     async validate(payload) {
         const user = await this.prisma.user.findUnique({
             where: { id: payload.sub },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    },
+                },
+                company: {
+                    select: {
+                        id: true,
+                        name: true,
+                        isActive: true,
+                    },
+                },
+            },
         });
         if (!user || !user.isActive) {
-            throw new common_1.UnauthorizedException();
+            throw new common_1.UnauthorizedException('User not found or inactive');
         }
+        if (!user.company.isActive) {
+            throw new common_1.UnauthorizedException('Company is inactive');
+        }
+        const permissions = [];
+        if (user.roles && user.roles.length > 0) {
+        }
+        const { password, refreshToken, ...sanitizedUser } = user;
         return {
-            id: user.id,
-            email: user.email,
-            companyId: user.companyId,
+            ...sanitizedUser,
+            roleNames: user.roles.map(userRole => userRole.role.name),
         };
     }
 };
@@ -2376,7 +2404,6 @@ exports.JwtStrategy = JwtStrategy = __decorate([
   \***************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2425,7 +2452,6 @@ exports.RefreshTokenStrategy = RefreshTokenStrategy = __decorate([
   \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2456,8 +2482,20 @@ let EmployeesController = class EmployeesController {
     create(tenantId, createDto) {
         return this.employeesService.create(tenantId, createDto);
     }
-    findAll(tenantId, status, department, page, limit) {
-        return this.employeesService.findAll(tenantId, { status, department, page, limit });
+    findAll(tenantId, search, department, isActive, page, limit) {
+        return this.employeesService.findAll(tenantId, {
+            search,
+            department,
+            isActive,
+            page,
+            limit,
+        });
+    }
+    getDepartments(tenantId) {
+        return this.employeesService.getDepartments(tenantId);
+    }
+    getStats(tenantId) {
+        return this.employeesService.getEmployeeStats(tenantId);
     }
     findOne(tenantId, id) {
         return this.employeesService.findOne(tenantId, id);
@@ -2483,14 +2521,31 @@ __decorate([
     (0, common_1.Get)(),
     (0, swagger_1.ApiOperation)({ summary: 'Get all employees' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Query)('status')),
+    __param(1, (0, common_1.Query)('search')),
     __param(2, (0, common_1.Query)('department')),
-    __param(3, (0, common_1.Query)('page')),
-    __param(4, (0, common_1.Query)('limit')),
+    __param(3, (0, common_1.Query)('isActive')),
+    __param(4, (0, common_1.Query)('page')),
+    __param(5, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, Number, Number]),
+    __metadata("design:paramtypes", [String, String, String, String, Number, Number]),
     __metadata("design:returntype", void 0)
 ], EmployeesController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('departments'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all departments' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], EmployeesController.prototype, "getDepartments", null);
+__decorate([
+    (0, common_1.Get)('stats'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get employee statistics' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], EmployeesController.prototype, "getStats", null);
 __decorate([
     (0, common_1.Get)(':id'),
     (0, swagger_1.ApiOperation)({ summary: 'Get employee by ID' }),
@@ -2536,7 +2591,6 @@ exports.EmployeesController = EmployeesController = __decorate([
   \********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2558,9 +2612,8 @@ const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const jwt_auth_guard_1 = __webpack_require__(/*! ../../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
 const tenant_guard_1 = __webpack_require__(/*! ../../../common/guards/tenant.guard */ "./src/common/guards/tenant.guard.ts");
 const tenant_decorator_1 = __webpack_require__(/*! ../../../common/decorators/tenant.decorator */ "./src/common/decorators/tenant.decorator.ts");
-const current_user_decorator_1 = __webpack_require__(/*! ../../../common/decorators/current-user.decorator */ "./src/common/decorators/current-user.decorator.ts");
 const leave_service_1 = __webpack_require__(/*! ../services/leave.service */ "./src/modules/hr/services/leave.service.ts");
-const create_leave_request_dto_1 = __webpack_require__(/*! ../dto/create-leave-request.dto */ "./src/modules/hr/dto/create-leave-request.dto.ts");
+const create_leave_dto_1 = __webpack_require__(/*! ../dto/create-leave.dto */ "./src/modules/hr/dto/create-leave.dto.ts");
 let LeaveController = class LeaveController {
     constructor(leaveService) {
         this.leaveService = leaveService;
@@ -2568,54 +2621,95 @@ let LeaveController = class LeaveController {
     create(tenantId, createDto) {
         return this.leaveService.create(tenantId, createDto);
     }
-    findAll(tenantId, employeeId, status) {
-        return this.leaveService.findAll(tenantId, { employeeId, status });
+    findAll(tenantId, employeeId, status, type, page, limit) {
+        return this.leaveService.findAll(tenantId, {
+            employeeId,
+            status,
+            type,
+            page,
+            limit,
+        });
     }
-    approve(tenantId, id, user) {
-        return this.leaveService.approve(tenantId, id, user.id);
+    getBalance(tenantId, employeeId, year) {
+        return this.leaveService.getLeaveBalance(tenantId, employeeId, Number(year));
     }
-    reject(tenantId, id, user) {
-        return this.leaveService.reject(tenantId, id, user.id);
+    getSummary(tenantId, year) {
+        return this.leaveService.getLeaveSummary(tenantId, Number(year));
+    }
+    findOne(id) {
+        return this.leaveService.findOne(id);
+    }
+    approve(id) {
+        return this.leaveService.approve(id);
+    }
+    reject(id) {
+        return this.leaveService.reject(id);
     }
 };
 exports.LeaveController = LeaveController;
 __decorate([
     (0, common_1.Post)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Create leave request' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Create a leave request' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_b = typeof create_leave_request_dto_1.CreateLeaveRequestDto !== "undefined" && create_leave_request_dto_1.CreateLeaveRequestDto) === "function" ? _b : Object]),
+    __metadata("design:paramtypes", [String, typeof (_b = typeof create_leave_dto_1.CreateLeaveDto !== "undefined" && create_leave_dto_1.CreateLeaveDto) === "function" ? _b : Object]),
     __metadata("design:returntype", void 0)
 ], LeaveController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get leave requests' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all leave records' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Query)('employeeId')),
     __param(2, (0, common_1.Query)('status')),
+    __param(3, (0, common_1.Query)('type')),
+    __param(4, (0, common_1.Query)('page')),
+    __param(5, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, String, Number, Number]),
     __metadata("design:returntype", void 0)
 ], LeaveController.prototype, "findAll", null);
 __decorate([
+    (0, common_1.Get)('balance/:employeeId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get leave balance for an employee' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Param)('employeeId')),
+    __param(2, (0, common_1.Query)('year')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Number]),
+    __metadata("design:returntype", void 0)
+], LeaveController.prototype, "getBalance", null);
+__decorate([
+    (0, common_1.Get)('summary'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get leave summary' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Query)('year')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", void 0)
+], LeaveController.prototype, "getSummary", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get leave record by ID' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], LeaveController.prototype, "findOne", null);
+__decorate([
     (0, common_1.Put)(':id/approve'),
     (0, swagger_1.ApiOperation)({ summary: 'Approve leave request' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], LeaveController.prototype, "approve", null);
 __decorate([
     (0, common_1.Put)(':id/reject'),
     (0, swagger_1.ApiOperation)({ summary: 'Reject leave request' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], LeaveController.prototype, "reject", null);
 exports.LeaveController = LeaveController = __decorate([
@@ -2635,7 +2729,6 @@ exports.LeaveController = LeaveController = __decorate([
   \**********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2649,7 +2742,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PayrollController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
@@ -2663,58 +2756,102 @@ let PayrollController = class PayrollController {
     constructor(payrollService) {
         this.payrollService = payrollService;
     }
-    process(tenantId, processDto) {
+    processPayroll(tenantId, processDto) {
         return this.payrollService.processPayroll(tenantId, processDto);
     }
-    findAll(tenantId, period, employeeId, status) {
-        return this.payrollService.findAll(tenantId, { period, employeeId, status });
+    bulkProcess(tenantId, bulkDto) {
+        return this.payrollService.bulkProcessPayroll(tenantId, bulkDto.periodStart, bulkDto.periodEnd, bulkDto.employeeIds);
     }
-    findOne(tenantId, id) {
-        return this.payrollService.findOne(tenantId, id);
+    findAll(tenantId, employeeId, status, periodStart, periodEnd, page, limit) {
+        return this.payrollService.findAll(tenantId, {
+            employeeId,
+            status,
+            periodStart,
+            periodEnd,
+            page,
+            limit,
+        });
     }
-    markAsPaid(tenantId, id) {
-        return this.payrollService.markAsPaid(tenantId, id);
+    getSummary(tenantId, periodStart, periodEnd) {
+        return this.payrollService.getPayrollSummary(tenantId, new Date(periodStart), new Date(periodEnd));
+    }
+    findOne(id) {
+        return this.payrollService.findOne(id);
+    }
+    approve(id) {
+        return this.payrollService.approve(id);
+    }
+    pay(id) {
+        return this.payrollService.pay(id);
     }
 };
 exports.PayrollController = PayrollController;
 __decorate([
-    (0, common_1.Post)('process'),
-    (0, swagger_1.ApiOperation)({ summary: 'Process payroll for a period' }),
+    (0, common_1.Post)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Process payroll for an employee' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, typeof (_b = typeof process_payroll_dto_1.ProcessPayrollDto !== "undefined" && process_payroll_dto_1.ProcessPayrollDto) === "function" ? _b : Object]),
     __metadata("design:returntype", void 0)
-], PayrollController.prototype, "process", null);
+], PayrollController.prototype, "processPayroll", null);
+__decorate([
+    (0, common_1.Post)('bulk'),
+    (0, swagger_1.ApiOperation)({ summary: 'Process payroll for multiple employees' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_c = typeof process_payroll_dto_1.BulkProcessPayrollDto !== "undefined" && process_payroll_dto_1.BulkProcessPayrollDto) === "function" ? _c : Object]),
+    __metadata("design:returntype", void 0)
+], PayrollController.prototype, "bulkProcess", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get payroll entries' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all payroll records' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Query)('period')),
-    __param(2, (0, common_1.Query)('employeeId')),
-    __param(3, (0, common_1.Query)('status')),
+    __param(1, (0, common_1.Query)('employeeId')),
+    __param(2, (0, common_1.Query)('status')),
+    __param(3, (0, common_1.Query)('periodStart')),
+    __param(4, (0, common_1.Query)('periodEnd')),
+    __param(5, (0, common_1.Query)('page')),
+    __param(6, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, String, String, Number, Number]),
     __metadata("design:returntype", void 0)
 ], PayrollController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get payroll entry by ID' }),
+    (0, common_1.Get)('summary'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get payroll summary for a period' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Query)('periodStart')),
+    __param(2, (0, common_1.Query)('periodEnd')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], PayrollController.prototype, "getSummary", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get payroll record by ID' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PayrollController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Post)(':id/pay'),
-    (0, swagger_1.ApiOperation)({ summary: 'Mark payroll as paid' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
+    (0, common_1.Put)(':id/approve'),
+    (0, swagger_1.ApiOperation)({ summary: 'Approve payroll' }),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], PayrollController.prototype, "markAsPaid", null);
+], PayrollController.prototype, "approve", null);
+__decorate([
+    (0, common_1.Put)(':id/pay'),
+    (0, swagger_1.ApiOperation)({ summary: 'Mark payroll as paid' }),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], PayrollController.prototype, "pay", null);
 exports.PayrollController = PayrollController = __decorate([
     (0, swagger_1.ApiTags)('hr'),
     (0, swagger_1.ApiBearerAuth)(),
@@ -2732,7 +2869,6 @@ exports.PayrollController = PayrollController = __decorate([
   \***************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2749,7 +2885,6 @@ exports.UpdateEmployeeDto = exports.CreateEmployeeDto = void 0;
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
-const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
 class CreateEmployeeDto {
 }
 exports.CreateEmployeeDto = CreateEmployeeDto;
@@ -2757,7 +2892,7 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateEmployeeDto.prototype, "employeeNumber", void 0);
+], CreateEmployeeDto.prototype, "employeeNo", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsString)(),
@@ -2769,7 +2904,8 @@ __decorate([
     __metadata("design:type", String)
 ], CreateEmployeeDto.prototype, "lastName", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], CreateEmployeeDto.prototype, "email", void 0);
@@ -2784,31 +2920,19 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateEmployeeDto.prototype, "nationalId", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
 ], CreateEmployeeDto.prototype, "kraPin", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateEmployeeDto.prototype, "nssfNo", void 0);
+], CreateEmployeeDto.prototype, "nssf", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateEmployeeDto.prototype, "nhifNo", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateEmployeeDto.prototype, "department", void 0);
+], CreateEmployeeDto.prototype, "nhif", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
@@ -2816,48 +2940,90 @@ __decorate([
     __metadata("design:type", String)
 ], CreateEmployeeDto.prototype, "position", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsDate)(),
-    (0, class_transformer_1.Type)(() => Date),
-    __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
-], CreateEmployeeDto.prototype, "hireDate", void 0);
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateEmployeeDto.prototype, "department", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateEmployeeDto.prototype, "salary", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ enum: client_1.EmploymentStatus, default: 'ACTIVE' }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(client_1.EmploymentStatus),
-    __metadata("design:type", typeof (_b = typeof client_1.EmploymentStatus !== "undefined" && client_1.EmploymentStatus) === "function" ? _b : Object)
-], CreateEmployeeDto.prototype, "status", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateEmployeeDto.prototype, "bankAccount", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateEmployeeDto.prototype, "bankName", void 0);
-class UpdateEmployeeDto extends (0, swagger_1.PartialType)(CreateEmployeeDto) {
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
+    __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
+], CreateEmployeeDto.prototype, "hireDate", void 0);
+class UpdateEmployeeDto {
 }
 exports.UpdateEmployeeDto = UpdateEmployeeDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "firstName", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "lastName", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "email", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "phone", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "kraPin", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "position", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateEmployeeDto.prototype, "department", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateEmployeeDto.prototype, "salary", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
+    __metadata("design:type", typeof (_b = typeof Date !== "undefined" && Date) === "function" ? _b : Object)
+], UpdateEmployeeDto.prototype, "hireDate", void 0);
 
 
 /***/ }),
 
-/***/ "./src/modules/hr/dto/create-leave-request.dto.ts":
-/*!********************************************************!*\
-  !*** ./src/modules/hr/dto/create-leave-request.dto.ts ***!
-  \********************************************************/
+/***/ "./src/modules/hr/dto/create-leave.dto.ts":
+/*!************************************************!*\
+  !*** ./src/modules/hr/dto/create-leave.dto.ts ***!
+  \************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2868,48 +3034,44 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a, _b;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CreateLeaveRequestDto = void 0;
+exports.CreateLeaveDto = void 0;
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
 const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
-class CreateLeaveRequestDto {
+class CreateLeaveDto {
 }
-exports.CreateLeaveRequestDto = CreateLeaveRequestDto;
+exports.CreateLeaveDto = CreateLeaveDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], CreateLeaveRequestDto.prototype, "employeeId", void 0);
+], CreateLeaveDto.prototype, "employeeId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateLeaveRequestDto.prototype, "leaveType", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsDate)(),
-    (0, class_transformer_1.Type)(() => Date),
-    __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
-], CreateLeaveRequestDto.prototype, "startDate", void 0);
+    (0, swagger_1.ApiProperty)({ enum: client_1.LeaveType }),
+    (0, class_validator_1.IsEnum)(client_1.LeaveType),
+    __metadata("design:type", typeof (_a = typeof client_1.LeaveType !== "undefined" && client_1.LeaveType) === "function" ? _a : Object)
+], CreateLeaveDto.prototype, "type", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsDate)(),
     (0, class_transformer_1.Type)(() => Date),
     __metadata("design:type", typeof (_b = typeof Date !== "undefined" && Date) === "function" ? _b : Object)
-], CreateLeaveRequestDto.prototype, "endDate", void 0);
+], CreateLeaveDto.prototype, "startDate", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateLeaveRequestDto.prototype, "days", void 0);
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
+    __metadata("design:type", typeof (_c = typeof Date !== "undefined" && Date) === "function" ? _c : Object)
+], CreateLeaveDto.prototype, "endDate", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateLeaveRequestDto.prototype, "reason", void 0);
+], CreateLeaveDto.prototype, "reason", void 0);
 
 
 /***/ }),
@@ -2920,7 +3082,6 @@ __decorate([
   \***************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2931,24 +3092,64 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ProcessPayrollDto = void 0;
+exports.BulkProcessPayrollDto = exports.ProcessPayrollDto = void 0;
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
 class ProcessPayrollDto {
 }
 exports.ProcessPayrollDto = ProcessPayrollDto;
 __decorate([
-    (0, swagger_1.ApiProperty)({ example: '2024-01' }),
-    (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], ProcessPayrollDto.prototype, "period", void 0);
+], ProcessPayrollDto.prototype, "employeeId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
+    __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
+], ProcessPayrollDto.prototype, "periodStart", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
+    __metadata("design:type", typeof (_b = typeof Date !== "undefined" && Date) === "function" ? _b : Object)
+], ProcessPayrollDto.prototype, "periodEnd", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false, default: 0 }),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], ProcessPayrollDto.prototype, "allowances", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false, default: 0 }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], ProcessPayrollDto.prototype, "otherDeductions", void 0);
+class BulkProcessPayrollDto {
+}
+exports.BulkProcessPayrollDto = BulkProcessPayrollDto;
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
+    __metadata("design:type", typeof (_c = typeof Date !== "undefined" && Date) === "function" ? _c : Object)
+], BulkProcessPayrollDto.prototype, "periodStart", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
+    __metadata("design:type", typeof (_d = typeof Date !== "undefined" && Date) === "function" ? _d : Object)
+], BulkProcessPayrollDto.prototype, "periodEnd", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false, type: [String] }),
+    (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)
-], ProcessPayrollDto.prototype, "employeeIds", void 0);
+], BulkProcessPayrollDto.prototype, "employeeIds", void 0);
 
 
 /***/ }),
@@ -2959,7 +3160,6 @@ __decorate([
   \*************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -2981,9 +3181,21 @@ let HrModule = class HrModule {
 exports.HrModule = HrModule;
 exports.HrModule = HrModule = __decorate([
     (0, common_1.Module)({
-        controllers: [employees_controller_1.EmployeesController, payroll_controller_1.PayrollController, leave_controller_1.LeaveController],
-        providers: [employees_service_1.EmployeesService, payroll_service_1.PayrollService, leave_service_1.LeaveService],
-        exports: [employees_service_1.EmployeesService, payroll_service_1.PayrollService],
+        controllers: [
+            employees_controller_1.EmployeesController,
+            payroll_controller_1.PayrollController,
+            leave_controller_1.LeaveController,
+        ],
+        providers: [
+            employees_service_1.EmployeesService,
+            payroll_service_1.PayrollService,
+            leave_service_1.LeaveService,
+        ],
+        exports: [
+            employees_service_1.EmployeesService,
+            payroll_service_1.PayrollService,
+            leave_service_1.LeaveService,
+        ],
     })
 ], HrModule);
 
@@ -2996,7 +3208,6 @@ exports.HrModule = HrModule = __decorate([
   \******************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3019,66 +3230,153 @@ let EmployeesService = class EmployeesService {
     async create(tenantId, createDto) {
         const existing = await this.prisma.employee.findUnique({
             where: {
-                companyId_employeeNumber: {
+                companyId_employeeNo: {
                     companyId: tenantId,
-                    employeeNumber: createDto.employeeNumber,
+                    employeeNo: createDto.employeeNo,
                 },
             },
         });
-        if (existing)
+        if (existing) {
             throw new common_1.ConflictException('Employee number already exists');
+        }
+        if (createDto.kraPin && !this.isValidKraPin(createDto.kraPin)) {
+            throw new common_1.ConflictException('Invalid KRA PIN format');
+        }
         return this.prisma.employee.create({
-            data: { companyId: tenantId, ...createDto },
+            data: {
+                companyId: tenantId,
+                ...createDto,
+            },
         });
     }
     async findAll(tenantId, options) {
         const page = options.page || 1;
-        const limit = options.limit || 50;
+        const limit = options.limit || 20;
         const skip = (page - 1) * limit;
         const where = { companyId: tenantId };
-        if (options.status)
-            where.status = options.status;
-        if (options.department)
+        if (options.search) {
+            where.OR = [
+                { firstName: { contains: options.search, mode: 'insensitive' } },
+                { lastName: { contains: options.search, mode: 'insensitive' } },
+                { employeeNo: { contains: options.search, mode: 'insensitive' } },
+                { email: { contains: options.search, mode: 'insensitive' } },
+            ];
+        }
+        if (options.department) {
             where.department = options.department;
+        }
+        if (options.isActive !== undefined) {
+            where.isActive = options.isActive === 'true';
+        }
         const [employees, total] = await Promise.all([
             this.prisma.employee.findMany({
                 where,
                 skip,
                 take: limit,
-                orderBy: { firstName: 'asc' },
+                orderBy: { employeeNo: 'asc' },
             }),
             this.prisma.employee.count({ where }),
         ]);
-        return { data: employees, meta: { total, page, limit, totalPages: Math.ceil(total / limit) } };
+        return {
+            data: employees,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
     }
     async findOne(tenantId, id) {
         const employee = await this.prisma.employee.findFirst({
             where: { id, companyId: tenantId },
             include: {
-                payrolls: {
+                payrollRuns: {
+                    orderBy: { periodEnd: 'desc' },
                     take: 12,
-                    orderBy: { period: 'desc' },
                 },
-                leaves: {
-                    take: 10,
+                leaveRecords: {
                     orderBy: { createdAt: 'desc' },
+                    take: 10,
                 },
             },
         });
-        if (!employee)
+        if (!employee) {
             throw new common_1.NotFoundException('Employee not found');
+        }
         return employee;
     }
     async update(tenantId, id, updateDto) {
         await this.findOne(tenantId, id);
-        return this.prisma.employee.update({ where: { id }, data: updateDto });
+        if (updateDto.kraPin && !this.isValidKraPin(updateDto.kraPin)) {
+            throw new common_1.ConflictException('Invalid KRA PIN format');
+        }
+        return this.prisma.employee.update({
+            where: { id },
+            data: updateDto,
+        });
     }
     async remove(tenantId, id) {
         await this.findOne(tenantId, id);
-        return this.prisma.employee.update({
-            where: { id },
-            data: { status: 'TERMINATED' },
+        const hasPayroll = await this.prisma.payrollRun.count({
+            where: { employeeId: id },
         });
+        if (hasPayroll > 0) {
+            return this.prisma.employee.update({
+                where: { id },
+                data: { isActive: false },
+            });
+        }
+        return this.prisma.employee.delete({ where: { id } });
+    }
+    async getDepartments(tenantId) {
+        const departments = await this.prisma.employee.findMany({
+            where: {
+                companyId: tenantId,
+                department: { not: null },
+                isActive: true,
+            },
+            select: {
+                department: true,
+            },
+            distinct: ['department'],
+        });
+        return departments
+            .map((d) => d.department)
+            .filter(Boolean)
+            .sort();
+    }
+    async getEmployeeStats(tenantId) {
+        const [total, active, byDepartment] = await Promise.all([
+            this.prisma.employee.count({
+                where: { companyId: tenantId },
+            }),
+            this.prisma.employee.count({
+                where: { companyId: tenantId, isActive: true },
+            }),
+            this.prisma.employee.groupBy({
+                by: ['department'],
+                where: {
+                    companyId: tenantId,
+                    isActive: true,
+                    department: { not: null },
+                },
+                _count: true,
+            }),
+        ]);
+        return {
+            total,
+            active,
+            inactive: total - active,
+            byDepartment: byDepartment.map((d) => ({
+                department: d.department,
+                count: d._count,
+            })),
+        };
+    }
+    isValidKraPin(pin) {
+        const kraPattern = /^[A-Z]\d{9}[A-Z]$/;
+        return kraPattern.test(pin);
     }
 };
 exports.EmployeesService = EmployeesService;
@@ -3096,7 +3394,6 @@ exports.EmployeesService = EmployeesService = __decorate([
   \**************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3119,62 +3416,203 @@ let LeaveService = class LeaveService {
     }
     async create(tenantId, createDto) {
         const employee = await this.prisma.employee.findFirst({
-            where: { id: createDto.employeeId, companyId: tenantId },
+            where: {
+                id: createDto.employeeId,
+                companyId: tenantId,
+                isActive: true,
+            },
         });
-        if (!employee)
+        if (!employee) {
             throw new common_1.NotFoundException('Employee not found');
-        return this.prisma.leaveRequest.create({
-            data: { companyId: tenantId, ...createDto },
-            include: { employee: true },
+        }
+        if (createDto.endDate <= createDto.startDate) {
+            throw new common_1.BadRequestException('End date must be after start date');
+        }
+        const days = this.calculateWorkingDays(createDto.startDate, createDto.endDate);
+        const overlapping = await this.prisma.leaveRecord.findFirst({
+            where: {
+                employeeId: createDto.employeeId,
+                status: { in: [client_1.LeaveStatus.PENDING, client_1.LeaveStatus.APPROVED] },
+                OR: [
+                    {
+                        startDate: { lte: createDto.endDate },
+                        endDate: { gte: createDto.startDate },
+                    },
+                ],
+            },
+        });
+        if (overlapping) {
+            throw new common_1.BadRequestException('Employee has overlapping leave request');
+        }
+        return this.prisma.leaveRecord.create({
+            data: {
+                employeeId: createDto.employeeId,
+                type: createDto.type,
+                startDate: createDto.startDate,
+                endDate: createDto.endDate,
+                days,
+                reason: createDto.reason,
+                status: client_1.LeaveStatus.PENDING,
+            },
+            include: {
+                employee: true,
+            },
         });
     }
     async findAll(tenantId, options) {
-        const where = { companyId: tenantId };
-        if (options.employeeId)
+        const page = options.page || 1;
+        const limit = options.limit || 20;
+        const skip = (page - 1) * limit;
+        const where = {
+            employee: {
+                companyId: tenantId,
+            },
+        };
+        if (options.employeeId) {
             where.employeeId = options.employeeId;
-        if (options.status)
+        }
+        if (options.status) {
             where.status = options.status;
-        return this.prisma.leaveRequest.findMany({
-            where,
-            include: { employee: true },
-            orderBy: { createdAt: 'desc' },
+        }
+        if (options.type) {
+            where.type = options.type;
+        }
+        const [leaves, total] = await Promise.all([
+            this.prisma.leaveRecord.findMany({
+                where,
+                skip,
+                take: limit,
+                include: {
+                    employee: true,
+                },
+                orderBy: { createdAt: 'desc' },
+            }),
+            this.prisma.leaveRecord.count({ where }),
+        ]);
+        return {
+            data: leaves,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
+    }
+    async findOne(id) {
+        const leave = await this.prisma.leaveRecord.findUnique({
+            where: { id },
+            include: {
+                employee: true,
+            },
+        });
+        if (!leave) {
+            throw new common_1.NotFoundException('Leave record not found');
+        }
+        return leave;
+    }
+    async approve(id) {
+        const leave = await this.findOne(id);
+        if (leave.status !== client_1.LeaveStatus.PENDING) {
+            throw new common_1.BadRequestException('Only pending leave can be approved');
+        }
+        return this.prisma.leaveRecord.update({
+            where: { id },
+            data: { status: client_1.LeaveStatus.APPROVED },
         });
     }
-    async approve(tenantId, id, approverId) {
-        const request = await this.prisma.leaveRequest.findFirst({
-            where: { id, companyId: tenantId },
-        });
-        if (!request)
-            throw new common_1.NotFoundException('Leave request not found');
-        if (request.status !== 'PENDING') {
-            throw new common_1.BadRequestException('Only pending requests can be approved');
+    async reject(id) {
+        const leave = await this.findOne(id);
+        if (leave.status !== client_1.LeaveStatus.PENDING) {
+            throw new common_1.BadRequestException('Only pending leave can be rejected');
         }
-        return this.prisma.leaveRequest.update({
+        return this.prisma.leaveRecord.update({
             where: { id },
-            data: {
+            data: { status: client_1.LeaveStatus.REJECTED },
+        });
+    }
+    async getLeaveBalance(tenantId, employeeId, year) {
+        const employee = await this.prisma.employee.findFirst({
+            where: { id: employeeId, companyId: tenantId },
+        });
+        if (!employee) {
+            throw new common_1.NotFoundException('Employee not found');
+        }
+        const annualLeaveEntitlement = 21;
+        const startOfYear = new Date(year, 0, 1);
+        const endOfYear = new Date(year, 11, 31);
+        const approvedLeaves = await this.prisma.leaveRecord.findMany({
+            where: {
+                employeeId,
                 status: client_1.LeaveStatus.APPROVED,
-                approvedBy: approverId,
-                approvedAt: new Date(),
+                startDate: { gte: startOfYear },
+                endDate: { lte: endOfYear },
             },
         });
+        const takenByType = approvedLeaves.reduce((acc, leave) => {
+            acc[leave.type] = (acc[leave.type] || 0) + leave.days;
+            return acc;
+        }, {});
+        return {
+            employeeId,
+            year,
+            annualLeaveEntitlement,
+            taken: takenByType,
+            totalTaken: approvedLeaves.reduce((sum, leave) => sum + leave.days, 0),
+            remaining: annualLeaveEntitlement - (takenByType.ANNUAL || 0),
+        };
     }
-    async reject(tenantId, id, approverId) {
-        const request = await this.prisma.leaveRequest.findFirst({
-            where: { id, companyId: tenantId },
-        });
-        if (!request)
-            throw new common_1.NotFoundException('Leave request not found');
-        if (request.status !== 'PENDING') {
-            throw new common_1.BadRequestException('Only pending requests can be rejected');
-        }
-        return this.prisma.leaveRequest.update({
-            where: { id },
-            data: {
-                status: client_1.LeaveStatus.REJECTED,
-                approvedBy: approverId,
-                approvedAt: new Date(),
+    async getLeaveSummary(tenantId, year) {
+        const startOfYear = new Date(year, 0, 1);
+        const endOfYear = new Date(year, 11, 31);
+        const leaves = await this.prisma.leaveRecord.findMany({
+            where: {
+                employee: {
+                    companyId: tenantId,
+                },
+                startDate: { gte: startOfYear },
+                endDate: { lte: endOfYear },
+            },
+            include: {
+                employee: true,
             },
         });
+        const summary = {
+            totalRequests: leaves.length,
+            byStatus: {
+                pending: 0,
+                approved: 0,
+                rejected: 0,
+            },
+            byType: {
+                ANNUAL: 0,
+                SICK: 0,
+                MATERNITY: 0,
+                PATERNITY: 0,
+                UNPAID: 0,
+            },
+            totalDays: 0,
+        };
+        leaves.forEach((leave) => {
+            summary.byStatus[leave.status.toLowerCase()] += 1;
+            summary.byType[leave.type] = (summary.byType[leave.type] || 0) + leave.days;
+            if (leave.status === client_1.LeaveStatus.APPROVED) {
+                summary.totalDays += leave.days;
+            }
+        });
+        return summary;
+    }
+    calculateWorkingDays(startDate, endDate) {
+        let days = 0;
+        const current = new Date(startDate);
+        while (current <= endDate) {
+            const dayOfWeek = current.getDay();
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                days++;
+            }
+            current.setDate(current.getDate() + 1);
+        }
+        return days;
     }
 };
 exports.LeaveService = LeaveService;
@@ -3192,7 +3630,6 @@ exports.LeaveService = LeaveService = __decorate([
   \****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3214,121 +3651,274 @@ let PayrollService = class PayrollService {
         this.prisma = prisma;
     }
     async processPayroll(tenantId, processDto) {
-        const where = { companyId: tenantId, status: 'ACTIVE' };
-        if (processDto.employeeIds && processDto.employeeIds.length > 0) {
-            where.id = { in: processDto.employeeIds };
+        const employee = await this.prisma.employee.findFirst({
+            where: {
+                id: processDto.employeeId,
+                companyId: tenantId,
+                isActive: true,
+            },
+        });
+        if (!employee) {
+            throw new common_1.NotFoundException('Employee not found or inactive');
         }
-        const employees = await this.prisma.employee.findMany({ where });
-        if (employees.length === 0) {
-            throw new common_1.BadRequestException('No employees found to process');
+        const existing = await this.prisma.payrollRun.findFirst({
+            where: {
+                employeeId: processDto.employeeId,
+                periodStart: processDto.periodStart,
+                periodEnd: processDto.periodEnd,
+            },
+        });
+        if (existing) {
+            throw new common_1.BadRequestException('Payroll already processed for this period');
         }
-        const payrollEntries = await Promise.all(employees.map(async (employee) => {
-            const basicSalary = employee.salary.toNumber();
-            const grossSalary = basicSalary;
-            const payeDeduction = this.calculatePAYE(grossSalary);
-            const nhifDeduction = this.calculateNHIF(grossSalary);
-            const nssfDeduction = this.calculateNSSF(grossSalary);
-            const totalDeductions = payeDeduction + nhifDeduction + nssfDeduction;
-            const netSalary = grossSalary - totalDeductions;
-            return this.prisma.payrollEntry.create({
-                data: {
-                    companyId: tenantId,
-                    employeeId: employee.id,
-                    period: processDto.period,
-                    basicSalary,
-                    grossSalary,
-                    payeDeduction,
-                    nhifDeduction,
-                    nssfDeduction,
-                    netSalary,
-                    status: client_1.PayrollStatus.PROCESSED,
-                },
-            });
-        }));
-        return { processed: payrollEntries.length, entries: payrollEntries };
-    }
-    calculatePAYE(grossSalary) {
-        if (grossSalary <= 24000)
-            return 0;
-        if (grossSalary <= 32333)
-            return (grossSalary - 24000) * 0.1;
-        if (grossSalary <= 40000)
-            return 833.3 + (grossSalary - 32333) * 0.15;
-        if (grossSalary <= 47333)
-            return 1983.35 + (grossSalary - 40000) * 0.2;
-        return 3449.95 + (grossSalary - 47333) * 0.25;
-    }
-    calculateNHIF(grossSalary) {
-        if (grossSalary <= 5999)
-            return 150;
-        if (grossSalary <= 7999)
-            return 300;
-        if (grossSalary <= 11999)
-            return 400;
-        if (grossSalary <= 14999)
-            return 500;
-        if (grossSalary <= 19999)
-            return 600;
-        if (grossSalary <= 24999)
-            return 750;
-        if (grossSalary <= 29999)
-            return 850;
-        if (grossSalary <= 34999)
-            return 900;
-        if (grossSalary <= 39999)
-            return 950;
-        if (grossSalary <= 44999)
-            return 1000;
-        if (grossSalary <= 49999)
-            return 1100;
-        if (grossSalary <= 59999)
-            return 1200;
-        if (grossSalary <= 69999)
-            return 1300;
-        if (grossSalary <= 79999)
-            return 1400;
-        if (grossSalary <= 89999)
-            return 1500;
-        if (grossSalary <= 99999)
-            return 1600;
-        return 1700;
-    }
-    calculateNSSF(grossSalary) {
-        const pensionablePay = Math.min(grossSalary, 18000);
-        return pensionablePay * 0.06;
+        const basicSalary = employee.salary.toNumber();
+        const allowances = processDto.allowances || 0;
+        const grossPay = basicSalary + allowances;
+        const paye = this.calculatePAYE(grossPay);
+        const nhif = this.calculateNHIF(grossPay);
+        const nssf = this.calculateNSSF(grossPay);
+        const totalDeductions = paye + nhif + nssf + (processDto.otherDeductions || 0);
+        const netPay = grossPay - totalDeductions;
+        return this.prisma.payrollRun.create({
+            data: {
+                employeeId: processDto.employeeId,
+                periodStart: processDto.periodStart,
+                periodEnd: processDto.periodEnd,
+                basicSalary,
+                allowances,
+                grossPay,
+                paye,
+                nhif,
+                nssf,
+                deductions: processDto.otherDeductions || 0,
+                netPay,
+                status: client_1.PayrollStatus.DRAFT,
+            },
+            include: {
+                employee: true,
+            },
+        });
     }
     async findAll(tenantId, options) {
-        const where = { companyId: tenantId };
-        if (options.period)
-            where.period = options.period;
-        if (options.employeeId)
+        const page = options.page || 1;
+        const limit = options.limit || 20;
+        const skip = (page - 1) * limit;
+        const where = {
+            employee: {
+                companyId: tenantId,
+            },
+        };
+        if (options.employeeId) {
             where.employeeId = options.employeeId;
-        if (options.status)
+        }
+        if (options.status) {
             where.status = options.status;
-        return this.prisma.payrollEntry.findMany({
-            where,
-            include: { employee: true },
-            orderBy: { period: 'desc' },
+        }
+        if (options.periodStart || options.periodEnd) {
+            where.periodStart = {};
+            if (options.periodStart)
+                where.periodStart.gte = new Date(options.periodStart);
+            if (options.periodEnd)
+                where.periodEnd = { lte: new Date(options.periodEnd) };
+        }
+        const [payrolls, total] = await Promise.all([
+            this.prisma.payrollRun.findMany({
+                where,
+                skip,
+                take: limit,
+                include: {
+                    employee: true,
+                },
+                orderBy: { periodEnd: 'desc' },
+            }),
+            this.prisma.payrollRun.count({ where }),
+        ]);
+        return {
+            data: payrolls,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
+    }
+    async findOne(id) {
+        const payroll = await this.prisma.payrollRun.findUnique({
+            where: { id },
+            include: {
+                employee: true,
+            },
+        });
+        if (!payroll) {
+            throw new common_1.NotFoundException('Payroll record not found');
+        }
+        return payroll;
+    }
+    async approve(id) {
+        const payroll = await this.findOne(id);
+        if (payroll.status !== client_1.PayrollStatus.DRAFT) {
+            throw new common_1.BadRequestException('Only draft payroll can be approved');
+        }
+        return this.prisma.payrollRun.update({
+            where: { id },
+            data: { status: client_1.PayrollStatus.APPROVED },
         });
     }
-    async findOne(tenantId, id) {
-        const entry = await this.prisma.payrollEntry.findFirst({
-            where: { id, companyId: tenantId },
-            include: { employee: true },
-        });
-        if (!entry)
-            throw new common_1.NotFoundException('Payroll entry not found');
-        return entry;
-    }
-    async markAsPaid(tenantId, id) {
-        await this.findOne(tenantId, id);
-        return this.prisma.payrollEntry.update({
+    async pay(id) {
+        const payroll = await this.findOne(id);
+        if (payroll.status !== client_1.PayrollStatus.APPROVED) {
+            throw new common_1.BadRequestException('Only approved payroll can be marked as paid');
+        }
+        return this.prisma.payrollRun.update({
             where: { id },
             data: {
                 status: client_1.PayrollStatus.PAID,
-                paidDate: new Date(),
+                paidAt: new Date(),
             },
         });
+    }
+    async getPayrollSummary(tenantId, periodStart, periodEnd) {
+        const payrolls = await this.prisma.payrollRun.findMany({
+            where: {
+                employee: {
+                    companyId: tenantId,
+                },
+                periodStart: { gte: periodStart },
+                periodEnd: { lte: periodEnd },
+            },
+            include: {
+                employee: true,
+            },
+        });
+        const summary = {
+            totalEmployees: payrolls.length,
+            totalGrossPay: 0,
+            totalPAYE: 0,
+            totalNHIF: 0,
+            totalNSSF: 0,
+            totalDeductions: 0,
+            totalNetPay: 0,
+            byStatus: {
+                draft: 0,
+                approved: 0,
+                paid: 0,
+            },
+        };
+        payrolls.forEach((p) => {
+            summary.totalGrossPay += p.grossPay.toNumber();
+            summary.totalPAYE += p.paye.toNumber();
+            summary.totalNHIF += p.nhif.toNumber();
+            summary.totalNSSF += p.nssf.toNumber();
+            summary.totalDeductions += p.deductions.toNumber();
+            summary.totalNetPay += p.netPay.toNumber();
+            summary.byStatus[p.status.toLowerCase()] += 1;
+        });
+        return summary;
+    }
+    calculatePAYE(grossPay) {
+        const taxablePay = grossPay - this.calculateNSSF(grossPay);
+        let tax = 0;
+        const personalRelief = 2400 / 12;
+        if (taxablePay <= 24000) {
+            tax = taxablePay * 0.10;
+        }
+        else if (taxablePay <= 32333) {
+            tax = 24000 * 0.10 + (taxablePay - 24000) * 0.25;
+        }
+        else if (taxablePay <= 500000) {
+            tax = 24000 * 0.10 + 8333 * 0.25 + (taxablePay - 32333) * 0.30;
+        }
+        else if (taxablePay <= 800000) {
+            tax = 24000 * 0.10 + 8333 * 0.25 + 467667 * 0.30 + (taxablePay - 500000) * 0.325;
+        }
+        else {
+            tax = 24000 * 0.10 + 8333 * 0.25 + 467667 * 0.30 + 300000 * 0.325 + (taxablePay - 800000) * 0.35;
+        }
+        tax -= personalRelief;
+        return Math.max(0, Math.round(tax));
+    }
+    calculateNHIF(grossPay) {
+        if (grossPay < 6000)
+            return 150;
+        if (grossPay < 8000)
+            return 300;
+        if (grossPay < 12000)
+            return 400;
+        if (grossPay < 15000)
+            return 500;
+        if (grossPay < 20000)
+            return 600;
+        if (grossPay < 25000)
+            return 750;
+        if (grossPay < 30000)
+            return 850;
+        if (grossPay < 35000)
+            return 900;
+        if (grossPay < 40000)
+            return 950;
+        if (grossPay < 45000)
+            return 1000;
+        if (grossPay < 50000)
+            return 1100;
+        if (grossPay < 60000)
+            return 1200;
+        if (grossPay < 70000)
+            return 1300;
+        if (grossPay < 80000)
+            return 1400;
+        if (grossPay < 90000)
+            return 1500;
+        if (grossPay < 100000)
+            return 1600;
+        return 1700;
+    }
+    calculateNSSF(grossPay) {
+        const tier1Limit = 7000;
+        const tier2Limit = 36000;
+        const rate = 0.06;
+        let nssf = 0;
+        if (grossPay <= tier1Limit) {
+            nssf = grossPay * rate;
+        }
+        else {
+            nssf = tier1Limit * rate;
+            if (grossPay > tier1Limit) {
+                const tier2Amount = Math.min(grossPay - tier1Limit, tier2Limit - tier1Limit);
+                nssf += tier2Amount * rate;
+            }
+        }
+        return Math.round(nssf);
+    }
+    async bulkProcessPayroll(tenantId, periodStart, periodEnd, employeeIds) {
+        const where = {
+            companyId: tenantId,
+            isActive: true,
+        };
+        if (employeeIds && employeeIds.length > 0) {
+            where.id = { in: employeeIds };
+        }
+        const employees = await this.prisma.employee.findMany({ where });
+        const results = await Promise.allSettled(employees.map((employee) => this.processPayroll(tenantId, {
+            employeeId: employee.id,
+            periodStart,
+            periodEnd,
+            allowances: 0,
+            otherDeductions: 0,
+        })));
+        const successful = results.filter((r) => r.status === 'fulfilled').length;
+        const failed = results.filter((r) => r.status === 'rejected').length;
+        return {
+            total: employees.length,
+            successful,
+            failed,
+            results: results.map((r, i) => ({
+                employeeId: employees[i].id,
+                employeeName: `${employees[i].firstName} ${employees[i].lastName}`,
+                status: r.status,
+                error: r.status === 'rejected' ? r.reason.message : null,
+            })),
+        };
     }
 };
 exports.PayrollService = PayrollService;
@@ -3340,13 +3930,75 @@ exports.PayrollService = PayrollService = __decorate([
 
 /***/ }),
 
+/***/ "./src/modules/integrations/etims/etims.controller.ts":
+/*!************************************************************!*\
+  !*** ./src/modules/integrations/etims/etims.controller.ts ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EtimsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
+const etims_service_1 = __webpack_require__(/*! ./etims.service */ "./src/modules/integrations/etims/etims.service.ts");
+let EtimsController = class EtimsController {
+    constructor(etimsService) {
+        this.etimsService = etimsService;
+    }
+    submitInvoice(invoiceId) {
+        return this.etimsService.submitInvoice(invoiceId);
+    }
+    getStatus(invoiceNumber) {
+        return this.etimsService.getInvoiceStatus(invoiceNumber);
+    }
+};
+exports.EtimsController = EtimsController;
+__decorate([
+    (0, common_1.Post)('submit/:invoiceId'),
+    __param(0, (0, common_1.Param)('invoiceId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], EtimsController.prototype, "submitInvoice", null);
+__decorate([
+    (0, common_1.Get)('status/:invoiceNumber'),
+    __param(0, (0, common_1.Param)('invoiceNumber')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], EtimsController.prototype, "getStatus", null);
+exports.EtimsController = EtimsController = __decorate([
+    (0, swagger_1.ApiTags)('integrations'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Controller)('integrations/etims'),
+    __metadata("design:paramtypes", [typeof (_a = typeof etims_service_1.EtimsService !== "undefined" && etims_service_1.EtimsService) === "function" ? _a : Object])
+], EtimsController);
+
+
+/***/ }),
+
 /***/ "./src/modules/integrations/etims/etims.service.ts":
 /*!*********************************************************!*\
   !*** ./src/modules/integrations/etims/etims.service.ts ***!
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3361,99 +4013,127 @@ var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.EtimsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
 const axios_1 = __webpack_require__(/*! axios */ "axios");
+const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 let EtimsService = class EtimsService {
-    constructor(prisma, config) {
-        this.prisma = prisma;
+    constructor(config, prisma) {
         this.config = config;
-        this.etimsUrl = this.config.get('ETIMS_API_URL') || 'https://etims-api-sbx.kra.go.ke';
+        this.prisma = prisma;
+        this.apiUrl = this.config.get('ETIMS_API_URL');
+        this.apiKey = this.config.get('ETIMS_API_KEY');
+        this.pin = this.config.get('ETIMS_PIN');
     }
-    async submitInvoice(tenantId, invoiceId) {
-        const invoice = await this.prisma.invoice.findFirst({
-            where: { id: invoiceId, companyId: tenantId },
+    async submitInvoice(invoiceId) {
+        const invoice = await this.prisma.invoice.findUnique({
+            where: { id: invoiceId },
             include: {
+                company: true,
                 customer: true,
                 lines: {
                     include: {
                         product: true,
                     },
                 },
-                company: true,
             },
         });
-        if (!invoice)
+        if (!invoice) {
             throw new common_1.BadRequestException('Invoice not found');
-        if (invoice.etimsSubmitted)
-            throw new common_1.BadRequestException('Already submitted to eTIMS');
-        const company = invoice.company;
-        if (!company.etimsDeviceId) {
-            throw new common_1.BadRequestException('eTIMS not configured for this company');
         }
-        const request = {
-            deviceId: company.etimsDeviceId,
-            invoiceNo: invoice.invoiceNumber,
-            invoiceDate: invoice.date.toISOString(),
-            customerPin: invoice.customer.kraPin,
-            customerName: invoice.customer.name,
-            items: invoice.lines.map((line) => ({
-                itemCode: line.product.code,
-                itemName: line.product.name,
-                quantity: line.quantity.toNumber(),
-                unitPrice: line.unitPrice.toNumber(),
-                taxRate: line.taxRate.toNumber(),
-                amount: line.amount.toNumber(),
+        const payload = {
+            tpin: this.pin,
+            bhfId: '00',
+            invcNo: invoice.invoiceNumber,
+            orgInvcNo: '',
+            custTpin: invoice.customer.kraPin || '',
+            custNm: invoice.customer.name,
+            salesTyCd: 'N',
+            rcptTyCd: 'S',
+            pmtTyCd: 'CASH',
+            salesSttsCd: '02',
+            cfmDt: invoice.date.toISOString().split('T')[0].replace(/-/g, ''),
+            salesDt: invoice.date.toISOString().split('T')[0].replace(/-/g, ''),
+            stockRlsDt: invoice.date.toISOString().split('T')[0].replace(/-/g, ''),
+            totItemCnt: invoice.lines.length,
+            taxblAmtA: invoice.subtotal.toNumber(),
+            taxblAmtB: 0,
+            taxblAmtC: 0,
+            taxblAmtD: 0,
+            taxRtA: 16,
+            taxRtB: 0,
+            taxRtC: 0,
+            taxRtD: 0,
+            taxAmtA: invoice.taxAmount.toNumber(),
+            taxAmtB: 0,
+            taxAmtC: 0,
+            taxAmtD: 0,
+            totTaxblAmt: invoice.subtotal.toNumber(),
+            totTaxAmt: invoice.taxAmount.toNumber(),
+            totAmt: invoice.total.toNumber(),
+            itemList: invoice.lines.map((line, index) => ({
+                itemSeq: index + 1,
+                itemCd: line.product.sku,
+                itemClsCd: '50101501',
+                itemNm: line.product.name,
+                bcd: line.product.barcode || '',
+                pkgUnitCd: 'NT',
+                pkg: line.quantity.toNumber(),
+                qtyUnitCd: 'U',
+                qty: line.quantity.toNumber(),
+                prc: line.unitPrice.toNumber(),
+                splyAmt: line.amount.toNumber(),
+                dcRt: 0,
+                dcAmt: 0,
+                taxblAmt: line.amount.toNumber(),
+                taxTyCd: 'A',
+                taxAmt: (line.amount.toNumber() * line.taxRate.toNumber()) / 100,
+                totAmt: line.amount.toNumber() * (1 + line.taxRate.toNumber() / 100),
             })),
-            totalAmount: invoice.total.toNumber(),
-            taxAmount: invoice.taxAmount.toNumber(),
         };
         try {
-            const settings = company.settings;
-            const apiKey = settings?.etimsApiKey || '';
-            const response = await axios_1.default.post(`${this.etimsUrl}/api/invoice/submit`, request, {
+            const response = await axios_1.default.post(`${this.apiUrl}/trnsSales/saveSales`, payload, {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`,
-                },
-            });
-            await this.prisma.etimsLog.create({
-                data: {
-                    companyId: tenantId,
-                    invoiceId,
-                    request,
-                    response: response.data,
-                    status: 'SUCCESS',
+                    'key': this.apiKey,
                 },
             });
             await this.prisma.invoice.update({
                 where: { id: invoiceId },
                 data: {
-                    etimsSubmitted: true,
-                    etimsInvoiceNo: response.data.invoiceNo,
+                    notes: JSON.stringify({
+                        etims: response.data,
+                    }),
                 },
             });
-            return { success: true, etimsInvoiceNo: response.data.invoiceNo };
+            return response.data;
         }
         catch (error) {
-            await this.prisma.etimsLog.create({
-                data: {
-                    companyId: tenantId,
-                    invoiceId,
-                    request,
-                    response: error.response?.data,
-                    status: 'FAILED',
-                    errorMessage: error.message,
+            throw new common_1.BadRequestException(error.response?.data?.msg || 'eTIMS submission failed');
+        }
+    }
+    async getInvoiceStatus(invoiceNumber) {
+        try {
+            const response = await axios_1.default.post(`${this.apiUrl}/trnsSales/selectTrnsSalesList`, {
+                tpin: this.pin,
+                bhfId: '00',
+                invcNo: invoiceNumber,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'key': this.apiKey,
                 },
             });
-            throw new common_1.BadRequestException(`eTIMS submission failed: ${error.message}`);
+            return response.data;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('Failed to get invoice status from eTIMS');
         }
     }
 };
 exports.EtimsService = EtimsService;
 exports.EtimsService = EtimsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _b : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object, typeof (_b = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _b : Object])
 ], EtimsService);
 
 
@@ -3465,7 +4145,6 @@ exports.EtimsService = EtimsService = __decorate([
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3476,17 +4155,133 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.IntegrationsModule = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const etims_service_1 = __webpack_require__(/*! ./etims/etims.service */ "./src/modules/integrations/etims/etims.service.ts");
+const mpesa_controller_1 = __webpack_require__(/*! ./mpesa/mpesa.controller */ "./src/modules/integrations/mpesa/mpesa.controller.ts");
+const etims_controller_1 = __webpack_require__(/*! ./etims/etims.controller */ "./src/modules/integrations/etims/etims.controller.ts");
 const mpesa_service_1 = __webpack_require__(/*! ./mpesa/mpesa.service */ "./src/modules/integrations/mpesa/mpesa.service.ts");
+const etims_service_1 = __webpack_require__(/*! ./etims/etims.service */ "./src/modules/integrations/etims/etims.service.ts");
+const email_service_1 = __webpack_require__(/*! ./notifications/email.service */ "./src/modules/integrations/notifications/email.service.ts");
+const sms_service_1 = __webpack_require__(/*! ./notifications/sms.service */ "./src/modules/integrations/notifications/sms.service.ts");
 let IntegrationsModule = class IntegrationsModule {
 };
 exports.IntegrationsModule = IntegrationsModule;
 exports.IntegrationsModule = IntegrationsModule = __decorate([
     (0, common_1.Module)({
-        providers: [etims_service_1.EtimsService, mpesa_service_1.MpesaService],
-        exports: [etims_service_1.EtimsService, mpesa_service_1.MpesaService],
+        controllers: [
+            mpesa_controller_1.MpesaController,
+            etims_controller_1.EtimsController,
+        ],
+        providers: [
+            mpesa_service_1.MpesaService,
+            etims_service_1.EtimsService,
+            email_service_1.EmailService,
+            sms_service_1.SmsService,
+        ],
+        exports: [
+            mpesa_service_1.MpesaService,
+            etims_service_1.EtimsService,
+            email_service_1.EmailService,
+            sms_service_1.SmsService,
+        ],
     })
 ], IntegrationsModule);
+
+
+/***/ }),
+
+/***/ "./src/modules/integrations/mpesa/mpesa.controller.ts":
+/*!************************************************************!*\
+  !*** ./src/modules/integrations/mpesa/mpesa.controller.ts ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.MpesaController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
+const mpesa_service_1 = __webpack_require__(/*! ./mpesa.service */ "./src/modules/integrations/mpesa/mpesa.service.ts");
+let MpesaController = class MpesaController {
+    constructor(mpesaService) {
+        this.mpesaService = mpesaService;
+    }
+    initiateSTKPush(phoneNumber, amount, accountReference, description) {
+        return this.mpesaService.initiateSTKPush(phoneNumber, amount, accountReference, description);
+    }
+    querySTK(checkoutRequestID) {
+        return this.mpesaService.querySTKStatus(checkoutRequestID);
+    }
+    handleCallback(callbackData) {
+        return this.mpesaService.handleCallback(callbackData);
+    }
+    handleC2BConfirmation(confirmationData) {
+        return this.mpesaService.handleC2BConfirmation(confirmationData);
+    }
+    handleC2BValidation(validationData) {
+        return { ResultCode: 0, ResultDesc: 'Accepted' };
+    }
+};
+exports.MpesaController = MpesaController;
+__decorate([
+    (0, common_1.Post)('stk-push'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)('phoneNumber')),
+    __param(1, (0, common_1.Body)('amount')),
+    __param(2, (0, common_1.Body)('accountReference')),
+    __param(3, (0, common_1.Body)('description')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number, String, String]),
+    __metadata("design:returntype", void 0)
+], MpesaController.prototype, "initiateSTKPush", null);
+__decorate([
+    (0, common_1.Get)('stk-query/:checkoutRequestID'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Param)('checkoutRequestID')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], MpesaController.prototype, "querySTK", null);
+__decorate([
+    (0, common_1.Post)('callback'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], MpesaController.prototype, "handleCallback", null);
+__decorate([
+    (0, common_1.Post)('c2b/confirmation'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], MpesaController.prototype, "handleC2BConfirmation", null);
+__decorate([
+    (0, common_1.Post)('c2b/validation'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], MpesaController.prototype, "handleC2BValidation", null);
+exports.MpesaController = MpesaController = __decorate([
+    (0, swagger_1.ApiTags)('integrations'),
+    (0, common_1.Controller)('integrations/mpesa'),
+    __metadata("design:paramtypes", [typeof (_a = typeof mpesa_service_1.MpesaService !== "undefined" && mpesa_service_1.MpesaService) === "function" ? _a : Object])
+], MpesaController);
 
 
 /***/ }),
@@ -3497,7 +4292,6 @@ exports.IntegrationsModule = IntegrationsModule = __decorate([
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3512,88 +4306,438 @@ var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.MpesaService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
 const axios_1 = __webpack_require__(/*! axios */ "axios");
+const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 let MpesaService = class MpesaService {
-    constructor(prisma, config) {
-        this.prisma = prisma;
+    constructor(config, prisma) {
         this.config = config;
-        this.mpesaUrl = this.config.get('MPESA_API_URL') || 'https://sandbox.safaricom.co.ke';
+        this.prisma = prisma;
         this.consumerKey = this.config.get('MPESA_CONSUMER_KEY');
         this.consumerSecret = this.config.get('MPESA_CONSUMER_SECRET');
+        this.shortcode = this.config.get('MPESA_SHORTCODE');
+        this.passkey = this.config.get('MPESA_PASSKEY');
+        this.callbackUrl = this.config.get('MPESA_CALLBACK_URL');
+        this.environment = this.config.get('MPESA_ENVIRONMENT', 'sandbox');
     }
     async getAccessToken() {
         const auth = Buffer.from(`${this.consumerKey}:${this.consumerSecret}`).toString('base64');
-        const response = await axios_1.default.get(`${this.mpesaUrl}/oauth/v1/generate?grant_type=client_credentials`, {
-            headers: { Authorization: `Basic ${auth}` },
-        });
-        return response.data.access_token;
+        const url = this.environment === 'production'
+            ? 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+            : 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+        try {
+            const response = await axios_1.default.get(url, {
+                headers: {
+                    Authorization: `Basic ${auth}`,
+                },
+            });
+            return response.data.access_token;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('Failed to get M-Pesa access token');
+        }
     }
-    async initiateSTKPush(data) {
+    async initiateSTKPush(phoneNumber, amount, accountReference, description) {
         const token = await this.getAccessToken();
-        const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14);
-        const request = {
-            BusinessShortCode: this.config.get('MPESA_SHORTCODE'),
-            Password: Buffer.from(`${this.config.get('MPESA_SHORTCODE')}${this.config.get('MPESA_PASSKEY')}${timestamp}`).toString('base64'),
+        const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, -3);
+        const password = Buffer.from(`${this.shortcode}${this.passkey}${timestamp}`).toString('base64');
+        const formattedPhone = phoneNumber.startsWith('0')
+            ? `254${phoneNumber.slice(1)}`
+            : phoneNumber.startsWith('+254')
+                ? phoneNumber.slice(1)
+                : phoneNumber;
+        const url = this.environment === 'production'
+            ? 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+            : 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+        const payload = {
+            BusinessShortCode: this.shortcode,
+            Password: password,
             Timestamp: timestamp,
             TransactionType: 'CustomerPayBillOnline',
-            Amount: data.amount,
-            PartyA: data.phoneNumber,
-            PartyB: this.config.get('MPESA_SHORTCODE'),
-            PhoneNumber: data.phoneNumber,
-            CallBackURL: `${this.config.get('BACKEND_URL')}/api/v1/integrations/mpesa/callback`,
-            AccountReference: data.reference,
-            TransactionDesc: data.description,
+            Amount: Math.round(amount),
+            PartyA: formattedPhone,
+            PartyB: this.shortcode,
+            PhoneNumber: formattedPhone,
+            CallBackURL: this.callbackUrl,
+            AccountReference: accountReference,
+            TransactionDesc: description,
         };
-        const response = await axios_1.default.post(`${this.mpesaUrl}/mpesa/stkpush/v1/processrequest`, request, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        });
-        await this.prisma.mpesaTransaction.create({
-            data: {
-                companyId: data.companyId,
-                transactionId: response.data.CheckoutRequestID,
-                amount: data.amount,
-                phoneNumber: data.phoneNumber,
-                merchantRequestId: response.data.MerchantRequestID,
-                checkoutRequestId: response.data.CheckoutRequestID,
-                status: 'PENDING',
-                metadata: { reference: data.reference, description: data.description },
-            },
-        });
-        return response.data;
+        try {
+            const response = await axios_1.default.post(url, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return {
+                success: true,
+                merchantRequestID: response.data.MerchantRequestID,
+                checkoutRequestID: response.data.CheckoutRequestID,
+                responseCode: response.data.ResponseCode,
+                responseDescription: response.data.ResponseDescription,
+                customerMessage: response.data.CustomerMessage,
+            };
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(error.response?.data?.errorMessage || 'STK Push failed');
+        }
+    }
+    async querySTKStatus(checkoutRequestID) {
+        const token = await this.getAccessToken();
+        const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, -3);
+        const password = Buffer.from(`${this.shortcode}${this.passkey}${timestamp}`).toString('base64');
+        const url = this.environment === 'production'
+            ? 'https://api.safaricom.co.ke/mpesa/stkpushquery/v1/query'
+            : 'https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query';
+        const payload = {
+            BusinessShortCode: this.shortcode,
+            Password: password,
+            Timestamp: timestamp,
+            CheckoutRequestID: checkoutRequestID,
+        };
+        try {
+            const response = await axios_1.default.post(url, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response.data;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('Failed to query STK status');
+        }
     }
     async handleCallback(callbackData) {
-        const { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } = callbackData.Body.stkCallback;
-        const transaction = await this.prisma.mpesaTransaction.findFirst({
-            where: {
-                merchantRequestId: MerchantRequestID,
-                checkoutRequestId: CheckoutRequestID,
-            },
-        });
-        if (!transaction)
-            return;
-        const status = ResultCode === 0 ? 'SUCCESS' : 'FAILED';
-        const mpesaCode = ResultCode === 0 ? callbackData.Body.stkCallback.CallbackMetadata?.Item?.find((item) => item.Name === 'MpesaReceiptNumber')?.Value : null;
-        await this.prisma.mpesaTransaction.update({
-            where: { id: transaction.id },
-            data: {
-                resultCode: ResultCode.toString(),
-                resultDesc: ResultDesc,
-                mpesaCode,
-                status,
-            },
-        });
+        const { Body } = callbackData;
+        const { stkCallback } = Body;
+        if (stkCallback.ResultCode === 0) {
+            const items = stkCallback.CallbackMetadata.Item;
+            const amount = items.find((i) => i.Name === 'Amount')?.Value;
+            const mpesaReceiptNumber = items.find((i) => i.Name === 'MpesaReceiptNumber')?.Value;
+            const phoneNumber = items.find((i) => i.Name === 'PhoneNumber')?.Value;
+            return {
+                success: true,
+                amount,
+                mpesaCode: mpesaReceiptNumber,
+                phoneNumber,
+                merchantRequestID: stkCallback.MerchantRequestID,
+                checkoutRequestID: stkCallback.CheckoutRequestID,
+            };
+        }
+        else {
+            return {
+                success: false,
+                resultCode: stkCallback.ResultCode,
+                resultDesc: stkCallback.ResultDesc,
+            };
+        }
+    }
+    async registerC2BUrls(validationUrl, confirmationUrl) {
+        const token = await this.getAccessToken();
+        const url = this.environment === 'production'
+            ? 'https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl'
+            : 'https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl';
+        const payload = {
+            ShortCode: this.shortcode,
+            ResponseType: 'Completed',
+            ConfirmationURL: confirmationUrl,
+            ValidationURL: validationUrl,
+        };
+        try {
+            const response = await axios_1.default.post(url, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response.data;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('Failed to register C2B URLs');
+        }
+    }
+    async handleC2BConfirmation(confirmationData) {
+        const { TransactionType, TransID, TransTime, TransAmount, BusinessShortCode, BillRefNumber, InvoiceNumber, OrgAccountBalance, ThirdPartyTransID, MSISDN, FirstName, MiddleName, LastName, } = confirmationData;
+        return {
+            ResultCode: 0,
+            ResultDesc: 'Accepted',
+        };
+    }
+    async b2cPayment(phoneNumber, amount, remarks) {
+        const token = await this.getAccessToken();
+        const url = this.environment === 'production'
+            ? 'https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest'
+            : 'https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest';
+        const formattedPhone = phoneNumber.startsWith('0')
+            ? `254${phoneNumber.slice(1)}`
+            : phoneNumber;
+        const payload = {
+            InitiatorName: this.config.get('MPESA_INITIATOR_NAME'),
+            SecurityCredential: this.config.get('MPESA_SECURITY_CREDENTIAL'),
+            CommandID: 'BusinessPayment',
+            Amount: Math.round(amount),
+            PartyA: this.shortcode,
+            PartyB: formattedPhone,
+            Remarks: remarks,
+            QueueTimeOutURL: `${this.callbackUrl}/b2c/timeout`,
+            ResultURL: `${this.callbackUrl}/b2c/result`,
+            Occasion: remarks,
+        };
+        try {
+            const response = await axios_1.default.post(url, payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+            return response.data;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('B2C payment failed');
+        }
     }
 };
 exports.MpesaService = MpesaService;
 exports.MpesaService = MpesaService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _b : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object, typeof (_b = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _b : Object])
 ], MpesaService);
+
+
+/***/ }),
+
+/***/ "./src/modules/integrations/notifications/email.service.ts":
+/*!*****************************************************************!*\
+  !*** ./src/modules/integrations/notifications/email.service.ts ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EmailService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const nodemailer = __webpack_require__(/*! nodemailer */ "nodemailer");
+let EmailService = class EmailService {
+    constructor(config) {
+        this.config = config;
+        this.transporter = nodemailer.createTransport({
+            host: this.config.get('SMTP_HOST'),
+            port: this.config.get('SMTP_PORT'),
+            secure: false,
+            auth: {
+                user: this.config.get('SMTP_USER'),
+                pass: this.config.get('SMTP_PASS'),
+            },
+        });
+    }
+    async sendEmail(to, subject, html) {
+        try {
+            await this.transporter.sendMail({
+                from: this.config.get('SMTP_FROM', 'noreply@fusionerp.com'),
+                to,
+                subject,
+                html,
+            });
+            return { success: true };
+        }
+        catch (error) {
+            console.error('Email error:', error);
+            return { success: false, error: error.message };
+        }
+    }
+    async sendInvoiceEmail(invoice, customerEmail) {
+        const html = `
+      <h2>Invoice ${invoice.invoiceNumber}</h2>
+      <p>Dear ${invoice.customer.name},</p>
+      <p>Please find attached your invoice for KES ${invoice.total.toLocaleString()}.</p>
+      <p>Due Date: ${new Date(invoice.dueDate).toLocaleDateString()}</p>
+      <p>Thank you for your business!</p>
+    `;
+        return this.sendEmail(customerEmail, `Invoice ${invoice.invoiceNumber}`, html);
+    }
+    async sendPaymentConfirmation(payment, customerEmail) {
+        const html = `
+      <h2>Payment Confirmation</h2>
+      <p>We have received your payment of KES ${payment.amount.toLocaleString()}.</p>
+      <p>M-Pesa Code: ${payment.mpesaCode}</p>
+      <p>Thank you!</p>
+    `;
+        return this.sendEmail(customerEmail, 'Payment Confirmation', html);
+    }
+};
+exports.EmailService = EmailService;
+exports.EmailService = EmailService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
+], EmailService);
+
+
+/***/ }),
+
+/***/ "./src/modules/integrations/notifications/sms.service.ts":
+/*!***************************************************************!*\
+  !*** ./src/modules/integrations/notifications/sms.service.ts ***!
+  \***************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SmsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const axios_1 = __webpack_require__(/*! axios */ "axios");
+let SmsService = class SmsService {
+    constructor(config) {
+        this.config = config;
+        this.username = this.config.get('AT_USERNAME');
+        this.apiKey = this.config.get('AT_API_KEY');
+        this.shortCode = this.config.get('AT_SHORTCODE', 'FUSIONERP');
+    }
+    async sendSms(to, message) {
+        try {
+            const response = await axios_1.default.post('https://api.africastalking.com/version1/messaging', {
+                username: this.username,
+                to,
+                message,
+                from: this.shortCode,
+            }, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'apiKey': this.apiKey,
+                },
+            });
+            return {
+                success: true,
+                data: response.data,
+            };
+        }
+        catch (error) {
+            console.error('SMS error:', error);
+            return {
+                success: false,
+                error: error.message,
+            };
+        }
+    }
+    async sendInvoiceSms(invoice, phoneNumber) {
+        const message = `Invoice ${invoice.invoiceNumber} for KES ${invoice.total.toLocaleString()} has been sent. Due: ${new Date(invoice.dueDate).toLocaleDateString()}. Thank you!`;
+        return this.sendSms(phoneNumber, message);
+    }
+    async sendPaymentConfirmation(payment, phoneNumber) {
+        const message = `Payment of KES ${payment.amount.toLocaleString()} received. M-Pesa Code: ${payment.mpesaCode}. Thank you!`;
+        return this.sendSms(phoneNumber, message);
+    }
+    async sendLowStockAlert(product, phoneNumber) {
+        const message = `Low Stock Alert: ${product.name} (${product.sku}) is below reorder level. Current stock: ${product.currentStock}`;
+        return this.sendSms(phoneNumber, message);
+    }
+};
+exports.SmsService = SmsService;
+exports.SmsService = SmsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
+], SmsService);
+
+
+/***/ }),
+
+/***/ "./src/modules/inventory/controllers/adjustments.controller.ts":
+/*!*********************************************************************!*\
+  !*** ./src/modules/inventory/controllers/adjustments.controller.ts ***!
+  \*********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AdjustmentsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
+const tenant_guard_1 = __webpack_require__(/*! ../../../common/guards/tenant.guard */ "./src/common/guards/tenant.guard.ts");
+const tenant_decorator_1 = __webpack_require__(/*! ../../../common/decorators/tenant.decorator */ "./src/common/decorators/tenant.decorator.ts");
+const adjustments_service_1 = __webpack_require__(/*! ../services/adjustments.service */ "./src/modules/inventory/services/adjustments.service.ts");
+const create_adjustment_dto_1 = __webpack_require__(/*! ../dto/create-adjustment.dto */ "./src/modules/inventory/dto/create-adjustment.dto.ts");
+let AdjustmentsController = class AdjustmentsController {
+    constructor(adjustmentsService) {
+        this.adjustmentsService = adjustmentsService;
+    }
+    create(tenantId, req, createDto) {
+        return this.adjustmentsService.create(tenantId, req.user.id, createDto);
+    }
+    findAll(tenantId, productId, warehouseId, page, limit) {
+        return this.adjustmentsService.findAll(tenantId, {
+            productId,
+            warehouseId,
+            page,
+            limit,
+        });
+    }
+};
+exports.AdjustmentsController = AdjustmentsController;
+__decorate([
+    (0, common_1.Post)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Create a stock adjustment' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Request)()),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object, typeof (_b = typeof create_adjustment_dto_1.CreateAdjustmentDto !== "undefined" && create_adjustment_dto_1.CreateAdjustmentDto) === "function" ? _b : Object]),
+    __metadata("design:returntype", void 0)
+], AdjustmentsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all stock adjustments' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Query)('productId')),
+    __param(2, (0, common_1.Query)('warehouseId')),
+    __param(3, (0, common_1.Query)('page')),
+    __param(4, (0, common_1.Query)('limit')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String, Number, Number]),
+    __metadata("design:returntype", void 0)
+], AdjustmentsController.prototype, "findAll", null);
+exports.AdjustmentsController = AdjustmentsController = __decorate([
+    (0, swagger_1.ApiTags)('inventory'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard),
+    (0, common_1.Controller)('inventory/adjustments'),
+    __metadata("design:paramtypes", [typeof (_a = typeof adjustments_service_1.AdjustmentsService !== "undefined" && adjustments_service_1.AdjustmentsService) === "function" ? _a : Object])
+], AdjustmentsController);
 
 
 /***/ }),
@@ -3604,7 +4748,6 @@ exports.MpesaService = MpesaService = __decorate([
   \******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3635,20 +4778,30 @@ let ProductsController = class ProductsController {
     create(tenantId, createDto) {
         return this.productsService.create(tenantId, createDto);
     }
-    findAll(tenantId, search, type, categoryId, page, limit) {
-        return this.productsService.findAll(tenantId, { search, type, categoryId, page, limit });
+    findAll(tenantId, search, categoryId, type, isActive, page, limit) {
+        return this.productsService.findAll(tenantId, {
+            search,
+            categoryId,
+            type,
+            isActive,
+            page,
+            limit,
+        });
+    }
+    getLowStock(tenantId) {
+        return this.productsService.getLowStockProducts(tenantId);
     }
     findOne(tenantId, id) {
         return this.productsService.findOne(tenantId, id);
+    }
+    getStock(tenantId, id) {
+        return this.productsService.getStock(tenantId, id);
     }
     update(tenantId, id, updateDto) {
         return this.productsService.update(tenantId, id, updateDto);
     }
     remove(tenantId, id) {
         return this.productsService.remove(tenantId, id);
-    }
-    getStock(tenantId, id) {
-        return this.productsService.getStock(tenantId, id);
     }
 };
 exports.ProductsController = ProductsController;
@@ -3666,14 +4819,23 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Get all products' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Query)('search')),
-    __param(2, (0, common_1.Query)('type')),
-    __param(3, (0, common_1.Query)('categoryId')),
-    __param(4, (0, common_1.Query)('page')),
-    __param(5, (0, common_1.Query)('limit')),
+    __param(2, (0, common_1.Query)('categoryId')),
+    __param(3, (0, common_1.Query)('type')),
+    __param(4, (0, common_1.Query)('isActive')),
+    __param(5, (0, common_1.Query)('page')),
+    __param(6, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String, Number, Number]),
+    __metadata("design:paramtypes", [String, String, String, String, String, Number, Number]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('low-stock'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get low stock products' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "getLowStock", null);
 __decorate([
     (0, common_1.Get)(':id'),
     (0, swagger_1.ApiOperation)({ summary: 'Get product by ID' }),
@@ -3683,6 +4845,15 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)(':id/stock'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get product stock levels' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "getStock", null);
 __decorate([
     (0, common_1.Put)(':id'),
     (0, swagger_1.ApiOperation)({ summary: 'Update product' }),
@@ -3702,15 +4873,6 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "remove", null);
-__decorate([
-    (0, common_1.Get)(':id/stock'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get product stock levels' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", void 0)
-], ProductsController.prototype, "getStock", null);
 exports.ProductsController = ProductsController = __decorate([
     (0, swagger_1.ApiTags)('inventory'),
     (0, swagger_1.ApiBearerAuth)(),
@@ -3728,7 +4890,6 @@ exports.ProductsController = ProductsController = __decorate([
   \*************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3770,11 +4931,14 @@ let StockMovementsController = class StockMovementsController {
             limit,
         });
     }
+    findOne(tenantId, id) {
+        return this.stockMovementsService.findOne(tenantId, id);
+    }
 };
 exports.StockMovementsController = StockMovementsController;
 __decorate([
     (0, common_1.Post)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Create stock movement' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Create a stock movement' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -3783,7 +4947,7 @@ __decorate([
 ], StockMovementsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get stock movements' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all stock movements' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Query)('productId')),
     __param(2, (0, common_1.Query)('warehouseId')),
@@ -3796,6 +4960,15 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String, String, String, String, Number, Number]),
     __metadata("design:returntype", void 0)
 ], StockMovementsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get stock movement by ID' }),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], StockMovementsController.prototype, "findOne", null);
 exports.StockMovementsController = StockMovementsController = __decorate([
     (0, swagger_1.ApiTags)('inventory'),
     (0, swagger_1.ApiBearerAuth)(),
@@ -3813,7 +4986,6 @@ exports.StockMovementsController = StockMovementsController = __decorate([
   \********************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3914,13 +5086,65 @@ exports.WarehousesController = WarehousesController = __decorate([
 
 /***/ }),
 
+/***/ "./src/modules/inventory/dto/create-adjustment.dto.ts":
+/*!************************************************************!*\
+  !*** ./src/modules/inventory/dto/create-adjustment.dto.ts ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreateAdjustmentDto = void 0;
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+class CreateAdjustmentDto {
+}
+exports.CreateAdjustmentDto = CreateAdjustmentDto;
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], CreateAdjustmentDto.prototype, "productId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], CreateAdjustmentDto.prototype, "warehouseId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateAdjustmentDto.prototype, "newQuantity", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAdjustmentDto.prototype, "reason", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAdjustmentDto.prototype, "notes", void 0);
+
+
+/***/ }),
+
 /***/ "./src/modules/inventory/dto/create-product.dto.ts":
 /*!*********************************************************!*\
   !*** ./src/modules/inventory/dto/create-product.dto.ts ***!
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -3933,7 +5157,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CreateProductDto = void 0;
+exports.UpdateProductDto = exports.CreateProductDto = void 0;
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
@@ -4013,6 +5237,57 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateProductDto.prototype, "isActive", void 0);
+class UpdateProductDto {
+}
+exports.UpdateProductDto = UpdateProductDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateProductDto.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateProductDto.prototype, "description", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], UpdateProductDto.prototype, "categoryId", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateProductDto.prototype, "costPrice", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateProductDto.prototype, "sellingPrice", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateProductDto.prototype, "reorderLevel", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateProductDto.prototype, "reorderQuantity", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateProductDto.prototype, "isActive", void 0);
 
 
 /***/ }),
@@ -4023,7 +5298,6 @@ __decorate([
   \***********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4035,7 +5309,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CreateWarehouseDto = void 0;
+exports.UpdateWarehouseDto = exports.CreateWarehouseDto = void 0;
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 class CreateWarehouseDto {
@@ -4075,6 +5349,39 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], CreateWarehouseDto.prototype, "isActive", void 0);
+class UpdateWarehouseDto {
+}
+exports.UpdateWarehouseDto = UpdateWarehouseDto;
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateWarehouseDto.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateWarehouseDto.prototype, "address", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateWarehouseDto.prototype, "city", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateWarehouseDto.prototype, "phone", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateWarehouseDto.prototype, "isActive", void 0);
 
 
 /***/ }),
@@ -4085,7 +5392,6 @@ __decorate([
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4155,7 +5461,6 @@ __decorate([
   \***************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4169,9 +5474,11 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const products_controller_1 = __webpack_require__(/*! ./controllers/products.controller */ "./src/modules/inventory/controllers/products.controller.ts");
 const warehouses_controller_1 = __webpack_require__(/*! ./controllers/warehouses.controller */ "./src/modules/inventory/controllers/warehouses.controller.ts");
 const stock_movements_controller_1 = __webpack_require__(/*! ./controllers/stock-movements.controller */ "./src/modules/inventory/controllers/stock-movements.controller.ts");
+const adjustments_controller_1 = __webpack_require__(/*! ./controllers/adjustments.controller */ "./src/modules/inventory/controllers/adjustments.controller.ts");
 const products_service_1 = __webpack_require__(/*! ./services/products.service */ "./src/modules/inventory/services/products.service.ts");
 const warehouses_service_1 = __webpack_require__(/*! ./services/warehouses.service */ "./src/modules/inventory/services/warehouses.service.ts");
 const stock_movements_service_1 = __webpack_require__(/*! ./services/stock-movements.service */ "./src/modules/inventory/services/stock-movements.service.ts");
+const adjustments_service_1 = __webpack_require__(/*! ./services/adjustments.service */ "./src/modules/inventory/services/adjustments.service.ts");
 let InventoryModule = class InventoryModule {
 };
 exports.InventoryModule = InventoryModule;
@@ -4181,15 +5488,179 @@ exports.InventoryModule = InventoryModule = __decorate([
             products_controller_1.ProductsController,
             warehouses_controller_1.WarehousesController,
             stock_movements_controller_1.StockMovementsController,
+            adjustments_controller_1.AdjustmentsController,
         ],
         providers: [
             products_service_1.ProductsService,
             warehouses_service_1.WarehousesService,
             stock_movements_service_1.StockMovementsService,
+            adjustments_service_1.AdjustmentsService,
         ],
-        exports: [products_service_1.ProductsService, stock_movements_service_1.StockMovementsService],
+        exports: [
+            products_service_1.ProductsService,
+            warehouses_service_1.WarehousesService,
+            stock_movements_service_1.StockMovementsService,
+            adjustments_service_1.AdjustmentsService,
+        ],
     })
 ], InventoryModule);
+
+
+/***/ }),
+
+/***/ "./src/modules/inventory/services/adjustments.service.ts":
+/*!***************************************************************!*\
+  !*** ./src/modules/inventory/services/adjustments.service.ts ***!
+  \***************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AdjustmentsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let AdjustmentsService = class AdjustmentsService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async create(tenantId, userId, createDto) {
+        const [product, warehouse] = await Promise.all([
+            this.prisma.product.findFirst({
+                where: { id: createDto.productId, companyId: tenantId },
+            }),
+            this.prisma.warehouse.findFirst({
+                where: { id: createDto.warehouseId, companyId: tenantId },
+            }),
+        ]);
+        if (!product) {
+            throw new common_1.NotFoundException('Product not found');
+        }
+        if (!warehouse) {
+            throw new common_1.NotFoundException('Warehouse not found');
+        }
+        return this.prisma.$transaction(async (prisma) => {
+            const currentStock = await prisma.stock.findUnique({
+                where: {
+                    productId_warehouseId: {
+                        productId: createDto.productId,
+                        warehouseId: createDto.warehouseId,
+                    },
+                },
+            });
+            const oldQuantity = currentStock?.quantity.toNumber() || 0;
+            const difference = createDto.newQuantity - oldQuantity;
+            const adjustment = await prisma.stockAdjustment.create({
+                data: {
+                    companyId: tenantId,
+                    productId: createDto.productId,
+                    warehouseId: createDto.warehouseId,
+                    oldQuantity,
+                    newQuantity: createDto.newQuantity,
+                    difference,
+                    reason: createDto.reason,
+                    notes: createDto.notes,
+                    adjustedBy: userId,
+                },
+                include: {
+                    product: true,
+                    warehouse: true,
+                    adjustedByUser: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                            email: true,
+                        },
+                    },
+                },
+            });
+            await prisma.stock.upsert({
+                where: {
+                    productId_warehouseId: {
+                        productId: createDto.productId,
+                        warehouseId: createDto.warehouseId,
+                    },
+                },
+                create: {
+                    productId: createDto.productId,
+                    warehouseId: createDto.warehouseId,
+                    quantity: createDto.newQuantity,
+                    reservedQuantity: 0,
+                },
+                update: {
+                    quantity: createDto.newQuantity,
+                },
+            });
+            await prisma.stockMovement.create({
+                data: {
+                    companyId: tenantId,
+                    productId: createDto.productId,
+                    warehouseId: createDto.warehouseId,
+                    type: difference > 0 ? 'IN' : 'OUT',
+                    quantity: Math.abs(difference),
+                    reference: `ADJ-${adjustment.id.substring(0, 8)}`,
+                    notes: `Stock adjustment: ${createDto.reason}`,
+                    date: new Date(),
+                },
+            });
+            return adjustment;
+        });
+    }
+    async findAll(tenantId, options) {
+        const page = options.page || 1;
+        const limit = options.limit || 20;
+        const skip = (page - 1) * limit;
+        const where = { companyId: tenantId };
+        if (options.productId) {
+            where.productId = options.productId;
+        }
+        if (options.warehouseId) {
+            where.warehouseId = options.warehouseId;
+        }
+        const [adjustments, total] = await Promise.all([
+            this.prisma.stockAdjustment.findMany({
+                where,
+                skip,
+                take: limit,
+                include: {
+                    product: true,
+                    warehouse: true,
+                    adjustedByUser: {
+                        select: {
+                            firstName: true,
+                            lastName: true,
+                        },
+                    },
+                },
+                orderBy: { createdAt: 'desc' },
+            }),
+            this.prisma.stockAdjustment.count({ where }),
+        ]);
+        return {
+            data: adjustments,
+            meta: {
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+            },
+        };
+    }
+};
+exports.AdjustmentsService = AdjustmentsService;
+exports.AdjustmentsService = AdjustmentsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], AdjustmentsService);
 
 
 /***/ }),
@@ -4200,7 +5671,6 @@ exports.InventoryModule = InventoryModule = __decorate([
   \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4270,7 +5740,7 @@ let ProductsService = class ProductsService {
                 take: limit,
                 include: {
                     category: true,
-                    stocks: {
+                    stock: {
                         include: {
                             warehouse: true,
                         },
@@ -4295,7 +5765,7 @@ let ProductsService = class ProductsService {
             where: { id, companyId: tenantId },
             include: {
                 category: true,
-                stocks: {
+                stock: {
                     include: {
                         warehouse: true,
                     },
@@ -4323,7 +5793,7 @@ let ProductsService = class ProductsService {
             data: updateDto,
             include: {
                 category: true,
-                stocks: {
+                stock: {
                     include: {
                         warehouse: true,
                     },
@@ -4353,20 +5823,20 @@ let ProductsService = class ProductsService {
     }
     async getStock(tenantId, productId) {
         await this.findOne(tenantId, productId);
-        const stocks = await this.prisma.stock.findMany({
+        const stock = await this.prisma.stock.findMany({
             where: { productId },
             include: {
                 warehouse: true,
             },
         });
-        const totalQuantity = stocks.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
-        const totalReserved = stocks.reduce((sum, stock) => sum + stock.reservedQuantity.toNumber(), 0);
+        const totalQuantity = stock.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
+        const totalReserved = stock.reduce((sum, stock) => sum + stock.reservedQuantity.toNumber(), 0);
         return {
             productId,
             totalQuantity,
             totalReserved,
             availableQuantity: totalQuantity - totalReserved,
-            byWarehouse: stocks.map((stock) => ({
+            byWarehouse: stock.map((stock) => ({
                 warehouseId: stock.warehouseId,
                 warehouseName: stock.warehouse.name,
                 quantity: stock.quantity.toNumber(),
@@ -4383,11 +5853,11 @@ let ProductsService = class ProductsService {
                 trackInventory: true,
             },
             include: {
-                stocks: true,
+                stock: true,
             },
         });
         const lowStockProducts = products.filter((product) => {
-            const totalStock = product.stocks.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
+            const totalStock = product.stock.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
             return (product.reorderLevel &&
                 totalStock <= product.reorderLevel.toNumber());
         });
@@ -4395,7 +5865,7 @@ let ProductsService = class ProductsService {
             id: product.id,
             name: product.name,
             sku: product.sku,
-            currentStock: product.stocks.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0),
+            currentStock: product.stock.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0),
             reorderLevel: product.reorderLevel?.toNumber() || 0,
             reorderQuantity: product.reorderQuantity?.toNumber() || 0,
         }));
@@ -4438,7 +5908,6 @@ exports.ProductsService = ProductsService = __decorate([
   \*******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4579,9 +6048,99 @@ exports.StockMovementsService = StockMovementsService = __decorate([
 /*!**************************************************************!*\
   !*** ./src/modules/inventory/services/warehouses.service.ts ***!
   \**************************************************************/
-/***/ (() => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-throw new Error("Module parse failed: Unterminated regular expression (14:1)\nFile was processed with these loaders:\n * ./node_modules/ts-loader/index.js\nYou may need an additional loader to handle the result of these loaders.\n| Object.defineProperty(exports, \"__esModule\", { value: true });\n| exports.WarehousesService = void 0;\n> / ============================================;\n| const common_1 = require(\"@nestjs/common\");\n| const prisma_service_1 = require(\"../../../prisma/prisma.service\");");
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.WarehousesService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let WarehousesService = class WarehousesService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async create(tenantId, createDto) {
+        const existing = await this.prisma.warehouse.findUnique({
+            where: {
+                companyId_code: {
+                    companyId: tenantId,
+                    code: createDto.code,
+                },
+            },
+        });
+        if (existing) {
+            throw new common_1.ConflictException('Warehouse code already exists');
+        }
+        return this.prisma.warehouse.create({
+            data: {
+                companyId: tenantId,
+                ...createDto,
+            },
+        });
+    }
+    async findAll(tenantId) {
+        return this.prisma.warehouse.findMany({
+            where: { companyId: tenantId },
+            include: {
+                _count: {
+                    select: {
+                        stock: true,
+                    },
+                },
+            },
+            orderBy: { name: 'asc' },
+        });
+    }
+    async findOne(tenantId, id) {
+        const warehouse = await this.prisma.warehouse.findFirst({
+            where: { id, companyId: tenantId },
+            include: {
+                stock: {
+                    include: {
+                        product: true,
+                    },
+                },
+            },
+        });
+        if (!warehouse) {
+            throw new common_1.NotFoundException('Warehouse not found');
+        }
+        return warehouse;
+    }
+    async update(tenantId, id, updateDto) {
+        await this.findOne(tenantId, id);
+        return this.prisma.warehouse.update({
+            where: { id },
+            data: updateDto,
+        });
+    }
+    async remove(tenantId, id) {
+        await this.findOne(tenantId, id);
+        const hasStock = await this.prisma.stock.count({
+            where: { warehouseId: id, quantity: { gt: 0 } },
+        });
+        if (hasStock > 0) {
+            throw new common_1.ConflictException('Cannot delete warehouse with stock');
+        }
+        return this.prisma.warehouse.delete({ where: { id } });
+    }
+};
+exports.WarehousesService = WarehousesService;
+exports.WarehousesService = WarehousesService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], WarehousesService);
+
 
 /***/ }),
 
@@ -4591,7 +6150,6 @@ throw new Error("Module parse failed: Unterminated regular expression (14:1)\nFi
   \*****************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4713,7 +6271,6 @@ exports.BomController = BomController = __decorate([
   \*******************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4848,7 +6405,6 @@ exports.ProductionOrdersController = ProductionOrdersController = __decorate([
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4860,23 +6416,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UpdateBomDto = exports.CreateBomDto = exports.BomLineDto = void 0;
+exports.CreateBomDto = exports.BomComponentDto = void 0;
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
-class BomLineDto {
+class BomComponentDto {
 }
-exports.BomLineDto = BomLineDto;
+exports.BomComponentDto = BomComponentDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsUUID)(),
     __metadata("design:type", String)
-], BomLineDto.prototype, "componentId", void 0);
+], BomComponentDto.prototype, "productId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], BomLineDto.prototype, "quantity", void 0);
+], BomComponentDto.prototype, "quantity", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], BomComponentDto.prototype, "unit", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false, default: 0 }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], BomComponentDto.prototype, "wastagePercentage", void 0);
 class CreateBomDto {
 }
 exports.CreateBomDto = CreateBomDto;
@@ -4886,31 +6454,18 @@ __decorate([
     __metadata("design:type", String)
 ], CreateBomDto.prototype, "productId", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)({ required: false, default: '1.0' }),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateBomDto.prototype, "name", void 0);
+], CreateBomDto.prototype, "version", void 0);
 __decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsNumber)(),
-    __metadata("design:type", Number)
-], CreateBomDto.prototype, "quantity", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ type: [BomLineDto] }),
+    (0, swagger_1.ApiProperty)({ type: [BomComponentDto] }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
-    (0, class_transformer_1.Type)(() => BomLineDto),
+    (0, class_transformer_1.Type)(() => BomComponentDto),
     __metadata("design:type", Array)
-], CreateBomDto.prototype, "lines", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ default: true }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], CreateBomDto.prototype, "isActive", void 0);
-class UpdateBomDto extends (0, swagger_1.PartialType)(CreateBomDto) {
-}
-exports.UpdateBomDto = UpdateBomDto;
+], CreateBomDto.prototype, "components", void 0);
 
 
 /***/ }),
@@ -4921,7 +6476,6 @@ exports.UpdateBomDto = UpdateBomDto;
   \**********************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -4949,28 +6503,37 @@ __decorate([
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
-], CreateProductionOrderDto.prototype, "plannedQuantity", void 0);
+], CreateProductionOrderDto.prototype, "quantity", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsDate)(),
     (0, class_transformer_1.Type)(() => Date),
     __metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
-], CreateProductionOrderDto.prototype, "plannedDate", void 0);
+], CreateProductionOrderDto.prototype, "scheduledDate", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    (0, class_validator_1.IsUUID)(),
+    __metadata("design:type", String)
+], CreateProductionOrderDto.prototype, "warehouseId", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateProductionOrderDto.prototype, "notes", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ required: false, default: false }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateProductionOrderDto.prototype, "forceProduce", void 0);
 class CompleteProductionOrderDto {
 }
 exports.CompleteProductionOrderDto = CompleteProductionOrderDto;
 __decorate([
     (0, swagger_1.ApiProperty)(),
     (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(1),
     __metadata("design:type", Number)
 ], CompleteProductionOrderDto.prototype, "producedQuantity", void 0);
 
@@ -4983,7 +6546,6 @@ __decorate([
   \***********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5018,7 +6580,6 @@ exports.ManufacturingModule = ManufacturingModule = __decorate([
   \***********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5211,12 +6772,12 @@ let BomService = class BomService {
         const availability = [];
         for (const component of bom.components) {
             const requiredQty = component.quantity.toNumber() * quantityToProduce;
-            const stocks = await this.prisma.stock.findMany({
+            const stock = await this.prisma.stock.findMany({
                 where: {
                     productId: component.productId,
                 },
             });
-            const availableQty = stocks.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
+            const availableQty = stock.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
             availability.push({
                 productId: component.productId,
                 productName: component.product.name,
@@ -5250,7 +6811,6 @@ exports.BomService = BomService = __decorate([
   \*************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5297,10 +6857,10 @@ let ProductionOrdersService = class ProductionOrdersService {
         const shortages = [];
         for (const component of bom.components) {
             const requiredQty = component.quantity.toNumber() * createDto.quantity;
-            const stocks = await this.prisma.stock.findMany({
+            const stock = await this.prisma.stock.findMany({
                 where: { productId: component.productId },
             });
-            const availableQty = stocks.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
+            const availableQty = stock.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
             if (availableQty < requiredQty) {
                 shortages.push({
                     product: component.product.name,
@@ -5438,7 +6998,7 @@ let ProductionOrdersService = class ProductionOrdersService {
         await this.prisma.$transaction(async (prisma) => {
             for (const component of order.bom.components) {
                 const consumedQty = component.quantity.toNumber() * producedQuantity;
-                const stocks = await prisma.stock.findMany({
+                const stock = await prisma.stock.findMany({
                     where: {
                         productId: component.productId,
                         quantity: { gt: 0 },
@@ -5446,7 +7006,7 @@ let ProductionOrdersService = class ProductionOrdersService {
                     orderBy: { createdAt: 'asc' },
                 });
                 let remainingToConsume = consumedQty;
-                for (const stock of stocks) {
+                for (const stock of stock) {
                     if (remainingToConsume <= 0)
                         break;
                     const consumeFromThis = Math.min(stock.quantity.toNumber(), remainingToConsume);
@@ -5534,7 +7094,7 @@ let ProductionOrdersService = class ProductionOrdersService {
     async reserveComponents(tenantId, order) {
         for (const component of order.bom.components) {
             const requiredQty = component.quantity.toNumber() * order.quantity.toNumber();
-            const stocks = await this.prisma.stock.findMany({
+            const stock = await this.prisma.stock.findMany({
                 where: {
                     productId: component.productId,
                     quantity: { gt: 0 },
@@ -5542,7 +7102,7 @@ let ProductionOrdersService = class ProductionOrdersService {
                 orderBy: { createdAt: 'asc' },
             });
             let remainingToReserve = requiredQty;
-            for (const stock of stocks) {
+            for (const stock of stock) {
                 if (remainingToReserve <= 0)
                     break;
                 const reserveFromThis = Math.min(stock.quantity.toNumber(), remainingToReserve);
@@ -5564,14 +7124,14 @@ let ProductionOrdersService = class ProductionOrdersService {
     async releaseComponents(tenantId, order) {
         for (const component of order.bom.components) {
             const reservedQty = component.quantity.toNumber() * order.quantity.toNumber();
-            const stocks = await this.prisma.stock.findMany({
+            const stock = await this.prisma.stock.findMany({
                 where: {
                     productId: component.productId,
                     reservedQuantity: { gt: 0 },
                 },
             });
             let remainingToRelease = reservedQty;
-            for (const stock of stocks) {
+            for (const stock of stock) {
                 if (remainingToRelease <= 0)
                     break;
                 const releaseFromThis = Math.min(stock.reservedQuantity.toNumber(), remainingToRelease);
@@ -5606,7 +7166,6 @@ exports.ProductionOrdersService = ProductionOrdersService = __decorate([
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5711,7 +7270,6 @@ exports.SalesController = SalesController = __decorate([
   \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5821,7 +7379,6 @@ exports.SessionsController = SessionsController = __decorate([
   \**************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5854,7 +7411,6 @@ __decorate([
   \****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5937,7 +7493,6 @@ __decorate([
   \*************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -5970,7 +7525,6 @@ __decorate([
   \***************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6005,7 +7559,6 @@ exports.PosModule = PosModule = __decorate([
   \***************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6213,7 +7766,6 @@ exports.SalesService = SalesService = __decorate([
   \******************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6384,7 +7936,6 @@ exports.SessionsService = SessionsService = __decorate([
   \*****************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6479,7 +8030,6 @@ exports.BillsController = BillsController = __decorate([
   \***************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6586,7 +8136,6 @@ exports.PurchaseOrdersController = PurchaseOrdersController = __decorate([
   \*********************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6697,7 +8246,6 @@ exports.SuppliersController = SuppliersController = __decorate([
   \********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6791,7 +8339,6 @@ __decorate([
   \******************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6880,7 +8427,6 @@ __decorate([
   \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -6960,7 +8506,6 @@ __decorate([
   \************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdateSupplierDto = void 0;
@@ -6979,7 +8524,6 @@ exports.UpdateSupplierDto = UpdateSupplierDto;
   \*******************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7024,7 +8568,6 @@ exports.ProcurementModule = ProcurementModule = __decorate([
   \***********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7135,7 +8678,6 @@ exports.BillsService = BillsService = __decorate([
   \*********************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7291,7 +8833,6 @@ exports.PurchaseOrdersService = PurchaseOrdersService = __decorate([
   \***************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7373,13 +8914,12 @@ exports.SuppliersService = SuppliersService = __decorate([
 
 /***/ }),
 
-/***/ "./src/modules/reporting/reporting.controller.ts":
-/*!*******************************************************!*\
-  !*** ./src/modules/reporting/reporting.controller.ts ***!
-  \*******************************************************/
+/***/ "./src/modules/reporting/controllers/financial-reports.controller.ts":
+/*!***************************************************************************!*\
+  !*** ./src/modules/reporting/controllers/financial-reports.controller.ts ***!
+  \***************************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7395,96 +8935,152 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ReportingController = void 0;
+exports.FinancialReportsController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
-const jwt_auth_guard_1 = __webpack_require__(/*! ../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
-const tenant_guard_1 = __webpack_require__(/*! ../../common/guards/tenant.guard */ "./src/common/guards/tenant.guard.ts");
-const tenant_decorator_1 = __webpack_require__(/*! ../../common/decorators/tenant.decorator */ "./src/common/decorators/tenant.decorator.ts");
-const reporting_service_1 = __webpack_require__(/*! ./reporting.service */ "./src/modules/reporting/reporting.service.ts");
-let ReportingController = class ReportingController {
-    constructor(reportingService) {
-        this.reportingService = reportingService;
+const jwt_auth_guard_1 = __webpack_require__(/*! ../../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
+const tenant_guard_1 = __webpack_require__(/*! ../../../common/guards/tenant.guard */ "./src/common/guards/tenant.guard.ts");
+const tenant_decorator_1 = __webpack_require__(/*! ../../../common/decorators/tenant.decorator */ "./src/common/decorators/tenant.decorator.ts");
+const financial_reports_service_1 = __webpack_require__(/*! ../services/financial-reports.service */ "./src/modules/reporting/services/financial-reports.service.ts");
+let FinancialReportsController = class FinancialReportsController {
+    constructor(reportsService) {
+        this.reportsService = reportsService;
     }
-    getDashboard(tenantId) {
-        return this.reportingService.getDashboard(tenantId);
+    profitAndLoss(tenantId, startDate, endDate) {
+        return this.reportsService.profitAndLoss(tenantId, new Date(startDate), new Date(endDate));
     }
-    getSalesSummary(tenantId, startDate, endDate) {
-        return this.reportingService.getSalesSummary(tenantId, startDate, endDate);
+    balanceSheet(tenantId, asOfDate) {
+        return this.reportsService.balanceSheet(tenantId, new Date(asOfDate));
     }
-    getInventorySummary(tenantId) {
-        return this.reportingService.getInventorySummary(tenantId);
+    cashFlow(tenantId, startDate, endDate) {
+        return this.reportsService.cashFlow(tenantId, new Date(startDate), new Date(endDate));
     }
-    getFinancialSummary(tenantId, startDate, endDate) {
-        return this.reportingService.getFinancialSummary(tenantId, startDate, endDate);
-    }
-    getAgedReceivables(tenantId) {
-        return this.reportingService.getAgedReceivables(tenantId);
-    }
-    getAgedPayables(tenantId) {
-        return this.reportingService.getAgedPayables(tenantId);
+    salesAnalysis(tenantId, startDate, endDate) {
+        return this.reportsService.salesAnalysis(tenantId, new Date(startDate), new Date(endDate));
     }
 };
-exports.ReportingController = ReportingController;
+exports.FinancialReportsController = FinancialReportsController;
 __decorate([
-    (0, common_1.Get)('dashboard'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get dashboard statistics' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], ReportingController.prototype, "getDashboard", null);
-__decorate([
-    (0, common_1.Get)('sales-summary'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get sales summary' }),
+    (0, common_1.Get)('profit-and-loss'),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Query)('startDate')),
     __param(2, (0, common_1.Query)('endDate')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
-], ReportingController.prototype, "getSalesSummary", null);
+], FinancialReportsController.prototype, "profitAndLoss", null);
 __decorate([
-    (0, common_1.Get)('inventory-summary'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get inventory summary' }),
+    (0, common_1.Get)('balance-sheet'),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Query)('asOfDate')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
-], ReportingController.prototype, "getInventorySummary", null);
+], FinancialReportsController.prototype, "balanceSheet", null);
 __decorate([
-    (0, common_1.Get)('financial-summary'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get financial summary' }),
+    (0, common_1.Get)('cash-flow'),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Query)('startDate')),
     __param(2, (0, common_1.Query)('endDate')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
-], ReportingController.prototype, "getFinancialSummary", null);
+], FinancialReportsController.prototype, "cashFlow", null);
 __decorate([
-    (0, common_1.Get)('aged-receivables'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get aged receivables report' }),
+    (0, common_1.Get)('sales-analysis'),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Query)('startDate')),
+    __param(2, (0, common_1.Query)('endDate')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
-], ReportingController.prototype, "getAgedReceivables", null);
-__decorate([
-    (0, common_1.Get)('aged-payables'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get aged payables report' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], ReportingController.prototype, "getAgedPayables", null);
-exports.ReportingController = ReportingController = __decorate([
+], FinancialReportsController.prototype, "salesAnalysis", null);
+exports.FinancialReportsController = FinancialReportsController = __decorate([
     (0, swagger_1.ApiTags)('reporting'),
     (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard),
-    (0, common_1.Controller)('reporting'),
-    __metadata("design:paramtypes", [typeof (_a = typeof reporting_service_1.ReportingService !== "undefined" && reporting_service_1.ReportingService) === "function" ? _a : Object])
-], ReportingController);
+    (0, common_1.Controller)('reporting/financial'),
+    __metadata("design:paramtypes", [typeof (_a = typeof financial_reports_service_1.FinancialReportsService !== "undefined" && financial_reports_service_1.FinancialReportsService) === "function" ? _a : Object])
+], FinancialReportsController);
+
+
+/***/ }),
+
+/***/ "./src/modules/reporting/controllers/operational-reports.controller.ts":
+/*!*****************************************************************************!*\
+  !*** ./src/modules/reporting/controllers/operational-reports.controller.ts ***!
+  \*****************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OperationalReportsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
+const tenant_guard_1 = __webpack_require__(/*! ../../../common/guards/tenant.guard */ "./src/common/guards/tenant.guard.ts");
+const tenant_decorator_1 = __webpack_require__(/*! ../../../common/decorators/tenant.decorator */ "./src/common/decorators/tenant.decorator.ts");
+const operational_reports_service_1 = __webpack_require__(/*! ../services/operational-reports.service */ "./src/modules/reporting/services/operational-reports.service.ts");
+let OperationalReportsController = class OperationalReportsController {
+    constructor(reportsService) {
+        this.reportsService = reportsService;
+    }
+    inventoryValuation(tenantId) {
+        return this.reportsService.inventoryValuation(tenantId);
+    }
+    stockMovements(tenantId, startDate, endDate) {
+        return this.reportsService.stockMovementReport(tenantId, new Date(startDate), new Date(endDate));
+    }
+    purchaseAnalysis(tenantId, startDate, endDate) {
+        return this.reportsService.purchaseAnalysis(tenantId, new Date(startDate), new Date(endDate));
+    }
+};
+exports.OperationalReportsController = OperationalReportsController;
+__decorate([
+    (0, common_1.Get)('inventory-valuation'),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], OperationalReportsController.prototype, "inventoryValuation", null);
+__decorate([
+    (0, common_1.Get)('stock-movements'),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Query)('startDate')),
+    __param(2, (0, common_1.Query)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], OperationalReportsController.prototype, "stockMovements", null);
+__decorate([
+    (0, common_1.Get)('purchase-analysis'),
+    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
+    __param(1, (0, common_1.Query)('startDate')),
+    __param(2, (0, common_1.Query)('endDate')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", void 0)
+], OperationalReportsController.prototype, "purchaseAnalysis", null);
+exports.OperationalReportsController = OperationalReportsController = __decorate([
+    (0, swagger_1.ApiTags)('reporting'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard),
+    (0, common_1.Controller)('reporting/operational'),
+    __metadata("design:paramtypes", [typeof (_a = typeof operational_reports_service_1.OperationalReportsService !== "undefined" && operational_reports_service_1.OperationalReportsService) === "function" ? _a : Object])
+], OperationalReportsController);
 
 
 /***/ }),
@@ -7495,7 +9091,6 @@ exports.ReportingController = ReportingController = __decorate([
   \***************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7506,29 +9101,39 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ReportingModule = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const reporting_controller_1 = __webpack_require__(/*! ./reporting.controller */ "./src/modules/reporting/reporting.controller.ts");
-const reporting_service_1 = __webpack_require__(/*! ./reporting.service */ "./src/modules/reporting/reporting.service.ts");
+const financial_reports_controller_1 = __webpack_require__(/*! ./controllers/financial-reports.controller */ "./src/modules/reporting/controllers/financial-reports.controller.ts");
+const operational_reports_controller_1 = __webpack_require__(/*! ./controllers/operational-reports.controller */ "./src/modules/reporting/controllers/operational-reports.controller.ts");
+const financial_reports_service_1 = __webpack_require__(/*! ./services/financial-reports.service */ "./src/modules/reporting/services/financial-reports.service.ts");
+const operational_reports_service_1 = __webpack_require__(/*! ./services/operational-reports.service */ "./src/modules/reporting/services/operational-reports.service.ts");
 let ReportingModule = class ReportingModule {
 };
 exports.ReportingModule = ReportingModule;
 exports.ReportingModule = ReportingModule = __decorate([
     (0, common_1.Module)({
-        controllers: [reporting_controller_1.ReportingController],
-        providers: [reporting_service_1.ReportingService],
-        exports: [reporting_service_1.ReportingService],
+        controllers: [
+            financial_reports_controller_1.FinancialReportsController,
+            operational_reports_controller_1.OperationalReportsController,
+        ],
+        providers: [
+            financial_reports_service_1.FinancialReportsService,
+            operational_reports_service_1.OperationalReportsService,
+        ],
+        exports: [
+            financial_reports_service_1.FinancialReportsService,
+            operational_reports_service_1.OperationalReportsService,
+        ],
     })
 ], ReportingModule);
 
 
 /***/ }),
 
-/***/ "./src/modules/reporting/reporting.service.ts":
-/*!****************************************************!*\
-  !*** ./src/modules/reporting/reporting.service.ts ***!
-  \****************************************************/
+/***/ "./src/modules/reporting/services/financial-reports.service.ts":
+/*!*********************************************************************!*\
+  !*** ./src/modules/reporting/services/financial-reports.service.ts ***!
+  \*********************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7541,264 +9146,299 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ReportingService = void 0;
+exports.FinancialReportsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const prisma_service_1 = __webpack_require__(/*! ../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
-let ReportingService = class ReportingService {
+const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let FinancialReportsService = class FinancialReportsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async getDashboard(tenantId) {
-        const today = new Date();
-        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-        const startOfYear = new Date(today.getFullYear(), 0, 1);
-        const [totalCustomers, totalProducts, totalEmployees, monthSales, yearSales, pendingInvoices,] = await Promise.all([
-            this.prisma.customer.count({ where: { companyId: tenantId, isActive: true } }),
-            this.prisma.product.count({ where: { companyId: tenantId, isActive: true } }),
-            this.prisma.employee.count({ where: { companyId: tenantId, status: 'ACTIVE' } }),
-            this.prisma.invoice.aggregate({
-                where: {
+    async profitAndLoss(tenantId, startDate, endDate) {
+        const journalLines = await this.prisma.journalLine.findMany({
+            where: {
+                entry: {
                     companyId: tenantId,
-                    date: { gte: startOfMonth },
-                    status: { in: ['SENT', 'PAID', 'PARTIALLY_PAID'] },
+                    status: 'POSTED',
+                    date: {
+                        gte: startDate,
+                        lte: endDate,
+                    },
                 },
-                _sum: { total: true },
-            }),
-            this.prisma.invoice.aggregate({
-                where: {
-                    companyId: tenantId,
-                    date: { gte: startOfYear },
-                    status: { in: ['SENT', 'PAID', 'PARTIALLY_PAID'] },
-                },
-                _sum: { total: true },
-            }),
-            this.prisma.invoice.count({
-                where: {
-                    companyId: tenantId,
-                    status: { in: ['SENT', 'PARTIALLY_PAID', 'OVERDUE'] },
-                },
-            }),
-        ]);
-        const productsWithStock = await this.prisma.product.findMany({
+            },
+            include: {
+                account: true,
+            },
+        });
+        const income = journalLines
+            .filter((l) => l.account.type === 'INCOME')
+            .reduce((sum, l) => sum + l.credit.toNumber() - l.debit.toNumber(), 0);
+        const expenses = journalLines
+            .filter((l) => l.account.type === 'EXPENSE')
+            .reduce((sum, l) => sum + l.debit.toNumber() - l.credit.toNumber(), 0);
+        const netProfit = income - expenses;
+        return {
+            period: { startDate, endDate },
+            income,
+            expenses,
+            netProfit,
+            margin: income > 0 ? (netProfit / income) * 100 : 0,
+        };
+    }
+    async balanceSheet(tenantId, asOfDate) {
+        const accounts = await this.prisma.account.findMany({
             where: {
                 companyId: tenantId,
-                reorderLevel: { not: null },
+                isActive: true,
+            },
+        });
+        const assets = accounts
+            .filter((a) => a.type === 'ASSET')
+            .reduce((sum, a) => sum + a.balance.toNumber(), 0);
+        const liabilities = accounts
+            .filter((a) => a.type === 'LIABILITY')
+            .reduce((sum, a) => sum + a.balance.toNumber(), 0);
+        const equity = accounts
+            .filter((a) => a.type === 'EQUITY')
+            .reduce((sum, a) => sum + a.balance.toNumber(), 0);
+        return {
+            asOfDate,
+            assets,
+            liabilities,
+            equity,
+            totalLiabilitiesAndEquity: liabilities + equity,
+        };
+    }
+    async cashFlow(tenantId, startDate, endDate) {
+        const entries = await this.prisma.journalEntry.findMany({
+            where: {
+                companyId: tenantId,
+                status: 'POSTED',
+                date: {
+                    gte: startDate,
+                    lte: endDate,
+                },
+            },
+            include: {
+                lines: {
+                    include: {
+                        account: true,
+                    },
+                },
+            },
+        });
+        let operating = 0;
+        let investing = 0;
+        let financing = 0;
+        entries.forEach((entry) => {
+            entry.lines.forEach((line) => {
+                const amount = line.debit.toNumber() - line.credit.toNumber();
+                if (line.account.type === 'INCOME' || line.account.type === 'EXPENSE') {
+                    operating += amount;
+                }
+                else if (line.account.code.startsWith('15')) {
+                    investing += amount;
+                }
+                else if (line.account.code.startsWith('2')) {
+                    financing += amount;
+                }
+            });
+        });
+        return {
+            period: { startDate, endDate },
+            operating,
+            investing,
+            financing,
+            netChange: operating + investing + financing,
+        };
+    }
+    async salesAnalysis(tenantId, startDate, endDate) {
+        const invoices = await this.prisma.invoice.findMany({
+            where: {
+                companyId: tenantId,
+                date: {
+                    gte: startDate,
+                    lte: endDate,
+                },
+                status: { not: 'CANCELLED' },
+            },
+            include: {
+                customer: true,
+                lines: {
+                    include: {
+                        product: true,
+                    },
+                },
+            },
+        });
+        const totalSales = invoices.reduce((sum, inv) => sum + inv.total.toNumber(), 0);
+        const totalPaid = invoices.reduce((sum, inv) => sum + inv.paidAmount.toNumber(), 0);
+        const byCustomer = invoices.reduce((acc, inv) => {
+            const key = inv.customer.name;
+            if (!acc[key])
+                acc[key] = 0;
+            acc[key] += inv.total.toNumber();
+            return acc;
+        }, {});
+        const byProduct = invoices.flatMap((inv) => inv.lines).reduce((acc, line) => {
+            const key = line.product.name;
+            if (!acc[key])
+                acc[key] = { quantity: 0, amount: 0 };
+            acc[key].quantity += line.quantity.toNumber();
+            acc[key].amount += line.amount.toNumber();
+            return acc;
+        }, {});
+        return {
+            period: { startDate, endDate },
+            totalInvoices: invoices.length,
+            totalSales,
+            totalPaid,
+            outstanding: totalSales - totalPaid,
+            byCustomer,
+            byProduct,
+        };
+    }
+};
+exports.FinancialReportsService = FinancialReportsService;
+exports.FinancialReportsService = FinancialReportsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], FinancialReportsService);
+
+
+/***/ }),
+
+/***/ "./src/modules/reporting/services/operational-reports.service.ts":
+/*!***********************************************************************!*\
+  !*** ./src/modules/reporting/services/operational-reports.service.ts ***!
+  \***********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OperationalReportsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let OperationalReportsService = class OperationalReportsService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async inventoryValuation(tenantId) {
+        const products = await this.prisma.product.findMany({
+            where: {
+                companyId: tenantId,
+                isActive: true,
+                trackInventory: true,
             },
             include: {
                 stock: true,
             },
         });
-        const lowStockProducts = productsWithStock.filter(product => {
-            const totalStock = product.stock.reduce((sum, s) => sum + s.quantity.toNumber(), 0);
-            return product.reorderLevel && totalStock <= product.reorderLevel.toNumber();
-        }).length;
-        return {
-            overview: {
-                totalCustomers,
-                totalProducts,
-                totalEmployees,
-                lowStockProducts,
-            },
-            sales: {
-                thisMonth: monthSales._sum.total ? monthSales._sum.total.toNumber() : 0,
-                thisYear: yearSales._sum.total ? yearSales._sum.total.toNumber() : 0,
-                pendingInvoices,
-            },
-        };
-    }
-    async getSalesSummary(tenantId, startDate, endDate) {
-        const start = startDate ? new Date(startDate) : new Date(new Date().getFullYear(), 0, 1);
-        const end = endDate ? new Date(endDate) : new Date();
-        const [invoices, payments] = await Promise.all([
-            this.prisma.invoice.aggregate({
-                where: {
-                    companyId: tenantId,
-                    date: { gte: start, lte: end },
-                },
-                _sum: { total: true, paidAmount: true },
-                _count: true,
-            }),
-            this.prisma.payment.aggregate({
-                where: {
-                    companyId: tenantId,
-                    date: { gte: start, lte: end },
-                    status: 'COMPLETED',
-                },
-                _sum: { amount: true },
-            }),
-        ]);
-        const topProducts = await this.prisma.invoiceLine.groupBy({
-            by: ['productId'],
-            where: {
-                invoice: {
-                    companyId: tenantId,
-                    date: { gte: start, lte: end },
-                },
-            },
-            _sum: { quantity: true, amount: true },
-            orderBy: { _sum: { amount: 'desc' } },
-            take: 10,
+        const valuation = products.map((product) => {
+            const totalStock = product.stock.reduce((sum, stock) => sum + stock.quantity.toNumber(), 0);
+            const value = totalStock * product.costPrice.toNumber();
+            return {
+                sku: product.sku,
+                name: product.name,
+                quantity: totalStock,
+                costPrice: product.costPrice.toNumber(),
+                value,
+            };
         });
+        const totalValue = valuation.reduce((sum, item) => sum + item.value, 0);
         return {
-            period: { start, end },
-            totalSales: invoices._sum.total ? invoices._sum.total.toNumber() : 0,
-            totalPaid: payments._sum.amount ? payments._sum.amount.toNumber() : 0,
-            invoiceCount: invoices._count,
-            topProducts: await Promise.all(topProducts.map(async (item) => {
-                const product = await this.prisma.product.findUnique({
-                    where: { id: item.productId },
-                });
-                return {
-                    product: product?.name,
-                    quantity: item._sum.quantity ? item._sum.quantity.toNumber() : 0,
-                    amount: item._sum.amount ? item._sum.amount.toNumber() : 0,
-                };
-            })),
-        };
-    }
-    async getInventorySummary(tenantId) {
-        const products = await this.prisma.product.findMany({
-            where: { companyId: tenantId, type: 'STORABLE' },
-            include: { stock: true },
-        });
-        let totalValue = 0;
-        let lowStockCount = 0;
-        let outOfStockCount = 0;
-        products.forEach((product) => {
-            const totalQty = product.stock.reduce((sum, s) => sum + s.quantity.toNumber(), 0);
-            totalValue += totalQty * product.cost.toNumber();
-            if (totalQty === 0)
-                outOfStockCount++;
-            else if (product.reorderLevel && totalQty <= product.reorderLevel.toNumber()) {
-                lowStockCount++;
-            }
-        });
-        return {
-            totalProducts: products.length,
+            items: valuation,
             totalValue,
-            lowStockCount,
-            outOfStockCount,
         };
     }
-    async getFinancialSummary(tenantId, startDate, endDate) {
-        const start = startDate ? new Date(startDate) : new Date(new Date().getFullYear(), 0, 1);
-        const end = endDate ? new Date(endDate) : new Date();
-        const [revenue, expenses, receivables, payables] = await Promise.all([
-            this.prisma.invoice.aggregate({
-                where: {
-                    companyId: tenantId,
-                    date: { gte: start, lte: end },
-                    status: { in: ['SENT', 'PAID', 'PARTIALLY_PAID'] },
-                },
-                _sum: { total: true },
-            }),
-            this.prisma.bill.aggregate({
-                where: {
-                    companyId: tenantId,
-                    date: { gte: start, lte: end },
-                },
-                _sum: { total: true },
-            }),
-            this.prisma.invoice.aggregate({
-                where: {
-                    companyId: tenantId,
-                    status: { in: ['SENT', 'PARTIALLY_PAID', 'OVERDUE'] },
-                },
-                _sum: { total: true, paidAmount: true },
-            }),
-            this.prisma.bill.aggregate({
-                where: {
-                    companyId: tenantId,
-                    status: { in: ['SUBMITTED', 'PARTIALLY_PAID'] },
-                },
-                _sum: { total: true, paidAmount: true },
-            }),
-        ]);
-        const revenueTotal = revenue._sum.total ? revenue._sum.total.toNumber() : 0;
-        const expensesTotal = expenses._sum.total ? expenses._sum.total.toNumber() : 0;
-        const receivablesTotal = receivables._sum.total ? receivables._sum.total.toNumber() : 0;
-        const receivablesPaid = receivables._sum.paidAmount ? receivables._sum.paidAmount.toNumber() : 0;
-        const payablesTotal = payables._sum.total ? payables._sum.total.toNumber() : 0;
-        const payablesPaid = payables._sum.paidAmount ? payables._sum.paidAmount.toNumber() : 0;
-        return {
-            period: { start, end },
-            revenue: revenueTotal,
-            expenses: expensesTotal,
-            profit: revenueTotal - expensesTotal,
-            accountsReceivable: receivablesTotal - receivablesPaid,
-            accountsPayable: payablesTotal - payablesPaid,
-        };
-    }
-    async getAgedReceivables(tenantId) {
-        const invoices = await this.prisma.invoice.findMany({
+    async stockMovementReport(tenantId, startDate, endDate) {
+        const movements = await this.prisma.stockMovement.findMany({
             where: {
                 companyId: tenantId,
-                status: { in: ['SENT', 'PARTIALLY_PAID', 'OVERDUE'] },
+                date: {
+                    gte: startDate,
+                    lte: endDate,
+                },
             },
-            include: { customer: true },
+            include: {
+                product: true,
+                warehouse: true,
+            },
+            orderBy: {
+                date: 'desc',
+            },
         });
-        const today = new Date();
-        const aged = {
-            current: 0,
-            days30: 0,
-            days60: 0,
-            days90: 0,
-            over90: 0,
+        const summary = {
+            totalMovements: movements.length,
+            totalIn: movements
+                .filter((m) => m.type === 'IN')
+                .reduce((sum, m) => sum + m.quantity.toNumber(), 0),
+            totalOut: movements
+                .filter((m) => m.type === 'OUT')
+                .reduce((sum, m) => sum + m.quantity.toNumber(), 0),
+            movements: movements.map((m) => ({
+                date: m.date,
+                type: m.type,
+                product: m.product.name,
+                warehouse: m.warehouse.name,
+                quantity: m.quantity.toNumber(),
+                reference: m.reference,
+            })),
         };
-        invoices.forEach((inv) => {
-            const balance = inv.total.toNumber() - inv.paidAmount.toNumber();
-            const daysOverdue = Math.floor((today.getTime() - inv.dueDate.getTime()) / (1000 * 60 * 60 * 24));
-            if (daysOverdue < 0)
-                aged.current += balance;
-            else if (daysOverdue <= 30)
-                aged.days30 += balance;
-            else if (daysOverdue <= 60)
-                aged.days60 += balance;
-            else if (daysOverdue <= 90)
-                aged.days90 += balance;
-            else
-                aged.over90 += balance;
-        });
-        return aged;
+        return summary;
     }
-    async getAgedPayables(tenantId) {
+    async purchaseAnalysis(tenantId, startDate, endDate) {
         const bills = await this.prisma.bill.findMany({
             where: {
                 companyId: tenantId,
-                status: { in: ['SUBMITTED', 'PARTIALLY_PAID'] },
+                date: {
+                    gte: startDate,
+                    lte: endDate,
+                },
+                status: { not: 'CANCELLED' },
             },
-            include: { supplier: true },
+            include: {
+                supplier: true,
+                lines: {
+                    include: {
+                        product: true,
+                    },
+                },
+            },
         });
-        const today = new Date();
-        const aged = {
-            current: 0,
-            days30: 0,
-            days60: 0,
-            days90: 0,
-            over90: 0,
+        const totalPurchases = bills.reduce((sum, bill) => sum + bill.total.toNumber(), 0);
+        const totalPaid = bills.reduce((sum, bill) => sum + bill.paidAmount.toNumber(), 0);
+        const bySupplier = bills.reduce((acc, bill) => {
+            const key = bill.supplier.name;
+            if (!acc[key])
+                acc[key] = 0;
+            acc[key] += bill.total.toNumber();
+            return acc;
+        }, {});
+        return {
+            period: { startDate, endDate },
+            totalBills: bills.length,
+            totalPurchases,
+            totalPaid,
+            outstanding: totalPurchases - totalPaid,
+            bySupplier,
         };
-        bills.forEach((bill) => {
-            const balance = bill.total.toNumber() - bill.paidAmount.toNumber();
-            const daysOverdue = Math.floor((today.getTime() - bill.dueDate.getTime()) / (1000 * 60 * 60 * 24));
-            if (daysOverdue < 0)
-                aged.current += balance;
-            else if (daysOverdue <= 30)
-                aged.days30 += balance;
-            else if (daysOverdue <= 60)
-                aged.days60 += balance;
-            else if (daysOverdue <= 90)
-                aged.days90 += balance;
-            else
-                aged.over90 += balance;
-        });
-        return aged;
     }
 };
-exports.ReportingService = ReportingService;
-exports.ReportingService = ReportingService = __decorate([
+exports.OperationalReportsService = OperationalReportsService;
+exports.OperationalReportsService = OperationalReportsService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], ReportingService);
+], OperationalReportsService);
 
 
 /***/ }),
@@ -7809,7 +9449,6 @@ exports.ReportingService = ReportingService = __decorate([
   \**************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7821,7 +9460,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AssignPermissionsDto = exports.UpdateRoleDto = exports.CreateRoleDto = void 0;
+exports.AssignPermissionsDto = exports.CreateRoleDto = void 0;
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 class CreateRoleDto {
@@ -7838,15 +9477,13 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateRoleDto.prototype, "description", void 0);
-class UpdateRoleDto extends (0, swagger_1.PartialType)(CreateRoleDto) {
-}
-exports.UpdateRoleDto = UpdateRoleDto;
 class AssignPermissionsDto {
 }
 exports.AssignPermissionsDto = AssignPermissionsDto;
 __decorate([
-    (0, swagger_1.ApiProperty)(),
+    (0, swagger_1.ApiProperty)({ type: [String] }),
     (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsUUID)('4', { each: true }),
     __metadata("design:type", Array)
 ], AssignPermissionsDto.prototype, "permissionIds", void 0);
 
@@ -7859,7 +9496,6 @@ __decorate([
   \***********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -7873,7 +9509,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b, _c, _d;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.RolesController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
@@ -7893,26 +9529,25 @@ let RolesController = class RolesController {
     findAll(tenantId) {
         return this.rolesService.findAll(tenantId);
     }
-    getPermissions() {
-        return this.rolesService.getPermissions();
+    getAllPermissions() {
+        return this.rolesService.getAllPermissions();
     }
     findOne(tenantId, id) {
         return this.rolesService.findOne(tenantId, id);
     }
-    update(tenantId, id, updateDto) {
-        return this.rolesService.update(tenantId, id, updateDto);
+    assignPermissions(id, dto) {
+        return this.rolesService.assignPermissions(id, dto);
     }
-    assignPermissions(tenantId, id, assignDto) {
-        return this.rolesService.assignPermissions(tenantId, id, assignDto.permissionIds);
+    assignRoleToUser(roleId, userId) {
+        return this.rolesService.assignRoleToUser(userId, roleId);
     }
-    remove(tenantId, id) {
-        return this.rolesService.remove(tenantId, id);
+    removeRoleFromUser(roleId, userId) {
+        return this.rolesService.removeRoleFromUser(userId, roleId);
     }
 };
 exports.RolesController = RolesController;
 __decorate([
     (0, common_1.Post)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Create a new role' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -7921,7 +9556,6 @@ __decorate([
 ], RolesController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get all roles' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -7929,14 +9563,12 @@ __decorate([
 ], RolesController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)('permissions'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get all available permissions' }),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
-], RolesController.prototype, "getPermissions", null);
+], RolesController.prototype, "getAllPermissions", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get role by ID' }),
     __param(0, (0, tenant_decorator_1.CurrentTenant)()),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -7944,34 +9576,29 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], RolesController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Put)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Update role' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, common_1.Body)()),
+    (0, common_1.Post)(':id/permissions'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, typeof (_c = typeof create_role_dto_1.UpdateRoleDto !== "undefined" && create_role_dto_1.UpdateRoleDto) === "function" ? _c : Object]),
-    __metadata("design:returntype", void 0)
-], RolesController.prototype, "update", null);
-__decorate([
-    (0, common_1.Put)(':id/permissions'),
-    (0, swagger_1.ApiOperation)({ summary: 'Assign permissions to role' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, typeof (_d = typeof create_role_dto_1.AssignPermissionsDto !== "undefined" && create_role_dto_1.AssignPermissionsDto) === "function" ? _d : Object]),
+    __metadata("design:paramtypes", [String, typeof (_c = typeof create_role_dto_1.AssignPermissionsDto !== "undefined" && create_role_dto_1.AssignPermissionsDto) === "function" ? _c : Object]),
     __metadata("design:returntype", void 0)
 ], RolesController.prototype, "assignPermissions", null);
 __decorate([
-    (0, common_1.Delete)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Delete role' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
+    (0, common_1.Post)(':roleId/users/:userId'),
+    __param(0, (0, common_1.Param)('roleId')),
+    __param(1, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", void 0)
-], RolesController.prototype, "remove", null);
+], RolesController.prototype, "assignRoleToUser", null);
+__decorate([
+    (0, common_1.Delete)(':roleId/users/:userId'),
+    __param(0, (0, common_1.Param)('roleId')),
+    __param(1, (0, common_1.Param)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], RolesController.prototype, "removeRoleFromUser", null);
 exports.RolesController = RolesController = __decorate([
     (0, swagger_1.ApiTags)('roles'),
     (0, swagger_1.ApiBearerAuth)(),
@@ -7989,7 +9616,6 @@ exports.RolesController = RolesController = __decorate([
   \*******************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8022,7 +9648,6 @@ exports.RolesModule = RolesModule = __decorate([
   \********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8044,12 +9669,21 @@ let RolesService = class RolesService {
     }
     async create(tenantId, createDto) {
         const existing = await this.prisma.role.findUnique({
-            where: { companyId_name: { companyId: tenantId, name: createDto.name } },
+            where: {
+                companyId_name: {
+                    companyId: tenantId,
+                    name: createDto.name,
+                },
+            },
         });
-        if (existing)
+        if (existing) {
             throw new common_1.ConflictException('Role name already exists');
+        }
         return this.prisma.role.create({
-            data: { companyId: tenantId, ...createDto },
+            data: {
+                companyId: tenantId,
+                ...createDto,
+            },
         });
     }
     async findAll(tenantId) {
@@ -8057,14 +9691,12 @@ let RolesService = class RolesService {
             where: { companyId: tenantId },
             include: {
                 _count: {
-                    select: { users: true, permissions: true },
+                    select: {
+                        users: true,
+                        permissions: true,
+                    },
                 },
             },
-        });
-    }
-    async getPermissions() {
-        return this.prisma.permission.findMany({
-            orderBy: [{ module: 'asc' }, { action: 'asc' }],
         });
     }
     async findOne(tenantId, id) {
@@ -8081,46 +9713,73 @@ let RolesService = class RolesService {
                         user: {
                             select: {
                                 id: true,
+                                email: true,
                                 firstName: true,
                                 lastName: true,
-                                email: true,
                             },
                         },
                     },
                 },
             },
         });
-        if (!role)
+        if (!role) {
             throw new common_1.NotFoundException('Role not found');
+        }
         return role;
     }
-    async update(tenantId, id, updateDto) {
-        const role = await this.findOne(tenantId, id);
-        if (role.isSystem) {
-            throw new common_1.BadRequestException('Cannot modify system roles');
-        }
-        return this.prisma.role.update({ where: { id }, data: updateDto });
-    }
-    async assignPermissions(tenantId, roleId, permissionIds) {
-        await this.findOne(tenantId, roleId);
-        await this.prisma.rolePermission.deleteMany({ where: { roleId } });
-        await this.prisma.rolePermission.createMany({
-            data: permissionIds.map((permissionId) => ({
-                roleId,
-                permissionId,
-            })),
+    async assignPermissions(roleId, dto) {
+        await this.prisma.rolePermission.deleteMany({
+            where: { roleId },
         });
-        return this.findOne(tenantId, roleId);
+        if (dto.permissionIds.length > 0) {
+            await this.prisma.rolePermission.createMany({
+                data: dto.permissionIds.map((permissionId) => ({
+                    roleId,
+                    permissionId,
+                })),
+            });
+        }
+        return this.prisma.role.findUnique({
+            where: { id: roleId },
+            include: {
+                permissions: {
+                    include: {
+                        permission: true,
+                    },
+                },
+            },
+        });
     }
-    async remove(tenantId, id) {
-        const role = await this.findOne(tenantId, id);
-        if (role.isSystem) {
-            throw new common_1.BadRequestException('Cannot delete system roles');
+    async assignRoleToUser(userId, roleId) {
+        const existing = await this.prisma.userRole.findUnique({
+            where: {
+                userId_roleId: {
+                    userId,
+                    roleId,
+                },
+            },
+        });
+        if (existing) {
+            throw new common_1.ConflictException('User already has this role');
         }
-        if (role.users.length > 0) {
-            throw new common_1.BadRequestException('Cannot delete role with assigned users');
-        }
-        return this.prisma.role.delete({ where: { id } });
+        return this.prisma.userRole.create({
+            data: { userId, roleId },
+        });
+    }
+    async removeRoleFromUser(userId, roleId) {
+        return this.prisma.userRole.delete({
+            where: {
+                userId_roleId: {
+                    userId,
+                    roleId,
+                },
+            },
+        });
+    }
+    async getAllPermissions() {
+        return this.prisma.permission.findMany({
+            orderBy: [{ module: 'asc' }, { name: 'asc' }],
+        });
     }
 };
 exports.RolesService = RolesService;
@@ -8138,7 +9797,6 @@ exports.RolesService = RolesService = __decorate([
   \***************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8273,7 +9931,6 @@ exports.CustomersController = CustomersController = __decorate([
   \**************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8395,7 +10052,6 @@ exports.InvoicesController = InvoicesController = __decorate([
   \************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8502,7 +10158,6 @@ exports.OrdersController = OrdersController = __decorate([
   \****************************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8624,7 +10279,6 @@ exports.QuotationsController = QuotationsController = __decorate([
   \******************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8710,7 +10364,6 @@ __decorate([
   \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8804,7 +10457,6 @@ __decorate([
   \***************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8893,7 +10545,6 @@ __decorate([
   \*******************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -8981,7 +10632,6 @@ __decorate([
   \******************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UpdateCustomerDto = void 0;
@@ -9000,7 +10650,6 @@ exports.UpdateCustomerDto = UpdateCustomerDto;
   \*******************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -9011,6 +10660,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SalesModule = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const event_emitter_1 = __webpack_require__(/*! @nestjs/event-emitter */ "@nestjs/event-emitter");
 const customers_controller_1 = __webpack_require__(/*! ./controllers/customers.controller */ "./src/modules/sales/controllers/customers.controller.ts");
 const quotations_controller_1 = __webpack_require__(/*! ./controllers/quotations.controller */ "./src/modules/sales/controllers/quotations.controller.ts");
 const orders_controller_1 = __webpack_require__(/*! ./controllers/orders.controller */ "./src/modules/sales/controllers/orders.controller.ts");
@@ -9024,6 +10674,9 @@ let SalesModule = class SalesModule {
 exports.SalesModule = SalesModule;
 exports.SalesModule = SalesModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            event_emitter_1.EventEmitterModule.forRoot(),
+        ],
         controllers: [
             customers_controller_1.CustomersController,
             quotations_controller_1.QuotationsController,
@@ -9052,7 +10705,6 @@ exports.SalesModule = SalesModule = __decorate([
   \*********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -9219,7 +10871,6 @@ exports.CustomersService = CustomersService = __decorate([
   \********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -9421,7 +11072,6 @@ exports.InvoicesService = InvoicesService = __decorate([
   \******************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -9538,7 +11188,6 @@ exports.OrdersService = OrdersService = __decorate([
   \**********************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -9660,630 +11309,12 @@ exports.QuotationsService = QuotationsService = __decorate([
 
 /***/ }),
 
-/***/ "./src/modules/tenancy/dto/update-company.dto.ts":
-/*!*******************************************************!*\
-  !*** ./src/modules/tenancy/dto/update-company.dto.ts ***!
-  \*******************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UpdateCompanyDto = void 0;
-const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
-const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
-class UpdateCompanyDto {
-}
-exports.UpdateCompanyDto = UpdateCompanyDto;
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "name", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "phone", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "kraPin", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "address", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "city", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "logo", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsObject)(),
-    __metadata("design:type", Object)
-], UpdateCompanyDto.prototype, "settings", void 0);
-
-
-/***/ }),
-
-/***/ "./src/modules/tenancy/tenancy.controller.ts":
-/*!***************************************************!*\
-  !*** ./src/modules/tenancy/tenancy.controller.ts ***!
-  \***************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a, _b;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TenancyController = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
-const jwt_auth_guard_1 = __webpack_require__(/*! ../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
-const tenant_guard_1 = __webpack_require__(/*! ../../common/guards/tenant.guard */ "./src/common/guards/tenant.guard.ts");
-const tenant_decorator_1 = __webpack_require__(/*! ../../common/decorators/tenant.decorator */ "./src/common/decorators/tenant.decorator.ts");
-const tenancy_service_1 = __webpack_require__(/*! ./tenancy.service */ "./src/modules/tenancy/tenancy.service.ts");
-const update_company_dto_1 = __webpack_require__(/*! ./dto/update-company.dto */ "./src/modules/tenancy/dto/update-company.dto.ts");
-let TenancyController = class TenancyController {
-    constructor(tenancyService) {
-        this.tenancyService = tenancyService;
-    }
-    getCompany(tenantId) {
-        return this.tenancyService.getCompany(tenantId);
-    }
-    updateCompany(tenantId, updateDto) {
-        return this.tenancyService.updateCompany(tenantId, updateDto);
-    }
-    getModules(tenantId) {
-        return this.tenancyService.getModules(tenantId);
-    }
-    toggleModule(tenantId, code) {
-        return this.tenancyService.toggleModule(tenantId, code);
-    }
-};
-exports.TenancyController = TenancyController;
-__decorate([
-    (0, common_1.Get)('company'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get company details' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], TenancyController.prototype, "getCompany", null);
-__decorate([
-    (0, common_1.Put)('company'),
-    (0, swagger_1.ApiOperation)({ summary: 'Update company details' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_b = typeof update_company_dto_1.UpdateCompanyDto !== "undefined" && update_company_dto_1.UpdateCompanyDto) === "function" ? _b : Object]),
-    __metadata("design:returntype", void 0)
-], TenancyController.prototype, "updateCompany", null);
-__decorate([
-    (0, common_1.Get)('modules'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get enabled modules' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], TenancyController.prototype, "getModules", null);
-__decorate([
-    (0, common_1.Put)('modules/:code/toggle'),
-    (0, swagger_1.ApiOperation)({ summary: 'Toggle module status' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", void 0)
-], TenancyController.prototype, "toggleModule", null);
-exports.TenancyController = TenancyController = __decorate([
-    (0, swagger_1.ApiTags)('tenancy'),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard),
-    (0, common_1.Controller)('tenancy'),
-    __metadata("design:paramtypes", [typeof (_a = typeof tenancy_service_1.TenancyService !== "undefined" && tenancy_service_1.TenancyService) === "function" ? _a : Object])
-], TenancyController);
-
-
-/***/ }),
-
-/***/ "./src/modules/tenancy/tenancy.module.ts":
-/*!***********************************************!*\
-  !*** ./src/modules/tenancy/tenancy.module.ts ***!
-  \***********************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TenancyModule = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const tenancy_controller_1 = __webpack_require__(/*! ./tenancy.controller */ "./src/modules/tenancy/tenancy.controller.ts");
-const tenancy_service_1 = __webpack_require__(/*! ./tenancy.service */ "./src/modules/tenancy/tenancy.service.ts");
-let TenancyModule = class TenancyModule {
-};
-exports.TenancyModule = TenancyModule;
-exports.TenancyModule = TenancyModule = __decorate([
-    (0, common_1.Module)({
-        controllers: [tenancy_controller_1.TenancyController],
-        providers: [tenancy_service_1.TenancyService],
-        exports: [tenancy_service_1.TenancyService],
-    })
-], TenancyModule);
-
-
-/***/ }),
-
-/***/ "./src/modules/tenancy/tenancy.service.ts":
-/*!************************************************!*\
-  !*** ./src/modules/tenancy/tenancy.service.ts ***!
-  \************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TenancyService = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const prisma_service_1 = __webpack_require__(/*! ../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
-let TenancyService = class TenancyService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async getCompany(tenantId) {
-        const company = await this.prisma.company.findUnique({
-            where: { id: tenantId },
-            include: {
-                modules: true,
-                _count: {
-                    select: {
-                        users: true,
-                        customers: true,
-                        products: true,
-                    },
-                },
-            },
-        });
-        if (!company)
-            throw new common_1.NotFoundException('Company not found');
-        return company;
-    }
-    async updateCompany(tenantId, updateDto) {
-        return this.prisma.company.update({
-            where: { id: tenantId },
-            data: updateDto,
-        });
-    }
-    async getModules(tenantId) {
-        return this.prisma.tenantModule.findMany({
-            where: { companyId: tenantId },
-        });
-    }
-    async toggleModule(tenantId, code) {
-        const module = await this.prisma.tenantModule.findUnique({
-            where: { companyId_moduleCode: { companyId: tenantId, moduleCode: code } },
-        });
-        if (module) {
-            return this.prisma.tenantModule.update({
-                where: { id: module.id },
-                data: { enabled: !module.enabled },
-            });
-        }
-        else {
-            return this.prisma.tenantModule.create({
-                data: { companyId: tenantId, moduleCode: code, enabled: true },
-            });
-        }
-    }
-};
-exports.TenancyService = TenancyService;
-exports.TenancyService = TenancyService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], TenancyService);
-
-
-/***/ }),
-
-/***/ "./src/modules/users/dto/create-user.dto.ts":
-/*!**************************************************!*\
-  !*** ./src/modules/users/dto/create-user.dto.ts ***!
-  \**************************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CreateUserDto = void 0;
-const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
-const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
-class CreateUserDto {
-}
-exports.CreateUserDto = CreateUserDto;
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "email", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(6),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "password", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "firstName", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "lastName", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ required: false }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "phone", void 0);
-
-
-/***/ }),
-
-/***/ "./src/modules/users/dto/update-user.dto.ts":
-/*!**************************************************!*\
-  !*** ./src/modules/users/dto/update-user.dto.ts ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UpdateUserDto = void 0;
-const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
-const create_user_dto_1 = __webpack_require__(/*! ./create-user.dto */ "./src/modules/users/dto/create-user.dto.ts");
-class UpdateUserDto extends (0, swagger_1.PartialType)(create_user_dto_1.CreateUserDto) {
-}
-exports.UpdateUserDto = UpdateUserDto;
-
-
-/***/ }),
-
-/***/ "./src/modules/users/users.controller.ts":
-/*!***********************************************!*\
-  !*** ./src/modules/users/users.controller.ts ***!
-  \***********************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a, _b, _c;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UsersController = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
-const jwt_auth_guard_1 = __webpack_require__(/*! ../../common/guards/jwt-auth.guard */ "./src/common/guards/jwt-auth.guard.ts");
-const tenant_guard_1 = __webpack_require__(/*! ../../common/guards/tenant.guard */ "./src/common/guards/tenant.guard.ts");
-const tenant_decorator_1 = __webpack_require__(/*! ../../common/decorators/tenant.decorator */ "./src/common/decorators/tenant.decorator.ts");
-const users_service_1 = __webpack_require__(/*! ./users.service */ "./src/modules/users/users.service.ts");
-const create_user_dto_1 = __webpack_require__(/*! ./dto/create-user.dto */ "./src/modules/users/dto/create-user.dto.ts");
-const update_user_dto_1 = __webpack_require__(/*! ./dto/update-user.dto */ "./src/modules/users/dto/update-user.dto.ts");
-let UsersController = class UsersController {
-    constructor(usersService) {
-        this.usersService = usersService;
-    }
-    create(tenantId, createDto) {
-        return this.usersService.create(tenantId, createDto);
-    }
-    findAll(tenantId) {
-        return this.usersService.findAll(tenantId);
-    }
-    findOne(tenantId, id) {
-        return this.usersService.findOne(tenantId, id);
-    }
-    update(tenantId, id, updateDto) {
-        return this.usersService.update(tenantId, id, updateDto);
-    }
-    remove(tenantId, id) {
-        return this.usersService.remove(tenantId, id);
-    }
-};
-exports.UsersController = UsersController;
-__decorate([
-    (0, common_1.Post)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Create a new user' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_b = typeof create_user_dto_1.CreateUserDto !== "undefined" && create_user_dto_1.CreateUserDto) === "function" ? _b : Object]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "create", null);
-__decorate([
-    (0, common_1.Get)(),
-    (0, swagger_1.ApiOperation)({ summary: 'Get all users' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Get user by ID' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Put)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Update user' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, typeof (_c = typeof update_user_dto_1.UpdateUserDto !== "undefined" && update_user_dto_1.UpdateUserDto) === "function" ? _c : Object]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    (0, swagger_1.ApiOperation)({ summary: 'Delete user' }),
-    __param(0, (0, tenant_decorator_1.CurrentTenant)()),
-    __param(1, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "remove", null);
-exports.UsersController = UsersController = __decorate([
-    (0, swagger_1.ApiTags)('users'),
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, tenant_guard_1.TenantGuard),
-    (0, common_1.Controller)('users'),
-    __metadata("design:paramtypes", [typeof (_a = typeof users_service_1.UsersService !== "undefined" && users_service_1.UsersService) === "function" ? _a : Object])
-], UsersController);
-
-
-/***/ }),
-
-/***/ "./src/modules/users/users.module.ts":
-/*!*******************************************!*\
-  !*** ./src/modules/users/users.module.ts ***!
-  \*******************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UsersModule = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const users_controller_1 = __webpack_require__(/*! ./users.controller */ "./src/modules/users/users.controller.ts");
-const users_service_1 = __webpack_require__(/*! ./users.service */ "./src/modules/users/users.service.ts");
-let UsersModule = class UsersModule {
-};
-exports.UsersModule = UsersModule;
-exports.UsersModule = UsersModule = __decorate([
-    (0, common_1.Module)({
-        controllers: [users_controller_1.UsersController],
-        providers: [users_service_1.UsersService],
-        exports: [users_service_1.UsersService],
-    })
-], UsersModule);
-
-
-/***/ }),
-
-/***/ "./src/modules/users/users.service.ts":
-/*!********************************************!*\
-  !*** ./src/modules/users/users.service.ts ***!
-  \********************************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UsersService = void 0;
-const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const prisma_service_1 = __webpack_require__(/*! ../../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
-const bcrypt = __webpack_require__(/*! bcrypt */ "bcrypt");
-let UsersService = class UsersService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async create(tenantId, createDto) {
-        const existing = await this.prisma.user.findUnique({
-            where: { companyId_email: { companyId: tenantId, email: createDto.email } },
-        });
-        if (existing)
-            throw new common_1.ConflictException('User email already exists');
-        const hashedPassword = await bcrypt.hash(createDto.password, 10);
-        return this.prisma.user.create({
-            data: {
-                companyId: tenantId,
-                email: createDto.email,
-                password: hashedPassword,
-                firstName: createDto.firstName,
-                lastName: createDto.lastName,
-                phone: createDto.phone,
-            },
-        });
-    }
-    async findAll(tenantId) {
-        return this.prisma.user.findMany({
-            where: { companyId: tenantId },
-            select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                phone: true,
-                isActive: true,
-                lastLoginAt: true,
-                createdAt: true,
-                roles: {
-                    include: {
-                        role: true,
-                    },
-                },
-            },
-        });
-    }
-    async findOne(tenantId, id) {
-        const user = await this.prisma.user.findFirst({
-            where: { id, companyId: tenantId },
-            select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                phone: true,
-                avatar: true,
-                isActive: true,
-                lastLoginAt: true,
-                createdAt: true,
-                roles: {
-                    include: {
-                        role: {
-                            include: {
-                                permissions: {
-                                    include: {
-                                        permission: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        });
-        if (!user)
-            throw new common_1.NotFoundException('User not found');
-        return user;
-    }
-    async update(tenantId, id, updateDto) {
-        await this.findOne(tenantId, id);
-        const data = { ...updateDto };
-        if (updateDto.password) {
-            data.password = await bcrypt.hash(updateDto.password, 10);
-        }
-        return this.prisma.user.update({
-            where: { id },
-            data,
-        });
-    }
-    async remove(tenantId, id) {
-        await this.findOne(tenantId, id);
-        return this.prisma.user.update({
-            where: { id },
-            data: { isActive: false },
-        });
-    }
-};
-exports.UsersService = UsersService;
-exports.UsersService = UsersService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], UsersService);
-
-
-/***/ }),
-
 /***/ "./src/prisma/prisma.module.ts":
 /*!*************************************!*\
   !*** ./src/prisma/prisma.module.ts ***!
   \*************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -10315,7 +11346,6 @@ exports.PrismaModule = PrismaModule = __decorate([
   \**************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -10359,24 +11389,12 @@ exports.PrismaService = PrismaService = __decorate([
 
 /***/ }),
 
-/***/ "@nestjs/bull":
-/*!*******************************!*\
-  !*** external "@nestjs/bull" ***!
-  \*******************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("@nestjs/bull");
-
-/***/ }),
-
 /***/ "@nestjs/common":
 /*!*********************************!*\
   !*** external "@nestjs/common" ***!
   \*********************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/common");
 
 /***/ }),
@@ -10387,7 +11405,6 @@ module.exports = require("@nestjs/common");
   \*********************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/config");
 
 /***/ }),
@@ -10398,7 +11415,6 @@ module.exports = require("@nestjs/config");
   \*******************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/core");
 
 /***/ }),
@@ -10409,7 +11425,6 @@ module.exports = require("@nestjs/core");
   \****************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/event-emitter");
 
 /***/ }),
@@ -10420,7 +11435,6 @@ module.exports = require("@nestjs/event-emitter");
   \******************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/jwt");
 
 /***/ }),
@@ -10431,7 +11445,6 @@ module.exports = require("@nestjs/jwt");
   \***********************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/passport");
 
 /***/ }),
@@ -10442,19 +11455,7 @@ module.exports = require("@nestjs/passport");
   \**********************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/swagger");
-
-/***/ }),
-
-/***/ "@nestjs/throttler":
-/*!************************************!*\
-  !*** external "@nestjs/throttler" ***!
-  \************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("@nestjs/throttler");
 
 /***/ }),
 
@@ -10464,7 +11465,6 @@ module.exports = require("@nestjs/throttler");
   \*********************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@prisma/client");
 
 /***/ }),
@@ -10475,7 +11475,6 @@ module.exports = require("@prisma/client");
   \************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("axios");
 
 /***/ }),
@@ -10486,7 +11485,6 @@ module.exports = require("axios");
   \*************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("bcrypt");
 
 /***/ }),
@@ -10497,7 +11495,6 @@ module.exports = require("bcrypt");
   \************************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("class-transformer");
 
 /***/ }),
@@ -10508,30 +11505,17 @@ module.exports = require("class-transformer");
   \**********************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("class-validator");
 
 /***/ }),
 
-/***/ "compression":
-/*!******************************!*\
-  !*** external "compression" ***!
-  \******************************/
+/***/ "nodemailer":
+/*!*****************************!*\
+  !*** external "nodemailer" ***!
+  \*****************************/
 /***/ ((module) => {
 
-"use strict";
-module.exports = require("compression");
-
-/***/ }),
-
-/***/ "helmet":
-/*!*************************!*\
-  !*** external "helmet" ***!
-  \*************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("helmet");
+module.exports = require("nodemailer");
 
 /***/ }),
 
@@ -10541,7 +11525,6 @@ module.exports = require("helmet");
   \*******************************/
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("passport-jwt");
 
 /***/ })
@@ -10574,9 +11557,8 @@ module.exports = require("passport-jwt");
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry needs to be wrapped in an IIFE because it needs to be in strict mode.
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-"use strict";
 var exports = __webpack_exports__;
 /*!*********************!*\
   !*** ./src/main.ts ***!
@@ -10587,43 +11569,61 @@ const core_1 = __webpack_require__(/*! @nestjs/core */ "@nestjs/core");
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const swagger_1 = __webpack_require__(/*! @nestjs/swagger */ "@nestjs/swagger");
 const app_module_1 = __webpack_require__(/*! ./app.module */ "./src/app.module.ts");
-const compression = __webpack_require__(/*! compression */ "compression");
-const helmet_1 = __webpack_require__(/*! helmet */ "helmet");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
-    app.use((0, helmet_1.default)());
-    app.use(compression());
     app.enableCors({
         origin: process.env.FRONTEND_URL || 'http://localhost:3001',
         credentials: true,
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
-        transform: true,
         whitelist: true,
+        transform: true,
         forbidNonWhitelisted: true,
     }));
     app.setGlobalPrefix('api/v1');
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Fusion ERP API')
-        .setDescription('Enterprise Resource Planning System for Kenyan Businesses')
+        .setDescription('Complete ERP System for Kenyan Businesses')
         .setVersion('1.0')
         .addBearerAuth()
-        .addTag('auth', 'Authentication endpoints')
-        .addTag('tenancy', 'Multi-tenant management')
-        .addTag('accounting', 'Accounting and Finance')
-        .addTag('sales', 'Sales and CRM')
-        .addTag('inventory', 'Inventory Management')
+        .addTag('auth', 'Authentication & Registration')
+        .addTag('sales', 'Sales Management')
+        .addTag('accounting', 'Accounting & Finance')
         .addTag('pos', 'Point of Sale')
-        .addTag('manufacturing', 'Manufacturing')
-        .addTag('hr', 'Human Resources')
-        .addTag('procurement', 'Procurement')
+        .addTag('procurement', 'Procurement & Purchasing')
+        .addTag('inventory', 'Inventory Management')
+        .addTag('manufacturing', 'Manufacturing & Production')
+        .addTag('hr', 'Human Resources & Payroll')
+        .addTag('audit', 'Audit Logs')
+        .addTag('integrations', 'M-Pesa, eTIMS, Notifications')
+        .addTag('reporting', 'Financial & Operational Reports')
+        .addTag('roles', 'Roles & Permissions')
         .build();
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api/docs', app, document);
     const port = process.env.PORT || 3000;
     await app.listen(port);
-    console.log(`🚀 Fusion ERP Backend running on http://localhost:${port}`);
-    console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
+    console.log(`
+    🚀 Fusion ERP Backend is running!
+    
+    📡 API: http://localhost:${port}/api/v1
+    📚 Docs: http://localhost:${port}/api/docs
+    🌍 Environment: ${process.env.NODE_ENV || 'development'}
+    
+    Modules loaded:
+    ✅ Auth & Multi-tenancy
+    ✅ Sales Management
+    ✅ Accounting (Double-entry)
+    ✅ Point of Sale
+    ✅ Procurement
+    ✅ Inventory (Multi-warehouse)
+    ✅ Manufacturing (BOM & Production)
+    ✅ HR & Payroll (Kenya: PAYE, NHIF, NSSF)
+    ✅ Audit Logging
+    ✅ Integrations (M-Pesa, eTIMS, Email, SMS)
+    ✅ Reporting (Financial & Operational)
+    ✅ Roles & Permissions
+  `);
 }
 bootstrap();
 

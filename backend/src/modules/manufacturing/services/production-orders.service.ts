@@ -43,10 +43,10 @@ export class ProductionOrdersService {
     const shortages = [];
     for (const component of bom.components) {
       const requiredQty = component.quantity.toNumber() * createDto.quantity;
-      const stocks = await this.prisma.stock.findMany({
+      const stock = await this.prisma.stock.findMany({
         where: { productId: component.productId },
       });
-      const availableQty = stocks.reduce(
+      const availableQty = stock.reduce(
         (sum, stock) => sum + stock.quantity.toNumber(),
         0,
       );
@@ -212,8 +212,8 @@ export class ProductionOrdersService {
       for (const component of order.bom.components) {
         const consumedQty = component.quantity.toNumber() * producedQuantity;
 
-        // Find stocks with available quantity
-        const stocks = await prisma.stock.findMany({
+        // Find stock with available quantity
+        const stock = await prisma.stock.findMany({
           where: {
             productId: component.productId,
             quantity: { gt: 0 },
@@ -223,7 +223,7 @@ export class ProductionOrdersService {
 
         let remainingToConsume = consumedQty;
 
-        for (const stock of stocks) {
+        for (const stock of stock) {
           if (remainingToConsume <= 0) break;
 
           const consumeFromThis = Math.min(
@@ -332,8 +332,8 @@ export class ProductionOrdersService {
     for (const component of order.bom.components) {
       const requiredQty = component.quantity.toNumber() * order.quantity.toNumber();
 
-      // Find stocks to reserve from
-      const stocks = await this.prisma.stock.findMany({
+      // Find stock to reserve from
+      const stock = await this.prisma.stock.findMany({
         where: {
           productId: component.productId,
           quantity: { gt: 0 },
@@ -343,7 +343,7 @@ export class ProductionOrdersService {
 
       let remainingToReserve = requiredQty;
 
-      for (const stock of stocks) {
+      for (const stock of stock) {
         if (remainingToReserve <= 0) break;
 
         const reserveFromThis = Math.min(
@@ -372,7 +372,7 @@ export class ProductionOrdersService {
     for (const component of order.bom.components) {
       const reservedQty = component.quantity.toNumber() * order.quantity.toNumber();
 
-      const stocks = await this.prisma.stock.findMany({
+      const stock = await this.prisma.stock.findMany({
         where: {
           productId: component.productId,
           reservedQuantity: { gt: 0 },
@@ -381,7 +381,7 @@ export class ProductionOrdersService {
 
       let remainingToRelease = reservedQty;
 
-      for (const stock of stocks) {
+      for (const stock of stock) {
         if (remainingToRelease <= 0) break;
 
         const releaseFromThis = Math.min(

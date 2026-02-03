@@ -1,19 +1,25 @@
-// ============================================
-// FILE: backend/src/modules/manufacturing/dto/create-bom.dto.ts
-// Location: backend/src/modules/manufacturing/dto/create-bom.dto.ts
-// ============================================
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsUUID, IsString, IsNumber, IsArray, ValidateNested, IsBoolean, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsUUID, IsString, IsNumber, IsOptional, IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class BomLineDto {
+export class BomComponentDto {
   @ApiProperty()
   @IsUUID()
-  componentId: string;
+  productId: string;
 
   @ApiProperty()
   @IsNumber()
   quantity: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  unit?: string;
+
+  @ApiProperty({ required: false, default: 0 })
+  @IsOptional()
+  @IsNumber()
+  wastagePercentage?: number;
 }
 
 export class CreateBomDto {
@@ -21,24 +27,14 @@ export class CreateBomDto {
   @IsUUID()
   productId: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false, default: '1.0' })
+  @IsOptional()
   @IsString()
-  name: string;
+  version?: string;
 
-  @ApiProperty()
-  @IsNumber()
-  quantity: number;
-
-  @ApiProperty({ type: [BomLineDto] })
+  @ApiProperty({ type: [BomComponentDto] })
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => BomLineDto)
-  lines: BomLineDto[];
-
-  @ApiProperty({ default: true })
-  @IsOptional()
-  @IsBoolean()
-  isActive?: boolean;
+  @Type(() => BomComponentDto)
+  components: BomComponentDto[];
 }
-
-export class UpdateBomDto extends PartialType(CreateBomDto) {}

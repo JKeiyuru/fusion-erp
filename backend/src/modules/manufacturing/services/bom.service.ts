@@ -215,13 +215,13 @@ export class BomService {
       const requiredQty = component.quantity.toNumber() * quantityToProduce;
 
       // Get total available stock across all warehouses
-      const stocks = await this.prisma.stock.findMany({
+      const stock = await this.prisma.stock.findMany({
         where: {
           productId: component.productId,
         },
       });
 
-      const availableQty = stocks.reduce(
+      const availableQty = stock.reduce(
         (sum, stock) => sum + stock.quantity.toNumber(),
         0,
       );

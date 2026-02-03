@@ -1,3 +1,4 @@
+// ============================================
 // FILE: backend/src/modules/inventory/dto/create-product.dto.ts
 // ============================================
 import { ApiProperty } from '@nestjs/swagger';
@@ -61,6 +62,48 @@ export class CreateProductDto {
   reorderQuantity?: number;
 
   @ApiProperty({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+}
+
+export class UpdateProductDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber()
+  costPrice?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber()
+  sellingPrice?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber()
+  reorderLevel?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumber()
+  reorderQuantity?: number;
+
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;

@@ -1,14 +1,48 @@
+// ============================================
 // FILE: backend/src/modules/hr/dto/process-payroll.dto.ts
+// ============================================
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsArray, IsOptional } from 'class-validator';
+import { IsUUID, IsDate, IsNumber, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class ProcessPayrollDto {
-  @ApiProperty({ example: '2024-01' })
-  @IsString()
-  period: string;
+  @ApiProperty()
+  @IsUUID()
+  employeeId: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
+  periodStart: Date;
+
+  @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
+  periodEnd: Date;
+
+  @ApiProperty({ required: false, default: 0 })
   @IsOptional()
-  @IsArray()
+  @IsNumber()
+  allowances?: number;
+
+  @ApiProperty({ required: false, default: 0 })
+  @IsOptional()
+  @IsNumber()
+  otherDeductions?: number;
+}
+
+export class BulkProcessPayrollDto {
+  @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
+  periodStart: Date;
+
+  @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
+  periodEnd: Date;
+
+  @ApiProperty({ required: false, type: [String] })
+  @IsOptional()
   employeeIds?: string[];
 }

@@ -1,54 +1,92 @@
+version: '3.8'
+
 services:
+  # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
-    container_name: fusion-erp-postgres
+    container_name: erp_postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: fusion_erp
+      POSTGRES_DB: erp_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: postgres
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - fusion-network
+      - erp_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # Redis Cache
   redis:
     image: redis:7-alpine
-    container_name: fusion-erp-redis
+    container_name: erp_redis
+    restart: unless-stopped
     ports:
-      - '6379:6379'
+      - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
-      - fusion-network
+      - erp_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  backend:
+  # ERP Backend API
+  api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: fusion-erp-backend
+    container_name: erp_api
+    restart: unless-stopped
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/fusion_erp
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/erp_db?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./src:/app/src
+      - ./uploads:/app/uploads
+    networks:
+      - erp_network
+    command: npm run start:dev
+
+  # PgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: erp_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
     depends_on:
       - postgres
-      - redis
-    volumes:
-      - .:/app
-      - /app/node_modules
     networks:
-      - fusion-network
-    command: npm run start:dev
+      - erp_network
 
 volumes:
   postgres_data:
+    driver: local
   redis_data:
+    driver: local
 
 networks:
-  fusion-network:
+  erp_network:
     driver: bridge

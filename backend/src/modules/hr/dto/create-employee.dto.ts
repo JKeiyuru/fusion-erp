@@ -1,20 +1,14 @@
+// ============================================
 // FILE: backend/src/modules/hr/dto/create-employee.dto.ts
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import {
-  IsString,
-  IsEmail,
-  IsEnum,
-  IsNumber,
-  IsDate,
-  IsOptional,
-} from 'class-validator';
+// ============================================
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsEmail, IsOptional, IsNumber, IsDate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { EmploymentStatus } from '@prisma/client';
 
 export class CreateEmployeeDto {
   @ApiProperty()
   @IsString()
-  employeeNumber: string;
+  employeeNo: string;
 
   @ApiProperty()
   @IsString()
@@ -24,9 +18,10 @@ export class CreateEmployeeDto {
   @IsString()
   lastName: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -36,7 +31,58 @@ export class CreateEmployeeDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  nationalId?: string;
+  kraPin?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  nssf?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  nhif?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  position?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  department?: string;
+
+  @ApiProperty()
+  @IsNumber()
+  salary: number;
+
+  @ApiProperty()
+  @IsDate()
+  @Type(() => Date)
+  hireDate: Date;
+}
+
+export class UpdateEmployeeDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  firstName?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  phone?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -46,12 +92,7 @@ export class CreateEmployeeDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  nssfNo?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  nhifNo?: string;
+  position?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -60,32 +101,12 @@ export class CreateEmployeeDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsString()
-  position?: string;
+  @IsNumber()
+  salary?: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsDate()
   @Type(() => Date)
-  hireDate: Date;
-
-  @ApiProperty()
-  @IsNumber()
-  salary: number;
-
-  @ApiProperty({ enum: EmploymentStatus, default: 'ACTIVE' })
-  @IsOptional()
-  @IsEnum(EmploymentStatus)
-  status?: EmploymentStatus;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  bankAccount?: string;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsString()
-  bankName?: string;
+  hireDate?: Date;
 }
-
-export class UpdateEmployeeDto extends PartialType(CreateEmployeeDto) {}

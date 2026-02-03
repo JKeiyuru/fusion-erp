@@ -1,6 +1,5 @@
 // ============================================
 // FILE: backend/src/modules/hr/hr.module.ts
-// Location: backend/src/modules/hr/hr.module.ts
 // ============================================
 import { Module } from '@nestjs/common';
 import { EmployeesController } from './controllers/employees.controller';
@@ -11,8 +10,20 @@ import { PayrollService } from './services/payroll.service';
 import { LeaveService } from './services/leave.service';
 
 @Module({
-  controllers: [EmployeesController, PayrollController, LeaveController],
-  providers: [EmployeesService, PayrollService, LeaveService],
-  exports: [EmployeesService, PayrollService],
+  controllers: [
+    EmployeesController,
+    PayrollController,
+    LeaveController,
+  ],
+  providers: [
+    EmployeesService,
+    PayrollService,
+    LeaveService,
+  ],
+  exports: [
+    EmployeesService,
+    PayrollService,
+    LeaveService,
+  ],
 })
 export class HrModule {}

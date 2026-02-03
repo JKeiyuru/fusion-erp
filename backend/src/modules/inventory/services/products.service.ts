@@ -70,7 +70,7 @@ export class ProductsService {
         take: limit,
         include: {
           category: true,
-          stocks: {
+          stock: {
             include: {
               warehouse: true,
             },
@@ -97,7 +97,7 @@ export class ProductsService {
       where: { id, companyId: tenantId },
       include: {
         category: true,
-        stocks: {
+        stock: {
           include: {
             warehouse: true,
           },
@@ -129,7 +129,7 @@ export class ProductsService {
       data: updateDto,
       include: {
         category: true,
-        stocks: {
+        stock: {
           include: {
             warehouse: true,
           },
@@ -167,19 +167,19 @@ export class ProductsService {
   async getStock(tenantId: string, productId: string) {
     await this.findOne(tenantId, productId);
 
-    const stocks = await this.prisma.stock.findMany({
+    const stock = await this.prisma.stock.findMany({
       where: { productId },
       include: {
         warehouse: true,
       },
     });
 
-    const totalQuantity = stocks.reduce(
+    const totalQuantity = stock.reduce(
       (sum, stock) => sum + stock.quantity.toNumber(),
       0,
     );
 
-    const totalReserved = stocks.reduce(
+    const totalReserved = stock.reduce(
       (sum, stock) => sum + stock.reservedQuantity.toNumber(),
       0,
     );
@@ -189,7 +189,7 @@ export class ProductsService {
       totalQuantity,
       totalReserved,
       availableQuantity: totalQuantity - totalReserved,
-      byWarehouse: stocks.map((stock) => ({
+      byWarehouse: stock.map((stock) => ({
         warehouseId: stock.warehouseId,
         warehouseName: stock.warehouse.name,
         quantity: stock.quantity.toNumber(),
@@ -208,12 +208,12 @@ export class ProductsService {
         trackInventory: true,
       },
       include: {
-        stocks: true,
+        stock: true,
       },
     });
 
     const lowStockProducts = products.filter((product) => {
-      const totalStock = product.stocks.reduce(
+      const totalStock = product.stock.reduce(
         (sum, stock) => sum + stock.quantity.toNumber(),
         0,
       );
@@ -227,7 +227,7 @@ export class ProductsService {
       id: product.id,
       name: product.name,
       sku: product.sku,
-      currentStock: product.stocks.reduce(
+      currentStock: product.stock.reduce(
         (sum, stock) => sum + stock.quantity.toNumber(),
         0,
       ),

@@ -1,109 +1,251 @@
+// ============================================
 // FILE: backend/src/modules/integrations/mpesa/mpesa.service.ts
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service';
+// ============================================
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class MpesaService {
-  private mpesaUrl: string;
-  private consumerKey: string;
-  private consumerSecret: string;
+  private readonly consumerKey: string;
+  private readonly consumerSecret: string;
+  private readonly shortcode: string;
+  private readonly passkey: string;
+  private readonly callbackUrl: string;
+  private readonly environment: string;
 
   constructor(
-    private prisma: PrismaService,
     private config: ConfigService,
+    private prisma: PrismaService,
   ) {
-    this.mpesaUrl = this.config.get('MPESA_API_URL') || 'https://sandbox.safaricom.co.ke';
     this.consumerKey = this.config.get('MPESA_CONSUMER_KEY');
     this.consumerSecret = this.config.get('MPESA_CONSUMER_SECRET');
+    this.shortcode = this.config.get('MPESA_SHORTCODE');
+    this.passkey = this.config.get('MPESA_PASSKEY');
+    this.callbackUrl = this.config.get('MPESA_CALLBACK_URL');
+    this.environment = this.config.get('MPESA_ENVIRONMENT', 'sandbox');
   }
 
-  private async getAccessToken(): Promise<string> {
+  async getAccessToken(): Promise<string> {
     const auth = Buffer.from(`${this.consumerKey}:${this.consumerSecret}`).toString('base64');
-    const response = await axios.get(`${this.mpesaUrl}/oauth/v1/generate?grant_type=client_credentials`, {
-      headers: { Authorization: `Basic ${auth}` },
-    });
-    return response.data.access_token;
+    const url = this.environment === 'production'
+      ? 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+      : 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Basic ${auth}`,
+        },
+      });
+      return response.data.access_token;
+    } catch (error) {
+      throw new BadRequestException('Failed to get M-Pesa access token');
+    }
   }
 
-  async initiateSTKPush(data: {
-    companyId: string;
-    phoneNumber: string;
-    amount: number;
-    reference: string;
-    description: string;
-  }) {
+  async initiateSTKPush(phoneNumber: string, amount: number, accountReference: string, description: string) {
     const token = await this.getAccessToken();
-    const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14);
-    
-    const request = {
-      BusinessShortCode: this.config.get('MPESA_SHORTCODE'),
-      Password: Buffer.from(
-        `${this.config.get('MPESA_SHORTCODE')}${this.config.get('MPESA_PASSKEY')}${timestamp}`
-      ).toString('base64'),
+    const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, -3);
+    const password = Buffer.from(`${this.shortcode}${this.passkey}${timestamp}`).toString('base64');
+
+    // Format phone number (remove leading 0, add 254)
+    const formattedPhone = phoneNumber.startsWith('0')
+      ? `254${phoneNumber.slice(1)}`
+      : phoneNumber.startsWith('+254')
+      ? phoneNumber.slice(1)
+      : phoneNumber;
+
+    const url = this.environment === 'production'
+      ? 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+      : 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+
+    const payload = {
+      BusinessShortCode: this.shortcode,
+      Password: password,
       Timestamp: timestamp,
       TransactionType: 'CustomerPayBillOnline',
-      Amount: data.amount,
-      PartyA: data.phoneNumber,
-      PartyB: this.config.get('MPESA_SHORTCODE'),
-      PhoneNumber: data.phoneNumber,
-      CallBackURL: `${this.config.get('BACKEND_URL')}/api/v1/integrations/mpesa/callback`,
-      AccountReference: data.reference,
-      TransactionDesc: data.description,
+      Amount: Math.round(amount),
+      PartyA: formattedPhone,
+      PartyB: this.shortcode,
+      PhoneNumber: formattedPhone,
+      CallBackURL: this.callbackUrl,
+      AccountReference: accountReference,
+      TransactionDesc: description,
     };
 
-    const response = await axios.post(`${this.mpesaUrl}/mpesa/stkpush/v1/processrequest`, request, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    // Save transaction
-    await this.prisma.mpesaTransaction.create({
-      data: {
-        companyId: data.companyId,
-        transactionId: response.data.CheckoutRequestID,
-        amount: data.amount,
-        phoneNumber: data.phoneNumber,
-        merchantRequestId: response.data.MerchantRequestID,
-        checkoutRequestId: response.data.CheckoutRequestID,
-        status: 'PENDING',
-        metadata: { reference: data.reference, description: data.description },
-      },
-    });
+      return {
+        success: true,
+        merchantRequestID: response.data.MerchantRequestID,
+        checkoutRequestID: response.data.CheckoutRequestID,
+        responseCode: response.data.ResponseCode,
+        responseDescription: response.data.ResponseDescription,
+        customerMessage: response.data.CustomerMessage,
+      };
+    } catch (error) {
+      throw new BadRequestException(error.response?.data?.errorMessage || 'STK Push failed');
+    }
+  }
 
-    return response.data;
+  async querySTKStatus(checkoutRequestID: string) {
+    const token = await this.getAccessToken();
+    const timestamp = new Date().toISOString().replace(/[^0-9]/g, '').slice(0, -3);
+    const password = Buffer.from(`${this.shortcode}${this.passkey}${timestamp}`).toString('base64');
+
+    const url = this.environment === 'production'
+      ? 'https://api.safaricom.co.ke/mpesa/stkpushquery/v1/query'
+      : 'https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query';
+
+    const payload = {
+      BusinessShortCode: this.shortcode,
+      Password: password,
+      Timestamp: timestamp,
+      CheckoutRequestID: checkoutRequestID,
+    };
+
+    try {
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw new BadRequestException('Failed to query STK status');
+    }
   }
 
   async handleCallback(callbackData: any) {
-    const { MerchantRequestID, CheckoutRequestID, ResultCode, ResultDesc } = callbackData.Body.stkCallback;
+    const { Body } = callbackData;
+    const { stkCallback } = Body;
 
-    const transaction = await this.prisma.mpesaTransaction.findFirst({
-      where: {
-        merchantRequestId: MerchantRequestID,
-        checkoutRequestId: CheckoutRequestID,
-      },
-    });
+    if (stkCallback.ResultCode === 0) {
+      // Payment successful
+      const items = stkCallback.CallbackMetadata.Item;
+      const amount = items.find((i: any) => i.Name === 'Amount')?.Value;
+      const mpesaReceiptNumber = items.find((i: any) => i.Name === 'MpesaReceiptNumber')?.Value;
+      const phoneNumber = items.find((i: any) => i.Name === 'PhoneNumber')?.Value;
 
-    if (!transaction) return;
+      return {
+        success: true,
+        amount,
+        mpesaCode: mpesaReceiptNumber,
+        phoneNumber,
+        merchantRequestID: stkCallback.MerchantRequestID,
+        checkoutRequestID: stkCallback.CheckoutRequestID,
+      };
+    } else {
+      // Payment failed
+      return {
+        success: false,
+        resultCode: stkCallback.ResultCode,
+        resultDesc: stkCallback.ResultDesc,
+      };
+    }
+  }
 
-    const status = ResultCode === 0 ? 'SUCCESS' : 'FAILED';
-    const mpesaCode = ResultCode === 0 ? callbackData.Body.stkCallback.CallbackMetadata?.Item?.find(
-      (item: any) => item.Name === 'MpesaReceiptNumber'
-    )?.Value : null;
+  async registerC2BUrls(validationUrl: string, confirmationUrl: string) {
+    const token = await this.getAccessToken();
 
-    await this.prisma.mpesaTransaction.update({
-      where: { id: transaction.id },
-      data: {
-        resultCode: ResultCode.toString(),
-        resultDesc: ResultDesc,
-        mpesaCode,
-        status,
-      },
-    });
+    const url = this.environment === 'production'
+      ? 'https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl'
+      : 'https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl';
 
-    // TODO: Update related invoice/payment
+    const payload = {
+      ShortCode: this.shortcode,
+      ResponseType: 'Completed',
+      ConfirmationURL: confirmationUrl,
+      ValidationURL: validationUrl,
+    };
+
+    try {
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw new BadRequestException('Failed to register C2B URLs');
+    }
+  }
+
+  async handleC2BConfirmation(confirmationData: any) {
+    // Process C2B payment confirmation
+    // This is called when customer pays via Paybill
+    const {
+      TransactionType,
+      TransID,
+      TransTime,
+      TransAmount,
+      BusinessShortCode,
+      BillRefNumber,
+      InvoiceNumber,
+      OrgAccountBalance,
+      ThirdPartyTransID,
+      MSISDN,
+      FirstName,
+      MiddleName,
+      LastName,
+    } = confirmationData;
+
+    // Store transaction or update invoice
+    // Example: Find invoice by BillRefNumber and mark as paid
+    return {
+      ResultCode: 0,
+      ResultDesc: 'Accepted',
+    };
+  }
+
+  async b2cPayment(phoneNumber: string, amount: number, remarks: string) {
+    const token = await this.getAccessToken();
+
+    const url = this.environment === 'production'
+      ? 'https://api.safaricom.co.ke/mpesa/b2c/v1/paymentrequest'
+      : 'https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest';
+
+    // Format phone number
+    const formattedPhone = phoneNumber.startsWith('0')
+      ? `254${phoneNumber.slice(1)}`
+      : phoneNumber;
+
+    const payload = {
+      InitiatorName: this.config.get('MPESA_INITIATOR_NAME'),
+      SecurityCredential: this.config.get('MPESA_SECURITY_CREDENTIAL'),
+      CommandID: 'BusinessPayment',
+      Amount: Math.round(amount),
+      PartyA: this.shortcode,
+      PartyB: formattedPhone,
+      Remarks: remarks,
+      QueueTimeOutURL: `${this.callbackUrl}/b2c/timeout`,
+      ResultURL: `${this.callbackUrl}/b2c/result`,
+      Occasion: remarks,
+    };
+
+    try {
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw new BadRequestException('B2C payment failed');
+    }
   }
 }

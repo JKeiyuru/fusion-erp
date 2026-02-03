@@ -19,7 +19,7 @@ model Product {
 
   company             Company              @relation(fields: [companyId], references: [id])
   category            ProductCategory?     @relation(fields: [categoryId], references: [id])
-  stocks              Stock[]
+  stock              Stock[]
   stockMovements      StockMovement[]
   invoiceLines        InvoiceLine[]
   salesOrderLines     SalesOrderLine[]

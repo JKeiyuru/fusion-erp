@@ -1,7 +1,8 @@
+// ============================================
 // FILE: backend/src/modules/inventory/dto/create-adjustment.dto.ts
 // ============================================
 import { ApiProperty } from '@nestjs/swagger';
-import { IsUUID, IsNumber, IsString } from 'class-validator';
+import { IsUUID, IsNumber, IsString, IsOptional } from 'class-validator';
 
 export class CreateAdjustmentDto {
   @ApiProperty()
@@ -21,6 +22,7 @@ export class CreateAdjustmentDto {
   reason: string;
 
   @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   notes?: string;
 }

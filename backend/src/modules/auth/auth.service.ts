@@ -23,10 +23,48 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
+  // Add this method for local strategy validation
+  async validateUser(email: string, password: string, tenantId?: string): Promise<any> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+        companyId: tenantId,
+        isActive: true,
+      },
+      include: {
+        company: true,
+        roles: {
+          include: {
+            role: {
+              include: {
+                permissions: {
+                  include: {
+                    permission: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return null;
+    }
+
+    return user;
+  }
+
   async register(registerDto: RegisterDto) {
     // Check if company email already exists
     const existingCompany = await this.prisma.company.findUnique({
-      where: { email: registerDto.companyEmail },
+      where: { email: registerDto.companyName },
     });
 
     if (existingCompany) {
@@ -42,7 +80,7 @@ export class AuthService {
       const company = await prisma.company.create({
         data: {
           name: registerDto.companyName,
-          email: registerDto.companyEmail,
+          email: registerDto.companyName,
           phone: registerDto.companyPhone,
           kraPin: registerDto.kraPin,
           currency: 'KES',

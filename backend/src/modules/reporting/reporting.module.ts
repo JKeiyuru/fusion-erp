@@ -1,11 +1,21 @@
-// FILE: backend/src/modules/reporting/reporting.module.ts
 import { Module } from '@nestjs/common';
-import { ReportingController } from './reporting.controller';
-import { ReportingService } from './reporting.service';
+import { FinancialReportsController } from './controllers/financial-reports.controller';
+import { OperationalReportsController } from './controllers/operational-reports.controller';
+import { FinancialReportsService } from './services/financial-reports.service';
+import { OperationalReportsService } from './services/operational-reports.service';
 
 @Module({
-  controllers: [ReportingController],
-  providers: [ReportingService],
-  exports: [ReportingService],
+  controllers: [
+    FinancialReportsController,
+    OperationalReportsController,
+  ],
+  providers: [
+    FinancialReportsService,
+    OperationalReportsService,
+  ],
+  exports: [
+    FinancialReportsService,
+    OperationalReportsService,
+  ],
 })
 export class ReportingModule {}
